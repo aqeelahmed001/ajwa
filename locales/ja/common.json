@@ -1,0 +1,25 @@
+{
+  "navigation": {
+    "home": "ホーム",
+    "about": "会社概要",
+    "services": "サービス",
+    "machinery": "機械",
+    "contact": "お問い合わせ",
+    "language": "言語"
+  },
+  "buttons": {
+    "contactUs": "お問い合わせ",
+    "learnMore": "詳しく見る",
+    "viewMachinery": "機械一覧",
+    "getQuote": "見積もり依頼",
+    "submit": "送信",
+    "send": "メッセージ送信"
+  },
+  "footer": {
+    "company": "会社",
+    "services": "サービス",
+    "contact": "お問い合わせ",
+    "followUs": "フォローする",
+    "allRightsReserved": "All rights reserved"
+  }
+} 

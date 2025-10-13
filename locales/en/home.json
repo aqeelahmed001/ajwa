@@ -1,0 +1,57 @@
+{
+  "hero": {
+    "title": "We Buy & Sell Machinery",
+    "subtitle": "Leading Japan-based machinery export and import company with global reach",
+    "description": "Ajwa Trading Limited specializes in buying used machinery from Japanese customers and selling high-quality Japanese machinery worldwide.",
+    "ctaPrimary": "View Machinery",
+    "ctaSecondary": "Learn More"
+  },
+  "sections": {
+    "cta": {
+      "title": "Ready to Trade Machinery?",
+      "subtitle": "Get in touch with our experts for personalized solutions",
+      "description": "Whether you're looking to buy quality Japanese machinery or sell your used equipment, we're here to help with professional service and competitive pricing.",
+      "contactInfo": {
+        "title": "Contact Information",
+        "phone": "+81-3-1234-5678",
+        "email": "info@ajwatrading.com",
+        "address": "Tokyo, Japan"
+      },
+      "trustBadges": {
+        "title": "Why Choose Us",
+        "items": [
+          "20+ Years Experience",
+          "Global Network",
+          "Quality Guaranteed",
+          "Fast Service"
+        ]
+      }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about our services",
+      "items": [
+        {
+          "question": "What types of machinery do you buy and sell?",
+          "answer": "We deal with a wide range of industrial machinery including manufacturing equipment, construction machinery, agricultural equipment, and specialized industrial tools."
+        },
+        {
+          "question": "How do you determine the price for used machinery?",
+          "answer": "Our pricing is based on market research, equipment condition, age, and current demand. We provide transparent assessments with detailed reports."
+        },
+        {
+          "question": "Do you handle international shipping?",
+          "answer": "Yes, we provide complete international shipping services including documentation, customs clearance, and logistics management."
+        },
+        {
+          "question": "What is your typical response time?",
+          "answer": "We typically respond to inquiries within 24 hours and can complete machinery purchases within 48 hours for qualified equipment."
+        },
+        {
+          "question": "Do you provide after-sales support?",
+          "answer": "Yes, we offer comprehensive after-sales support including installation guidance, maintenance advice, and technical assistance."
+        }
+      ]
+    }
+  }
+} 

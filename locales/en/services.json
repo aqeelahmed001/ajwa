@@ -1,0 +1,92 @@
+{
+  "hero": {
+    "title": "Our Services",
+    "subtitle": "Ajwa Trading provides comprehensive solutions from machinery procurement to sales and export/import procedures."
+  },
+  "buyingServices": {
+    "title": "Machinery Purchase Services",
+    "subtitle": "We provide high-quality Japanese machinery to customers worldwide.",
+    "services": [
+      {
+        "title": "Machinery Sourcing",
+        "description": "We source the best machinery from trusted suppliers across Japan.",
+        "features": ["Quality guaranteed", "Competitive pricing", "Quick sourcing", "Expert selection"]
+      },
+      {
+        "title": "International Export",
+        "description": "We provide safe and efficient export services to countries worldwide.",
+        "features": ["Documentation handling", "Customs support", "Transport management", "Tracking system"]
+      },
+      {
+        "title": "Quality Assurance",
+        "description": "All machinery undergoes rigorous quality inspection and comes with warranty.",
+        "features": ["Technical inspection", "Performance testing", "Warranty certificate", "After-sales support"]
+      }
+    ]
+  },
+  "sellingServices": {
+    "title": "Machinery Selling Services",
+    "subtitle": "We offer fair price purchasing of used machinery and quick cash conversion.",
+    "services": [
+      {
+        "title": "Fair Price Assessment",
+        "description": "We achieve maximum value through transparent assessment based on market prices.",
+        "features": ["Market price research", "Transparent assessment", "Detailed reports", "Price negotiation support"]
+      },
+      {
+        "title": "Quick Purchase",
+        "description": "Fast service from assessment to cash conversion, completed within 48 hours.",
+        "features": ["Cash conversion within 48h", "Documentation handling", "Removal assistance", "Transport support"]
+      },
+      {
+        "title": "Procedure Handling",
+        "description": "We handle all complex selling procedures, minimizing customer burden.",
+        "features": ["Ownership transfer", "Tax filing support", "Insurance procedures", "Legal documentation"]
+      }
+    ]
+  },
+  "additionalServices": {
+    "title": "Additional Services",
+    "services": [
+      {
+        "title": "Transportation & Logistics",
+        "description": "We provide safe transportation and storage services for machinery."
+      },
+      {
+        "title": "Consulting",
+        "description": "Professional advice and consulting services for machinery trading."
+      },
+      {
+        "title": "Maintenance",
+        "description": "We provide regular maintenance and repair services for machinery."
+      }
+    ]
+  },
+  "process": {
+    "title": "Service Process",
+    "steps": [
+      {
+        "title": "Inquiry",
+        "description": "Tell us about your requirements."
+      },
+      {
+        "title": "Detailed Consultation",
+        "description": "Our specialists conduct detailed consultation."
+      },
+      {
+        "title": "Proposal & Quote",
+        "description": "We propose optimal solutions and quotes."
+      },
+      {
+        "title": "Contract & Execution",
+        "description": "After contract signing, we execute services promptly."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Want to Learn More About Our Services?",
+    "text": "Our specialists will propose optimal solutions tailored to your needs.",
+    "contactButton": "Contact Us",
+    "viewMachinery": "View Machinery"
+  }
+} 

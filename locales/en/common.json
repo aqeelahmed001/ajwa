@@ -1,0 +1,25 @@
+{
+  "navigation": {
+    "home": "Home",
+    "about": "About Us",
+    "services": "Services",
+    "machinery": "Machinery",
+    "contact": "Contact",
+    "language": "Language"
+  },
+  "buttons": {
+    "contactUs": "Contact Us",
+    "learnMore": "Learn More",
+    "viewMachinery": "View Machinery",
+    "getQuote": "Get Quote",
+    "submit": "Submit",
+    "send": "Send Message"
+  },
+  "footer": {
+    "company": "Company",
+    "services": "Services",
+    "contact": "Contact",
+    "followUs": "Follow Us",
+    "allRightsReserved": "All rights reserved"
+  }
+} 

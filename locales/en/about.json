@@ -1,0 +1,87 @@
+{
+  "hero": {
+    "title": "About Ajwa Trading Limited",
+    "subtitle": "Your Trusted Partner in Global Machinery Trade"
+  },
+  "mission": {
+    "title": "Our Mission",
+    "description": "To bridge the gap between Japanese machinery suppliers and global buyers, while providing fair and transparent services for those looking to sell their used equipment.",
+    "vision": "To become the leading machinery trading company connecting Japan with the world."
+  },
+  "keyFacts": {
+    "title": "Key Facts",
+    "facts": [
+      {
+        "number": "20+",
+        "label": "Years Experience",
+        "description": "Decades of expertise in machinery trading"
+      },
+      {
+        "number": "50+",
+        "label": "Countries Served",
+        "description": "Global reach across continents"
+      },
+      {
+        "number": "1000+",
+        "label": "Machines Traded",
+        "description": "Successful transactions completed"
+      },
+      {
+        "number": "24h",
+        "label": "Response Time",
+        "description": "Quick and reliable service"
+      }
+    ]
+  },
+  "values": {
+    "title": "Our Values",
+    "values": [
+      {
+        "title": "Quality",
+        "description": "We never compromise on the quality of machinery we trade."
+      },
+      {
+        "title": "Trust",
+        "description": "Building long-term relationships through transparency and reliability."
+      },
+      {
+        "title": "Innovation",
+        "description": "Continuously improving our processes and services."
+      },
+      {
+        "title": "Customer Focus",
+        "description": "Your success is our priority."
+      }
+    ]
+  },
+  "timeline": {
+    "title": "Our Journey",
+    "events": [
+      {
+        "year": "2003",
+        "title": "Company Founded",
+        "description": "Started as a small machinery trading company in Tokyo"
+      },
+      {
+        "year": "2008",
+        "title": "International Expansion",
+        "description": "Began exporting to Southeast Asian markets"
+      },
+      {
+        "year": "2015",
+        "title": "Global Network",
+        "description": "Established partnerships in 30+ countries"
+      },
+      {
+        "year": "2023",
+        "title": "Digital Transformation",
+        "description": "Launched comprehensive online platform"
+      }
+    ]
+  },
+  "cta": {
+    "title": "Ready to Work With Us?",
+    "description": "Join thousands of satisfied customers who trust Ajwa Trading for their machinery needs.",
+    "button": "Get Started"
+  }
+} 
