@@ -10,6 +10,7 @@ import AwesomeSlider from 'react-awesome-slider'
 import withAutoplay from 'react-awesome-slider/dist/autoplay'
 import 'react-awesome-slider/dist/styles.css'
 import 'react-awesome-slider/dist/custom-animations/cube-animation.css'
+import { usePageContent } from '@/hooks/usePageContent'
 
 interface HeroSectionProps {
   lang: string;
@@ -55,16 +56,28 @@ export default function HeroSection({ lang, backgroundImage, images }: HeroSecti
     }
   }
   
-  // Text content based on language
+  const { getContent } = usePageContent({
+    pageId: 'home',
+    section: 'hero',
+    lang
+  })
+
+  // Text content from CMS with fallbacks
   const heroText = {
-    categoryTag: isJapanese ? '国際機械取引' : 'International Machinery Trading',
-    mainLeft: isJapanese ? '機械を購入したい' : 'Buy a Machine',
-    mainRight: isJapanese ? '機械を売りたい' : 'Sell a Machine',
-    subtitle: isJapanese 
+    categoryTag: getContent('categoryTag', isJapanese ? '国際機械取引' : 'International Machinery Trading'),
+    mainLeft: getContent('mainLeft', isJapanese ? '機械を購入したい' : 'Buy a Machine'),
+    mainRight: getContent('mainRight', isJapanese ? '機械を売りたい' : 'Sell a Machine'),
+    subtitle: getContent('subtitle', isJapanese 
       ? 'あなたのニーズに合わせて、購入と売却をシンプルに' 
-      : 'Make buying and selling machinery simple',
-    ctaContact: isJapanese ? '売却の相談' : 'Sell Your Machine',
-    ctaListings: isJapanese ? '機械を探す' : 'Browse Listings'
+      : 'Make buying and selling machinery simple'),
+    ctaContact: getContent('ctaContact', isJapanese ? '売却の相談' : 'Sell Your Machine'),
+    ctaListings: getContent('ctaListings', isJapanese ? '機械を探す' : 'Browse Listings'),
+    leftDescription: getContent('leftDescription', isJapanese
+      ? '世界中から高品質な産業機械を厳選して提供します。'
+      : 'Find high-quality industrial machinery curated from around the world.'),
+    rightDescription: getContent('rightDescription', isJapanese
+      ? '日本国内の中古機械を適正な市場価格で買取いたします。'
+      : 'We purchase used machinery in Japan at fair market value.')
   }
 
   // Slider images (using the new images from public/images folder)
@@ -128,9 +141,7 @@ export default function HeroSection({ lang, backgroundImage, images }: HeroSecti
                   {heroText.mainLeft}
                 </h1>
                 <p className="mt-3 text-white/85 max-w-md text-center md:text-right">
-                  {isJapanese
-                    ? '世界中から高品質な産業機械を厳選して提供します。'
-                    : 'Find high-quality industrial machinery curated from around the world.'}
+                  {heroText.leftDescription}
                 </p>
                 <div className="mt-6">
                   <Button size="lg" className="text-base px-6 bg-white text-slate-900 hover:bg-white/90" asChild>
@@ -148,9 +159,7 @@ export default function HeroSection({ lang, backgroundImage, images }: HeroSecti
                   {heroText.mainRight}
                 </h1>
                 <p className="mt-3 text-white/85 max-w-md text-center md:text-left">
-                  {isJapanese
-                    ? '日本国内の中古機械を適正な市場価格で買取いたします。'
-                    : 'We purchase used machinery in Japan at fair market value.'}
+                  {heroText.rightDescription}
                 </p>
                 <div className="mt-6">
                   <Button size="lg" className="text-base px-6 bg-parrot-red hover:bg-parrot-red/90 text-white" asChild>
