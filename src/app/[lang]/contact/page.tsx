@@ -33,11 +33,11 @@ export default function ContactPage({ params }: { params: { lang: string } }) {
     messagePlaceholder: isJapanese ? 'お問い合わせ内容をご入力ください' : 'Enter your message here',
     submitButton: isJapanese ? '送信する' : 'Submit Inquiry',
     contactInfoTitle: isJapanese ? '連絡先情報' : 'Contact Information',
-    officeAddress: isJapanese ? '〒123-4567 東京都新宿区西新宿1-1-1' : '1-1-1 Nishi-Shinjuku, Shinjuku-ku, Tokyo 123-4567',
-    phoneNumber: '+81 XX-XXXX-XXXX',
-    emailAddress: 'info@ajwatrading.com',
+    officeAddress: isJapanese ? '〒496-0901 愛知県愛西市佐屋町道西64番地' : '〒496-0901 Aichi Prefecture, Aishish, Sayacho, michinishi 64',
+    phoneNumber: '+81 0567-3166-75',
+    emailAddress: 'info@ajwa.co.jp',
     businessHours: isJapanese ? '平日 9:00 - 18:00（日本時間）' : 'Mon-Fri 9:00 - 18:00 (JST)',
-    website: 'www.ajwatrading.com',
+    website: 'www.ajwa.co.jp',
     formDisclaimer: isJapanese 
       ? '※ ご入力いただいた個人情報は、お問い合わせへの対応とそれに付随する業務以外には使用いたしません。'
       : 'The personal information provided will only be used to respond to your inquiry and associated business operations.',
