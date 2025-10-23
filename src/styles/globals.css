@@ -4,42 +4,43 @@
 
 @layer base {
   :root {
-    /* Background with subtle light green tint */
-    --background: 140 30% 98%;
-    --foreground: 0 0% 10%; /* Dark grey, near black for text */
+    /* Professional light theme with warm undertones */
+    --background: 30 30% 98%; /* Soft cream white background */
+    --foreground: 25 80% 17%; /* Rich dark brown for text */
 
-    /* Light green tint for card backgrounds */
-    --card: 140 25% 99%;
-    --card-foreground: 0 0% 10%;
+    /* Card backgrounds with subtle warmth */
+    --card: 0 0% 100%; /* Pure white for cards */
+    --card-foreground: 25 80% 17%; /* Same as main text */
 
-    /* Popover with slight green tint */
-    --popover: 140 25% 99%;
-    --popover-foreground: 0 0% 10%;
+    /* Popover with clean white */
+    --popover: 0 0% 100%;
+    --popover-foreground: 25 80% 17%;
 
-    /* Ajwa brand colors */
-    --primary: 142 76% 36%; /* Vibrant green */
-    --primary-foreground: 0 0% 100%;
+    /* Professional brand colors */
+    --primary: 16 85% 45%; /* Deep orange-red - #C93A0E */
+    --primary-hover: 25 90% 50%; /* Warm orange - #F27D16 */
+    --primary-foreground: 0 0% 100%; /* White text on buttons */
 
-    /* Alternative primary color for option to switch */
-    --parrot-red: 0 65% 45%; /* Parrot red */
+    /* Secondary brand color */
+    --secondary: 30 15% 94%; /* Very light warm gray */
+    --secondary-foreground: 25 80% 17%; /* Same as main text */
 
-    /* Light grey with green tint for secondary */
-    --secondary: 140 10% 95%;
-    --secondary-foreground: 0 0% 10%;
+    /* Muted elements */
+    --muted: 30 10% 92%; /* Light warm gray */
+    --muted-foreground: 25 40% 35%; /* Medium brown for secondary text */
 
-    /* Muted backgrounds with green undertones */
-    --muted: 140 15% 96%;
-    --muted-foreground: 0 0% 45%;
+    /* Accent colors */
+    --accent: 25 90% 50%; /* Same as hover, for consistency */
+    --accent-foreground: 0 0% 100%;
 
-    --accent: 142 70% 45%; /* Light green for accents */
-    --accent-foreground: 0 0% 98%;
-
-    --destructive: 0 84% 60%;
+    /* Destructive actions */
+    --destructive: 0 84% 45%; /* Deep red */
     --destructive-foreground: 0 0% 98%;
 
-    --border: 140 10% 90%;
-    --input: 140 10% 90%;
-    --ring: 142 76% 36%;
+    /* Borders and inputs */
+    --border: 30 15% 85%; /* Light warm gray border */
+    --input: 30 15% 85%;
+    --ring: 16 85% 45%; /* Match primary for focus rings */
 
     --radius: 0.5rem;
 
@@ -61,38 +62,37 @@
   }
 
   .dark {
-    /* Dark mode with deep green undertones */
-    --background: 142 15% 10%;
-    --foreground: 0 0% 98%;
+    /* Professional dark theme with warm undertones */
+    --background: 25 25% 12%; /* Deep brown-black background */
+    --foreground: 30 15% 90%; /* Warm off-white text */
 
-    --card: 142 15% 12%;
-    --card-foreground: 0 0% 98%;
+    --card: 25 20% 15%; /* Slightly lighter than background */
+    --card-foreground: 30 15% 90%;
 
-    --popover: 142 15% 12%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 25 20% 15%;
+    --popover-foreground: 30 15% 90%;
 
-    --primary: 142 70% 40%;
-    --primary-foreground: 0 0% 98%;
+    /* Keep the same brand colors for consistency */
+    --primary: 16 85% 45%; /* Deep orange-red - #C93A0E */
+    --primary-hover: 25 90% 50%; /* Warm orange - #F27D16 */
+    --primary-foreground: 0 0% 100%;
 
-    /* Alternative primary color for dark mode */
-    --parrot-red: 0 65% 45%;
+    /* Secondary elements */
+    --secondary: 25 15% 25%; /* Dark warm gray */
+    --secondary-foreground: 30 15% 90%;
 
-    /* Deep green-gray for secondary elements */
-    --secondary: 142 10% 18%;
-    --secondary-foreground: 0 0% 98%;
+    --muted: 25 15% 20%; /* Darker warm gray */
+    --muted-foreground: 30 15% 70%; /* Light warm gray for secondary text */
 
-    --muted: 142 10% 15%;
-    --muted-foreground: 140 5% 70%;
+    --accent: 25 90% 50%; /* Same as hover */
+    --accent-foreground: 0 0% 100%;
 
-    --accent: 142 70% 35%;
-    --accent-foreground: 0 0% 98%;
-
-    --destructive: 0 62% 30%;
+    --destructive: 0 70% 45%; /* Brighter red for dark mode */
     --destructive-foreground: 0 0% 98%;
 
-    --border: 142 10% 20%;
-    --input: 142 10% 20%;
-    --ring: 142 70% 40%;
+    --border: 25 15% 25%; /* Dark warm gray border */
+    --input: 25 15% 25%;
+    --ring: 16 85% 45%; /* Match primary */
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -154,16 +154,16 @@
   }
   
   .btn-primary {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-lg font-medium transition-colors;
+    @apply bg-primary text-primary-foreground hover:bg-[hsl(var(--primary-hover))] px-6 py-3 rounded-md font-medium transition-colors shadow-sm;
   }
   
   .btn-secondary {
-    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 px-6 py-3 rounded-lg font-medium transition-colors;
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 px-6 py-3 rounded-md font-medium transition-colors border border-border/50 shadow-sm;
   }
   
-  /* Parrot red button alternative */
-  .btn-parrot-red {
-    @apply bg-[hsl(var(--parrot-red))] text-white hover:bg-[hsl(var(--parrot-red))]/90 px-6 py-3 rounded-lg font-medium transition-colors;
+  /* Accent button alternative */
+  .btn-accent {
+    @apply bg-[hsl(var(--accent))] text-white hover:bg-[hsl(var(--accent))]/90 px-6 py-3 rounded-md font-medium transition-colors shadow-sm;
   }
   
   .bg-grid-pattern {

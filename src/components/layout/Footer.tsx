@@ -52,7 +52,7 @@ export default function Footer({ lang }: FooterProps) {
   }
 
   return (
-    <footer className="bg-muted/30">
+    <footer className="bg-[#2A1506] text-white">
       <div className="container py-12 md:py-16">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Company Information */}
@@ -66,7 +66,7 @@ export default function Footer({ lang }: FooterProps) {
                 {isJapanese ? 'アジワ商事' : 'Ajwa Trading'}
               </span>
             </div>
-            <p className="mt-4 text-sm text-muted-foreground">
+            <p className="mt-4 text-sm text-white/80">
               {isJapanese 
                 ? '日本を拠点とする機械輸出入会社。品質の高い機械を世界各国へ輸出し、日本国内の中古機械を適正価格で買取いたします。' 
                 : 'Japan-based machinery export and import company. We export quality machinery worldwide and buy used machinery from Japanese customers at fair prices.'}
@@ -107,7 +107,7 @@ export default function Footer({ lang }: FooterProps) {
               <ul className="mt-4 space-y-2">
                 {footerNavigation.company.links.map((item, index) => (
                   <li key={index}>
-                    <Link href={item.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    <Link href={item.href} className="text-sm text-white/80 hover:text-white transition-colors">
                       {item.name}
                     </Link>
                   </li>
@@ -121,7 +121,7 @@ export default function Footer({ lang }: FooterProps) {
               <ul className="mt-4 space-y-2">
                 {footerNavigation.services.links.map((item, index) => (
                   <li key={index}>
-                    <Link href={item.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    <Link href={item.href} className="text-sm text-white/80 hover:text-white transition-colors">
                       {item.name}
                     </Link>
                   </li>
@@ -135,7 +135,7 @@ export default function Footer({ lang }: FooterProps) {
               <ul className="mt-4 space-y-2">
                 {footerNavigation.support.links.map((item, index) => (
                   <li key={index}>
-                    <Link href={item.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    <Link href={item.href} className="text-sm text-white/80 hover:text-white transition-colors">
                       {item.name}
                     </Link>
                   </li>
@@ -147,20 +147,20 @@ export default function Footer({ lang }: FooterProps) {
           {/* Contact Information */}
           <div>
             <h3 className="text-sm font-medium">{isJapanese ? 'お問い合わせ' : 'Contact'}</h3>
-            <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
+            <ul className="mt-4 space-y-3 text-sm text-white/80">
               <li className="flex items-start">
-                <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground mr-2" aria-hidden="true" />
+                <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-white/80 mr-2" aria-hidden="true" />
                 {contactInfo.address}
               </li>
               <li className="flex">
-                <Phone className="h-4 w-4 flex-shrink-0 text-muted-foreground mr-2" aria-hidden="true" />
-                <Link href={`tel:${contactInfo.phone}`} className="hover:text-foreground transition-colors">
+                <Phone className="h-4 w-4 flex-shrink-0 text-white/80 mr-2" aria-hidden="true" />
+                <Link href={`tel:${contactInfo.phone}`} className="hover:text-white transition-colors">
                   {contactInfo.phone}
                 </Link>
               </li>
               <li className="flex">
-                <Mail className="h-4 w-4 flex-shrink-0 text-muted-foreground mr-2" aria-hidden="true" />
-                <Link href={`mailto:${contactInfo.email}`} className="hover:text-foreground transition-colors">
+                <Mail className="h-4 w-4 flex-shrink-0 text-white/80 mr-2" aria-hidden="true" />
+                <Link href={`mailto:${contactInfo.email}`} className="hover:text-white transition-colors">
                   {contactInfo.email}
                 </Link>
               </li>
@@ -176,8 +176,8 @@ export default function Footer({ lang }: FooterProps) {
         </div>
         
         {/* Copyright */}
-        <div className="mt-12 border-t border-border pt-8 text-center md:flex md:items-center md:justify-between">
-          <p className="text-xs text-muted-foreground">
+        <div className="mt-12 border-t border-white/20 pt-8 text-center md:flex md:items-center md:justify-between">
+          <p className="text-xs text-white/70">
             &copy; {currentYear} Ajwa Trading Limited. {isJapanese ? '全著作権所有。' : 'All rights reserved.'}
           </p>
           <div className="mt-4 flex justify-center space-x-6 md:mt-0">
@@ -185,7 +185,7 @@ export default function Footer({ lang }: FooterProps) {
               <Link 
                 key={index} 
                 href={item.href}
-                className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                className="text-xs text-white/70 hover:text-white transition-colors"
               >
                 {item.name}
               </Link>

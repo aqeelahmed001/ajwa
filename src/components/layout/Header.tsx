@@ -66,7 +66,7 @@ export default function Header({ lang }: HeaderProps) {
       ja: { name: 'ホーム', path: '/ja' },
     },
     {
-      en: { name: 'About', path: '/en/about' },
+      en: { name: 'About Us', path: '/en/about' },
       ja: { name: '会社概要', path: '/ja/about' },
     },
     {
@@ -89,16 +89,16 @@ export default function Header({ lang }: HeaderProps) {
 
   // Contact information
   const contactInfo = {
-    phone: '+81-3-1234-5678',
-    email: 'info@ajwaco.com',
-    address: isJapanese ? '東京都港区赤坂1-2-3' : '1-2-3 Akasaka, Minato-ku, Tokyo, Japan',
+    phone: '+81-0567-31-6675',
+    email: 'info@ajwa.co.jp',
+    address: isJapanese ? '〒496-0901 愛知県愛西市佐屋町道西64番地' : '〒496-0901 Aichi Prefecture, Aishish, Sayacho, michinishi 64',
     japanTime: currentTime + ' JST',
   }
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       {/* Top Information Bar */}
-      <div className="bg-slate-50 border-b border-slate-200">
+      <div className="bg-secondary/50 border-b border-border/40">
         <div className="container mx-auto px-4 py-2">
           <div className="flex flex-wrap items-center justify-between text-xs text-slate-600">
             {/* Empty div for layout balance on small screens */}
@@ -141,7 +141,7 @@ export default function Header({ lang }: HeaderProps) {
       </div>
       
       {/* Main Header */}
-      <div className="border-b border-border/40 bg-white">
+      <div className="border-b border-border/40 bg-card shadow-sm">
         <div className="container mx-auto px-4 flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2">
@@ -206,7 +206,7 @@ export default function Header({ lang }: HeaderProps) {
 
             {/* Contact Us Button - Desktop - Using Parrot Red for contrast */}
             <div className="hidden sm:block">
-              <Button className="bg-parrot-red text-white hover:bg-parrot-red/90" asChild>
+              <Button className="bg-primary text-white hover:bg-[hsl(var(--primary-hover))]" asChild>
                 <Link href={`/${lang}/contact`}>
                   {isJapanese ? 'お問い合わせ' : 'Contact Us'}
                 </Link>
@@ -273,7 +273,7 @@ export default function Header({ lang }: HeaderProps) {
                     ))}
                   </div>
                   <div className="flex flex-col gap-2 pt-4">
-                    <Button className="w-full bg-parrot-red text-white hover:bg-parrot-red/90" asChild>
+                    <Button className="w-full bg-primary text-white hover:bg-[hsl(var(--primary-hover))]" asChild>
                       <Link href={`/${lang}/contact`}>
                         {isJapanese ? 'お問い合わせ' : 'Contact Us'}
                       </Link>

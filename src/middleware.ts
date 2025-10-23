@@ -11,17 +11,30 @@ export function middleware(request: NextRequest) {
   
   // Handle admin subdomain routing
   if (isAdminSubdomain) {
-    // Rewrite the URL to the /admin path
-    // This means requests to admin.domain.com/users will be handled by /admin/users
-    const newUrl = new URL(`/admin${path}`, url);
-    return NextResponse.rewrite(newUrl);
+    // If the path already starts with /admin, we need to avoid duplication
+    if (path.startsWith('/admin/')) {
+      // Path already has /admin/, so we need to strip it to avoid duplication
+      const strippedPath = path.replace(/^\/admin/, '');
+      const newUrl = new URL(`/admin${strippedPath}`, url);
+      return NextResponse.rewrite(newUrl);
+    } else if (path === '/admin') {
+      // Handle the root admin path
+      const newUrl = new URL('/admin', url);
+      return NextResponse.rewrite(newUrl);
+    } else {
+      // Normal case - rewrite to /admin path
+      const newUrl = new URL(`/admin${path}`, url);
+      return NextResponse.rewrite(newUrl);
+    }
   }
   
   // For the main domain, protect admin routes
   if (path.startsWith('/admin')) {
     // In production, redirect admin paths on main domain to the admin subdomain
-    if (process.env.NODE_ENV === 'production' && !isAdminSubdomain && path !== '/admin') {
-      const adminUrl = new URL(url);
+    if (process.env.NODE_ENV === 'production' && !isAdminSubdomain) {
+      // Strip /admin prefix to avoid duplication
+      const strippedPath = path.replace(/^\/admin/, '');
+      const adminUrl = new URL(strippedPath, url);
       adminUrl.host = `admin.${hostname}`;
       return NextResponse.redirect(adminUrl);
     }

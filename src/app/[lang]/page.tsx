@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: HomePageProps): Promise<Metad
   return {
     title: lang === 'ja' 
       ? 'アジワ商事 - 機械輸出入' 
-      : 'Ajwa Trading Limited - Machinery Export & Import',
+      : 'Ajwa Co.,LTD - Machinery Export & Import',
     description: lang === 'ja'
       ? '日本を拠点とする機械輸出入会社。中古機械の買取と世界各国への機械輸出を行っております。'
       : 'Japan-based machinery export and import company. We buy used machinery from Japanese customers and sell quality machinery worldwide.',

@@ -1,15 +1,67 @@
+"use client";
+
 import React from 'react'
 import Link from 'next/link'
 import { Metadata } from 'next'
 import { Phone, Mail, MapPin, Clock, Globe, ArrowRight } from 'lucide-react'
-
-export const metadata: Metadata = {
-  title: 'Contact Us | Ajwa Trading Limited',
-  description: 'Get in touch with Ajwa Trading Limited for machinery export and import inquiries. We provide professional consultation for buying and selling industrial machinery.',
-}
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 export default function ContactPage({ params }: { params: { lang: string } }) {
   const isJapanese = params.lang === 'ja'
+  
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    company: '',
+    subject: '',
+    message: '',
+  });
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      setIsSubmitting(true);
+      
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        toast.success(isJapanese ? 'お問い合わせを送信しました。' : 'Your message has been sent successfully.');
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          company: '',
+          subject: '',
+          message: '',
+        });
+      } else {
+        throw new Error(data.error || 'Failed to send message');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error(isJapanese ? 'エラーが発生しました。後でもう一度お試しください。' : 'An error occurred. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   
   const content = {
     title: isJapanese ? 'お問い合わせ' : 'Contact Us',
@@ -77,7 +129,7 @@ export default function ContactPage({ params }: { params: { lang: string } }) {
               <h2 className="text-2xl font-semibold mb-6">{content.formTitle}</h2>
               
               {/* Contact Form */}
-              <form className="space-y-6">
+              <form className="space-y-6" onSubmit={handleSubmit}>
                 <div className="grid md:grid-cols-2 gap-6">
                   {/* Name Field */}
                   <div className="space-y-2">
@@ -87,6 +139,9 @@ export default function ContactPage({ params }: { params: { lang: string } }) {
                     <input
                       type="text"
                       id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
                       placeholder={content.namePlaceholder}
                       className="w-full rounded-md border border-slate-200 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                       required
@@ -101,6 +156,9 @@ export default function ContactPage({ params }: { params: { lang: string } }) {
                     <input
                       type="email"
                       id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
                       placeholder={content.emailPlaceholder}
                       className="w-full rounded-md border border-slate-200 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                       required
@@ -117,33 +175,41 @@ export default function ContactPage({ params }: { params: { lang: string } }) {
                     <input
                       type="tel"
                       id="phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
                       placeholder={content.phonePlaceholder}
                       className="w-full rounded-md border border-slate-200 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                   </div>
                   
-                  {/* Subject Field */}
+                  {/* Company Field */}
                   <div className="space-y-2">
-                    <label htmlFor="subject" className="text-sm font-medium">
-                      {content.subjectLabel} <span className="text-red-500">*</span>
+                    <label htmlFor="company" className="text-sm font-medium">
+                      {content.nameLabel}
                     </label>
                     <input
                       type="text"
-                      id="subject"
-                      placeholder={content.subjectPlaceholder}
+                      id="company"
+                      name="company"
+                      value={formData.company}
+                      onChange={handleChange}
+                      placeholder={content.namePlaceholder}
                       className="w-full rounded-md border border-slate-200 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                      required
                     />
                   </div>
                 </div>
                 
-                {/* Inquiry Type */}
+                {/* Subject Field */}
                 <div className="space-y-2">
-                  <label htmlFor="inquiryType" className="text-sm font-medium">
-                    {content.inquiryTypeLabel} <span className="text-red-500">*</span>
+                  <label htmlFor="subject" className="text-sm font-medium">
+                    {content.subjectLabel} <span className="text-red-500">*</span>
                   </label>
                   <select
-                    id="inquiryType"
+                    id="subject"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
                     className="w-full rounded-md border border-slate-200 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                     required
                   >
@@ -163,8 +229,11 @@ export default function ContactPage({ params }: { params: { lang: string } }) {
                   </label>
                   <textarea
                     id="message"
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    rows={5}
                     placeholder={content.messagePlaceholder}
-                    rows={6}
                     className="w-full rounded-md border border-slate-200 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                     required
                   ></textarea>
@@ -180,10 +249,10 @@ export default function ContactPage({ params }: { params: { lang: string } }) {
                   </p>
                   <button
                     type="submit"
-                    className="px-8 py-3 bg-parrot-red hover:bg-parrot-red/90 text-white font-medium rounded-md flex items-center justify-center gap-2"
+                    disabled={isSubmitting}
+                    className="bg-primary hover:bg-primary-dark text-white font-medium py-2 px-6 rounded-md transition-colors disabled:opacity-70"
                   >
-                    {content.submitButton}
-                    <ArrowRight className="h-4 w-4" />
+                    {isSubmitting ? (isJapanese ? '送信中...' : 'Sending...') : content.submitButton}
                   </button>
                 </div>
               </form>

@@ -29,7 +29,7 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
       : 'Leading Global Machinery Trading Company',
     heroDescription: isJapanese
       ? 'アジュワトレーディングリミテッドは、日本を拠点に世界中へ高品質な機械を輸出・輸入する専門商社です。信頼と実績を基盤に、お客様のビジネスをサポートします。'
-      : 'Ajwa Trading Limited is a Japan-based specialist in exporting and importing high-quality machinery worldwide. We support your business with trust and proven expertise.',
+      : 'Ajwa Co.,LTD is a Japan-based specialist in exporting and importing high-quality machinery worldwide. We support your business with trust and proven expertise.',
     
     // Company profile
     profileTitle: isJapanese ? '企業プロフィール' : 'Company Profile',
@@ -39,7 +39,7 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
     companyInfo: [
       {
         label: isJapanese ? '会社名' : 'Company Name',
-        value: 'Ajwa Co LTD'
+        value: 'Ajwa Co.,LTD'
       },
       {
         label: isJapanese ? '設立' : 'Established',
@@ -47,11 +47,11 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
       },
       {
         label: isJapanese ? '資本金' : 'Capital',
-        value: isJapanese ? '1億円' : '100 Million JPY'
+        value: isJapanese ? '500億円' : '500 Million JPY'
       },
       {
         label: isJapanese ? '代表取締役' : 'CEO',
-        value: 'Muhammad Akeel'
+        value: 'Muhammad Aqeel Ahmed'
       },
       {
         label: isJapanese ? '事業内容' : 'Business',
@@ -59,11 +59,11 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
       },
       {
         label: isJapanese ? '従業員数' : 'Employees',
-        value: '45'
+        value: '10'
       },
       {
         label: isJapanese ? '取引国' : 'Trading Countries',
-        value: '50+'
+        value: '10+'
       }
     ],
     
@@ -87,7 +87,7 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
       },
       {
         icon: <Globe className="h-8 w-8 text-primary" />, 
-        label: isJapanese ? '50カ国以上への輸出実績' : '50+ Export Countries',
+        label: isJapanese ? '50カ国以上への輸出実績' : '10+ Export Countries',
         description: isJapanese ? 'グローバルなネットワークと輸出ノウハウ' : 'Global network and export expertise'
       },
       {
