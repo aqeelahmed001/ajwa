@@ -3,6 +3,7 @@ const nextConfig = {
   images: {
     domains: [
       'placehold.co',
+      ''
       // add other domains as needed
     ],
     formats: ['image/webp', 'image/avif'],

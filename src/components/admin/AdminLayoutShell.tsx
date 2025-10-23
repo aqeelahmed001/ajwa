@@ -18,7 +18,8 @@ export default function AdminLayoutShell({
   }
 
   // For the login page (/admin) we render the page content without the admin shell
-  if (pathname === '/admin') {
+  // Also handle the case when we're on the admin subdomain with path '/'
+  if (pathname === '/admin' || pathname === '/') {
     return <>{children}</>
   }
 
