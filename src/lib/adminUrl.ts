@@ -4,13 +4,12 @@
 
 /**
  * Get the base admin URL depending on the environment
- * In production, this will be the admin subdomain
- * In development, this will be the /admin path
+ * This will be the /admin path in both production and development
  */
 export function getAdminBaseUrl(): string {
   return process.env.NEXT_PUBLIC_ADMIN_URL || 
     (process.env.NODE_ENV === 'production' 
-      ? 'https://admin.yourdomain.com' 
+      ? 'https://ajwa-xi.vercel.app/admin' 
       : 'http://localhost:3000/admin');
 }
 
@@ -21,17 +20,13 @@ export function getAdminBaseUrl(): string {
 export function getAdminUrl(path: string = ''): string {
   const baseUrl = getAdminBaseUrl();
   
-  // In production with subdomain, don't include /admin in the path
-  if (process.env.NODE_ENV === 'production') {
-    // Remove leading slash if present
-    const cleanPath = path.startsWith('/') ? path.substring(1) : path;
-    return `${baseUrl}/${cleanPath}`;
+  // Handle paths that already include /admin
+  if (path.startsWith('/admin/')) {
+    return `${baseUrl}${path.substring(6)}`;
   }
   
-  // In development, the base URL already includes /admin
-  // So we need to make sure we don't duplicate it
-  if (path.startsWith('/admin')) {
-    return `${baseUrl}${path.substring(6)}`;
+  if (path === '/admin') {
+    return baseUrl;
   }
   
   // Remove leading slash if present to avoid double slashes
@@ -40,13 +35,9 @@ export function getAdminUrl(path: string = ''): string {
 }
 
 /**
- * Check if the current URL is on the admin subdomain
+ * This function is kept for backward compatibility
+ * Always returns false as we're not using subdomains anymore
  */
 export function isAdminSubdomain(): boolean {
-  if (typeof window === 'undefined') {
-    return false;
-  }
-  
-  const hostname = window.location.hostname;
-  return hostname.startsWith('admin.');
+  return false;
 }
