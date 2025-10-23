@@ -151,7 +151,7 @@ export default function Header({ lang }: HeaderProps) {
                 <span className="font-bold text-lg text-primary-foreground">A</span>
               </div>
               <span className="font-bold text-xl hidden sm:inline-block">
-                {isJapanese ? 'アジワ商事' : 'Ajwa Co LTD'}
+                {isJapanese ? 'アジュワ株式会社' : 'Ajwa Co LTD'}
               </span>
             </Link>
           </div>
