@@ -59,7 +59,7 @@ export default function IntroSection({ lang }: IntroSectionProps) {
   }
 
   return (
-    <section className="py-16 md:py-24 bg-white">
+    <section className="py-16 md:py-24 bg-background">
       <div className="container mx-auto px-4">
         <motion.div
           className="max-w-4xl mx-auto text-center mb-16"
@@ -87,7 +87,7 @@ export default function IntroSection({ lang }: IntroSectionProps) {
           variants={containerVariants}
         >
           {/* Feature 1: Buy */}
-          <motion.div variants={itemVariants} className="bg-white rounded-xl p-6 shadow-md border border-slate-100 hover:shadow-lg transition-shadow">
+          <motion.div variants={itemVariants} className="bg-card rounded-xl p-6 shadow-md border border-slate-100 hover:shadow-lg transition-shadow">
             <div className="bg-primary/10 w-14 h-14 rounded-full flex items-center justify-center mb-4 mx-auto">
               <Warehouse className="h-7 w-7 text-primary" />
             </div>
@@ -96,7 +96,7 @@ export default function IntroSection({ lang }: IntroSectionProps) {
           </motion.div>
 
           {/* Feature 2: Sell */}
-          <motion.div variants={itemVariants} className="bg-white rounded-xl p-6 shadow-md border border-slate-100 hover:shadow-lg transition-shadow">
+          <motion.div variants={itemVariants} className="bg-card rounded-xl p-6 shadow-md border border-slate-100 hover:shadow-lg transition-shadow">
             <div className="bg-parrot-red/10 w-14 h-14 rounded-full flex items-center justify-center mb-4 mx-auto">
               <Building2 className="h-7 w-7 text-parrot-red" />
             </div>
@@ -105,7 +105,7 @@ export default function IntroSection({ lang }: IntroSectionProps) {
           </motion.div>
 
           {/* Feature 3: Global Network */}
-          <motion.div variants={itemVariants} className="bg-white rounded-xl p-6 shadow-md border border-slate-100 hover:shadow-lg transition-shadow">
+          <motion.div variants={itemVariants} className="bg-card rounded-xl p-6 shadow-md border border-slate-100 hover:shadow-lg transition-shadow">
             <div className="bg-blue-500/10 w-14 h-14 rounded-full flex items-center justify-center mb-4 mx-auto">
               <Globe2 className="h-7 w-7 text-blue-500" />
             </div>

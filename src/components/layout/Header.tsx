@@ -141,7 +141,7 @@ export default function Header({ lang }: HeaderProps) {
       </div>
       
       {/* Main Header */}
-      <div className="border-b border-border/40 bg-card shadow-sm">
+      <div className="bg-secondary/50 border-b border-border/40">
         <div className="container mx-auto px-4 flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2">
@@ -206,7 +206,7 @@ export default function Header({ lang }: HeaderProps) {
 
             {/* Contact Us Button - Desktop - Using Parrot Red for contrast */}
             <div className="hidden sm:block">
-              <Button className="bg-primary text-white hover:bg-[hsl(var(--primary-hover))]" asChild>
+              <Button className="bg-[#F25912] text-white hover:bg-[#FA812F]" asChild>
                 <Link href={`/${lang}/contact`}>
                   {isJapanese ? 'お問い合わせ' : 'Contact Us'}
                 </Link>
@@ -273,7 +273,7 @@ export default function Header({ lang }: HeaderProps) {
                     ))}
                   </div>
                   <div className="flex flex-col gap-2 pt-4">
-                    <Button className="w-full bg-primary text-white hover:bg-[hsl(var(--primary-hover))]" asChild>
+                    <Button className="w-full bg-[#F25912] text-white hover:bg-[#FA812F]" asChild>
                       <Link href={`/${lang}/contact`}>
                         {isJapanese ? 'お問い合わせ' : 'Contact Us'}
                       </Link>

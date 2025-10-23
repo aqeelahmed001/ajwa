@@ -23,7 +23,7 @@ export default function AdminLayoutShell({
   }
 
   return (
-    <div className="flex h-screen bg-slate-50 dark:bg-slate-900">
+    <div className="flex h-screen bg-[#F9F5F0] dark:bg-[#2A1506]">
       <div className={`fixed inset-y-0 z-50 md:relative md:flex ${sidebarOpen ? 'flex' : 'hidden'}`}>
         <AdminSidebar />
       </div>

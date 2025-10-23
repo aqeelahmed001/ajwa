@@ -140,7 +140,7 @@ export default function FAQSection({ lang }: FAQSectionProps) {
               </p>
 
               {/* Contact card */}
-              <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+              <div className="bg-card rounded-xl border border-slate-200 p-6 shadow-sm">
                 <div className="flex items-center mb-4">
                   <div className="w-10 h-10 bg-parrot-red/10 rounded-full flex items-center justify-center mr-4">
                     <MessageSquare className="h-5 w-5 text-parrot-red" />
@@ -174,7 +174,7 @@ export default function FAQSection({ lang }: FAQSectionProps) {
                 <motion.div key={index} variants={itemVariants}>
                   <AccordionItem 
                     value={`item-${index}`} 
-                    className="bg-white border border-slate-200 rounded-xl mb-5 overflow-hidden shadow-sm"
+                    className="bg-card border border-slate-200 rounded-xl mb-5 overflow-hidden shadow-sm"
                   >
                     <CustomAccordionTrigger>
                       {item.question}

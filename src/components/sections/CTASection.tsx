@@ -154,7 +154,7 @@ export default function CTASection({ lang }: CTASectionProps) {
               variants={cardVariants}
               whileHover="hover"
             >
-              <Card className="h-full overflow-hidden border border-slate-200 hover:border-slate-300 transition-colors bg-white shadow-sm">
+              <Card className="h-full overflow-hidden border border-slate-200 hover:border-slate-300 transition-colors bg-card shadow-sm">
                 <CardContent className="p-0">
                   {/* Card header */}
                   <div className={`px-8 pt-8 pb-6 ${
@@ -226,7 +226,7 @@ export default function CTASection({ lang }: CTASectionProps) {
         
         {/* Contact Section */}
         <motion.div 
-          className="rounded-2xl overflow-hidden shadow-lg bg-white border border-slate-200"
+          className="rounded-2xl overflow-hidden shadow-lg bg-card border border-slate-200"
           variants={{
             hidden: { opacity: 0, scale: 0.95 },
             visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } }

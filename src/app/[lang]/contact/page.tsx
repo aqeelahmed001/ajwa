@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Metadata } from 'next'
 import { Phone, Mail, MapPin, Clock, Globe, ArrowRight } from 'lucide-react'
 import { useState } from 'react';
@@ -103,9 +104,19 @@ export default function ContactPage({ params }: { params: { lang: string } }) {
   return (
     <div className="bg-slate-50">
       {/* Header section */}
-      <div className="bg-gradient-to-r from-primary to-primary-dark py-16 md:py-24 relative overflow-hidden">
-        {/* Background elements */}
-        <div className="absolute inset-0 bg-grid-pattern opacity-[0.05] pointer-events-none"></div>
+      <div className="py-16 md:py-24 relative overflow-hidden">
+        {/* Background image with gradient overlay */}
+        <div className="absolute inset-0 z-0">
+          <Image 
+            src="/images/mach5.jpg" 
+            alt="Contact Us" 
+            fill 
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#F25912] to-[#FA812F]/90 mix-blend-multiply"></div>
+          <div className="absolute inset-0 bg-grid-pattern opacity-[0.05] pointer-events-none"></div>
+        </div>
         <div className="absolute -top-24 -left-24 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
         

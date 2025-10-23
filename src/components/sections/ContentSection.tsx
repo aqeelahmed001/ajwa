@@ -71,7 +71,7 @@ export default function ContentSection({ lang }: ContentSectionProps) {
   };
 
   return (
-    <section className="py-16 md:py-24 bg-white relative">
+    <section className="py-16 md:py-24 bg-background relative">
       {/* Background pattern */}
       <div className="absolute inset-0 bg-slate-50/50 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] -z-10" />
       
@@ -94,7 +94,7 @@ export default function ContentSection({ lang }: ContentSectionProps) {
           {content.items.map((item) => (
             <motion.div 
               key={item.id}
-              className="group relative overflow-hidden bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+              className="group relative overflow-hidden bg-card rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
               variants={itemVariants}
             >
               {/* Image */}

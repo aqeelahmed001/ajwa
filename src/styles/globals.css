@@ -4,21 +4,21 @@
 
 @layer base {
   :root {
-    /* Professional light theme with warm undertones */
-    --background: 30 30% 98%; /* Soft cream white background */
+    /* Professional light theme with warm undertones - matching header top bar */
+    --background: 30 15% 97%; /* Lighter version to match secondary/50 effect */
     --foreground: 25 80% 17%; /* Rich dark brown for text */
 
     /* Card backgrounds with subtle warmth */
-    --card: 0 0% 100%; /* Pure white for cards */
+    --card: 30 15% 97%; /* Off-white for cards to match background */
     --card-foreground: 25 80% 17%; /* Same as main text */
 
-    /* Popover with clean white */
-    --popover: 0 0% 100%;
+    /* Popover with off-white */
+    --popover: 30 15% 97%;
     --popover-foreground: 25 80% 17%;
 
     /* Professional brand colors */
-    --primary: 16 85% 45%; /* Deep orange-red - #C93A0E */
-    --primary-hover: 25 90% 50%; /* Warm orange - #F27D16 */
+    --primary: 16 85% 45%; /* Deep orange-red - #C93A0E (F25912) */
+    --primary-hover: 25 90% 50%; /* Warm orange - #F27D16 (FA812F) */
     --primary-foreground: 0 0% 100%; /* White text on buttons */
 
     /* Secondary brand color */
@@ -154,7 +154,7 @@
   }
   
   .btn-primary {
-    @apply bg-primary text-primary-foreground hover:bg-[hsl(var(--primary-hover))] px-6 py-3 rounded-md font-medium transition-colors shadow-sm;
+    @apply bg-[#F25912] text-white hover:bg-[#FA812F] px-6 py-3 rounded-md font-medium transition-colors shadow-sm;
   }
   
   .btn-secondary {
@@ -163,7 +163,7 @@
   
   /* Accent button alternative */
   .btn-accent {
-    @apply bg-[hsl(var(--accent))] text-white hover:bg-[hsl(var(--accent))]/90 px-6 py-3 rounded-md font-medium transition-colors shadow-sm;
+    @apply bg-[#FA812F] text-white hover:bg-[#F25912] px-6 py-3 rounded-md font-medium transition-colors shadow-sm;
   }
   
   .bg-grid-pattern {

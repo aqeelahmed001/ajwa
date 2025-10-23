@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion, cubicBezier } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -92,8 +93,19 @@ export default function ServicesPage({ params }: { params: { lang: string } }) {
   return (
     <div className="bg-slate-50 min-h-screen">
       {/* Hero Section */}
-      <section className="relative min-h-[400px] flex items-center justify-center bg-gradient-to-br from-primary/90 via-primary to-parrot-red/80 overflow-hidden">
-        <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
+      <section className="relative min-h-[400px] flex items-center justify-center overflow-hidden">
+        {/* Background image with gradient overlay */}
+        <div className="absolute inset-0 z-0">
+          <Image 
+            src="/images/contact.jpg" 
+            alt="Our Services" 
+            fill 
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary to-parrot-red/80 mix-blend-multiply"></div>
+          <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
+        </div>
         <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-white/10 rounded-full blur-3xl" />
         <div className="absolute -bottom-32 -right-32 w-[500px] h-[500px] bg-white/10 rounded-full blur-3xl" />
         
