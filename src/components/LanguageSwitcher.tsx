@@ -19,12 +19,25 @@ interface LanguageSwitcherProps {
 export default function LanguageSwitcher({ currentLang }: LanguageSwitcherProps) {
   const pathname = usePathname();
   
-  // Get language paths
-  const getLanguagePath = (lang: string) => {
+  // Get language paths with more robust handling
+  const getLanguagePath = (lang: string): string => {
+    // Make sure pathname is a string
+    const path = pathname || '';
+    
     if (lang === 'ja') {
-      return pathname.replace(/^\/en/, '/ja');
+      // If already Japanese or no language prefix, ensure Japanese prefix
+      if (path.startsWith('/ja/')) return path;
+      if (path.startsWith('/en/')) return path.replace(/^\/en/, '/ja');
+      if (path === '/en') return '/ja';
+      if (path === '/ja') return path;
+      return path.startsWith('/') ? `/ja${path}` : `/ja/${path}`;
     } else {
-      return pathname.replace(/^\/ja/, '/en');
+      // If already English or no language prefix, ensure English prefix
+      if (path.startsWith('/en/')) return path;
+      if (path.startsWith('/ja/')) return path.replace(/^\/ja/, '/en');
+      if (path === '/ja') return '/en';
+      if (path === '/en') return path;
+      return path.startsWith('/') ? `/en${path}` : `/en/${path}`;
     }
   };
 

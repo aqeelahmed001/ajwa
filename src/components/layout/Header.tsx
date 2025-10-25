@@ -85,10 +85,18 @@ export default function Header({ lang }: HeaderProps) {
                   onError={(e) => {
                     // Fallback if logo doesn't exist
                     e.currentTarget.style.display = 'none';
-                    e.currentTarget.nextSibling.style.display = 'block';
+                    
+                    // Find the fallback element by a safer method
+                    const parent = e.currentTarget.parentElement;
+                    if (parent) {
+                      const fallbackElement = parent.querySelector('.logo-fallback');
+                      if (fallbackElement instanceof HTMLElement) {
+                        fallbackElement.style.display = 'block';
+                      }
+                    }
                   }}
                 />
-                <div className="hidden h-12 w-12 bg-primary flex items-center justify-center">
+                <div className="hidden h-12 w-12 bg-primary flex items-center justify-center logo-fallback">
                   <span className="font-bold text-lg text-primary-foreground">A</span>
                 </div>
               </div>
