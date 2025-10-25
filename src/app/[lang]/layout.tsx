@@ -6,7 +6,7 @@ import { Inter } from 'next/font/google'
 
 const inter = Inter({ subsets: ['latin'] })
 
-const locales = ['en', 'ja']
+const locales = ['ja', 'en']
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ lang: locale }))

@@ -3,11 +3,13 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Building2, Globe, Users, Award, ArrowRight, Target, Handshake, ShieldCheck, TrendingUp, 
-  Phone, Mail, MapPin, ChevronRight, Clock, Briefcase, GraduationCap } from 'lucide-react'
+import { ArrowRight, Award, Globe, Building2, Users, Target, Handshake, ShieldCheck, TrendingUp,Phone,Mail,MapPin,Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion, cubicBezier } from 'framer-motion'
-import { Separator } from '@/components/ui/separator'
+
+// Import our new sections
+import CompanyProfileSection from '@/components/sections/CompanyProfileSection'
+import LocationsSection from '@/components/sections/LocationsSection'
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -231,174 +233,81 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
 
   return (
     <div className="bg-slate-50 min-h-screen">
-      {/* Hero Banner */}
-      <section className="relative min-h-[400px] md:min-h-[500px] flex items-center justify-center overflow-hidden">
-        {/* Background image with gradient overlay */}
+      {/* Hero Banner - Updated to match example */}
+      <section className="relative min-h-[500px] md:min-h-[600px] flex items-center justify-center overflow-hidden">
+        {/* Background image with centered positioning */}
         <div className="absolute inset-0 z-0">
           <Image 
-            src="/images/about-header.jpg" 
+            src="/images/about-us.jpg" 
             alt="About Ajwa Trading" 
             fill 
-            className="object-cover"
+            className="object-cover object-center"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary to-parrot-red/80 mix-blend-multiply"></div>
-          <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
+          <div className="absolute inset-0 bg-black/60"></div>
         </div>
-        <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-white/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-32 -right-32 w-[500px] h-[500px] bg-white/10 rounded-full blur-3xl" />
+        
         <div className="container relative z-10 py-16 md:py-24 text-center">
-          <motion.span 
-            className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-white/20 backdrop-blur-sm text-white border border-white/30 mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
-          >
-            {isJapanese ? '2002年設立' : 'Est. 2002'}
-          </motion.span>
-          
-          <motion.h1
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 drop-shadow-lg"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-          >
-            {content.heroTitle}
-          </motion.h1>
-          
-          <motion.h2
-            className="text-xl md:text-2xl font-medium text-white/90 mb-8 drop-shadow max-w-3xl mx-auto"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1, ease: 'easeOut' }}
-          >
-            {content.heroSubtitle}
-          </motion.h2>
-          
-          <motion.p
-            className="text-base md:text-lg text-white/80 max-w-2xl mx-auto drop-shadow mb-10"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
-          >
-            {content.heroDescription}
-          </motion.p>
-          
+          {/* Main content */}
           <motion.div
-            className="flex flex-wrap gap-4 justify-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
+            className="max-w-3xl mx-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
           >
-            <Button size="lg" className="bg-white text-primary hover:bg-white/90 font-medium" asChild>
-              <Link href={`/${params.lang}/contact`}>
-                {content.ctaConsultation}
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
+            <motion.h1
+              className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              {isJapanese ? '会社概要' : 'About Us'}
+            </motion.h1>
             
-            <Button variant="outline" size="lg" className="bg-transparent border-white text-white hover:bg-white/10" asChild>
-              <Link href={`/${params.lang}/machinery`}>
-                {content.ctaCatalog}
+            <motion.h2
+              className="text-xl md:text-2xl font-medium text-white/90 mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+            >
+              {isJapanese ? 'グローバル機械取引のリーディングカンパニー' : 'Leading Global Machinery Trading Company'}
+            </motion.h2>
+            
+            <motion.p
+              className="text-base md:text-lg text-white/80 mx-auto mb-10"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              {isJapanese 
+                ? '2002年の設立以来、アジワ株式会社は日本と世界をつなぐ機械取引の架け橋として成長してきました。私たちは、高品質な産業機械の輸出入を専門とし、お客様のビジネス成功に貢献しています。' 
+                : 'Since our establishment in 2002, Ajwa Co.,LTD has grown to become a bridge connecting Japan and the world in machinery trading. We specialize in the export and import of high-quality industrial machinery.'}
+            </motion.p>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+            >
+              <Link 
+                href={`/${params.lang}/contact`}
+                className="inline-flex items-center px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-sm transition-colors"
+              >
+                {isJapanese ? '詳細はこちらを見る' : 'Learn More'}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
-            </Button>
+            </motion.div>
           </motion.div>
         </div>
       </section>
       
-      {/* Company Profile Section */}
-      <section className="py-16 md:py-24 bg-white">
-        <div className="container">
-          <motion.div 
-            className="max-w-3xl mx-auto mb-16 text-center"
-            variants={fadeInUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-6">{content.profileTitle}</h2>
-            <p className="text-lg text-slate-600">{content.profileDescription}</p>
-          </motion.div>
-          
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            {/* Company Info */}
-            <motion.div 
-              className="bg-slate-50 rounded-xl p-8 shadow-md border border-slate-100"
-              variants={fadeInUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
-            >
-              <h3 className="text-xl font-semibold mb-6 text-primary border-b border-slate-200 pb-2">
-                {isJapanese ? '会社情報' : 'Company Information'}
-              </h3>
-              
-              <div className="space-y-4">
-                {content.companyInfo.map((item, idx) => (
-                  <div key={idx} className="flex border-b border-slate-100 pb-3 last:border-0">
-                    <div className="w-1/3 font-medium text-slate-700">{item.label}</div>
-                    <div className="w-2/3 text-slate-600">{item.value}</div>
-                  </div>
-                ))}
-              </div>
-              
-              <div className="mt-8 flex justify-end">
-                <Button variant="outline" size="sm" className="text-primary border-primary hover:bg-primary/5" asChild>
-                  <Link href={`/${params.lang}/contact`}>
-                    {isJapanese ? 'お問い合わせ' : 'Contact Us'}
-                    <ChevronRight className="ml-1 h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-            </motion.div>
-            
-            {/* Vision & Mission */}
-            <motion.div 
-              className="space-y-8"
-              variants={fadeInUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
-            >
-              {/* Vision */}
-              <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl p-8 border border-primary/10 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-                
-                <h3 className="text-xl font-semibold mb-3 text-primary flex items-center">
-                  <Target className="mr-2 h-5 w-5" />
-                  {content.visionTitle}
-                </h3>
-                
-                <p className="text-slate-700 relative z-10">{content.vision}</p>
-              </div>
-              
-              {/* Mission */}
-              <div className="bg-gradient-to-br from-parrot-red/5 to-parrot-red/10 rounded-xl p-8 border border-parrot-red/10 relative overflow-hidden">
-                <div className="absolute bottom-0 left-0 w-32 h-32 bg-parrot-red/5 rounded-full translate-y-1/2 -translate-x-1/2"></div>
-                
-                <h3 className="text-xl font-semibold mb-3 text-parrot-red flex items-center">
-                  <Briefcase className="mr-2 h-5 w-5" />
-                  {content.missionTitle}
-                </h3>
-                
-                <p className="text-slate-700 relative z-10">{content.mission}</p>
-              </div>
-              
-              <div className="text-center">
-                <Button variant="link" className="text-primary hover:text-primary/80" asChild>
-                  <Link href={`/${params.lang}/services`}>
-                    {content.ctaServices}
-                    <ChevronRight className="ml-1 h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Key Facts Section */}
+      {/* Company Profile Section - New Component */}
+      <CompanyProfileSection lang={params.lang} />
+      
+      {/* Locations Section - New Component */}
+      <LocationsSection lang={params.lang} />
+      
+      {/* Key Facts Section - Simplified */}
       <section className="py-16 md:py-20 bg-slate-50">
         <div className="container">
           <motion.div 
@@ -408,33 +317,98 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-6">{content.factsTitle}</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-6">{isJapanese ? '会社の特徴' : 'Key Facts'}</h2>
             <p className="text-lg text-slate-600">
               {isJapanese 
-                ? '20年以上の実績と経験に基づく、アジュワトレーディングの強み'
+                ? '20年以上の実績と経験に基づく、アジワ株式会社の強み'
                 : 'Ajwa Co LTD strengths based on over 20 years of experience and achievements'}
             </p>
           </motion.div>
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {content.facts.map((fact, idx) => (
-              <motion.div
-                key={idx}
-                className="bg-white rounded-xl border border-slate-200 shadow-md p-8 flex flex-col items-center text-center h-full"
-                variants={fadeInUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ delay: idx * 0.1 }}
-                whileHover={{ y: -5, boxShadow: '0 12px 30px rgba(0,0,0,0.08)' }}
-              >
-                <div className="bg-primary/10 rounded-full p-4 mb-5">
-                  {fact.icon}
-                </div>
-                <h3 className="text-xl font-semibold text-slate-800 mb-3">{fact.label}</h3>
-                <p className="text-slate-600 text-sm">{fact.description}</p>
-              </motion.div>
-            ))}
+            {/* Fact 1 */}
+            <motion.div
+              className="bg-white rounded-xl border border-slate-200 shadow-md p-8 flex flex-col items-center text-center h-full"
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ delay: 0.1 }}
+              whileHover={{ y: -5, boxShadow: '0 12px 30px rgba(0,0,0,0.08)' }}
+            >
+              <div className="bg-primary/10 rounded-full p-4 mb-5">
+                <Award className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold text-slate-800 mb-3">
+                {isJapanese ? '20年以上の業界経験' : '20+ Years Experience'}
+              </h3>
+              <p className="text-slate-600 text-sm">
+                {isJapanese ? '長年の経験に基づく専門知識と実績' : 'Expertise and track record based on years of experience'}
+              </p>
+            </motion.div>
+            
+            {/* Fact 2 */}
+            <motion.div
+              className="bg-white rounded-xl border border-slate-200 shadow-md p-8 flex flex-col items-center text-center h-full"
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ delay: 0.2 }}
+              whileHover={{ y: -5, boxShadow: '0 12px 30px rgba(0,0,0,0.08)' }}
+            >
+              <div className="bg-primary/10 rounded-full p-4 mb-5">
+                <Globe className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold text-slate-800 mb-3">
+                {isJapanese ? '50カ国以上への輸出実績' : '10+ Export Countries'}
+              </h3>
+              <p className="text-slate-600 text-sm">
+                {isJapanese ? 'グローバルなネットワークと輸出ノウハウ' : 'Global network and export expertise'}
+              </p>
+            </motion.div>
+            
+            {/* Fact 3 */}
+            <motion.div
+              className="bg-white rounded-xl border border-slate-200 shadow-md p-8 flex flex-col items-center text-center h-full"
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ delay: 0.3 }}
+              whileHover={{ y: -5, boxShadow: '0 12px 30px rgba(0,0,0,0.08)' }}
+            >
+              <div className="bg-primary/10 rounded-full p-4 mb-5">
+                <Building2 className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold text-slate-800 mb-3">
+                {isJapanese ? '日本全国の仕入れネットワーク' : 'Nationwide Network'}
+              </h3>
+              <p className="text-slate-600 text-sm">
+                {isJapanese ? '日本全国からの優良機械の調達能力' : 'Ability to source quality machinery from across Japan'}
+              </p>
+            </motion.div>
+            
+            {/* Fact 4 */}
+            <motion.div
+              className="bg-white rounded-xl border border-slate-200 shadow-md p-8 flex flex-col items-center text-center h-full"
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ delay: 0.4 }}
+              whileHover={{ y: -5, boxShadow: '0 12px 30px rgba(0,0,0,0.08)' }}
+            >
+              <div className="bg-primary/10 rounded-full p-4 mb-5">
+                <Users className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold text-slate-800 mb-3">
+                {isJapanese ? '多言語対応の専門チーム' : 'Multilingual Team'}
+              </h3>
+              <p className="text-slate-600 text-sm">
+                {isJapanese ? '言語の壁を越えたスムーズな取引' : 'Smooth transactions beyond language barriers'}
+              </p>
+            </motion.div>
           </div>
           
           <motion.div 
@@ -446,7 +420,7 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
           >
             <Button className="bg-primary hover:bg-primary/90" size="lg" asChild>
               <Link href={`/${params.lang}/machinery`}>
-                {content.ctaCatalog}
+                {isJapanese ? '機械カタログを見る' : 'View Machinery Catalog'}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
@@ -454,8 +428,8 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
         </div>
       </section>
       
-      {/* Core Values Section */}
-      <section className="py-16 md:py-24 bg-gradient-to-br from-primary to-parrot-red text-white relative overflow-hidden">
+      {/* Core Values Section - Simplified */}
+      {/* <section className="py-16 md:py-24 bg-gradient-to-br from-primary to-parrot-red text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
         <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-white/5 rounded-full blur-3xl" />
         <div className="absolute -bottom-32 -right-32 w-[500px] h-[500px] bg-white/5 rounded-full blur-3xl" />
@@ -468,7 +442,7 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">{content.valuesTitle}</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">{isJapanese ? '私たちの価値観' : 'Our Core Values'}</h2>
             <p className="text-lg text-white/80">
               {isJapanese 
                 ? '私たちの事業活動の根底にある価値観と信念'
@@ -477,27 +451,113 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
           </motion.div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-            {content.values.map((value, idx) => (
-              <motion.div
-                key={idx}
-                className="bg-white/10 backdrop-blur-sm rounded-xl p-6 flex flex-col items-center text-center border border-white/20 h-full"
-                variants={fadeInUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ delay: idx * 0.1 }}
-                whileHover={{ y: -5, boxShadow: '0 12px 30px rgba(0,0,0,0.1)' }}
-              >
-                <div className="bg-primary rounded-full p-3 mb-4">
-                  {value.icon}
-                </div>
-                <h3 className="text-lg font-semibold text-white mb-2">{value.label}</h3>
-                <p className="text-white/80 text-sm">{value.description}</p>
-              </motion.div>
-            ))}
+            
+            <motion.div
+              className="bg-white/10 backdrop-blur-sm rounded-xl p-6 flex flex-col items-center text-center border border-white/20 h-full"
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ delay: 0.1 }}
+              whileHover={{ y: -5, boxShadow: '0 12px 30px rgba(0,0,0,0.1)' }}
+            >
+              <div className="bg-primary rounded-full p-3 mb-4">
+                <Handshake className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">
+                {isJapanese ? '信頼と誠実な取引' : 'Trust & Integrity'}
+              </h3>
+              <p className="text-white/80 text-sm">
+                {isJapanese ? '誠実さと透明性を重視した取引' : 'Transactions based on honesty and transparency'}
+              </p>
+            </motion.div>
+            
+      
+            <motion.div
+              className="bg-white/10 backdrop-blur-sm rounded-xl p-6 flex flex-col items-center text-center border border-white/20 h-full"
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ delay: 0.2 }}
+              whileHover={{ y: -5, boxShadow: '0 12px 30px rgba(0,0,0,0.1)' }}
+            >
+              <div className="bg-primary rounded-full p-3 mb-4">
+                <Target className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">
+                {isJapanese ? 'お客様第一主義' : 'Customer-First'}
+              </h3>
+              <p className="text-white/80 text-sm">
+                {isJapanese ? 'お客様のニーズを最優先に考える' : 'Prioritizing customer needs above all else'}
+              </p>
+            </motion.div>
+            
+            
+            <motion.div
+              className="bg-white/10 backdrop-blur-sm rounded-xl p-6 flex flex-col items-center text-center border border-white/20 h-full"
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ delay: 0.3 }}
+              whileHover={{ y: -5, boxShadow: '0 12px 30px rgba(0,0,0,0.1)' }}
+            >
+              <div className="bg-primary rounded-full p-3 mb-4">
+                <ShieldCheck className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">
+                {isJapanese ? '品質へのこだわり' : 'Quality Commitment'}
+              </h3>
+              <p className="text-white/80 text-sm">
+                {isJapanese ? '最高品質の機械のみを取り扱う' : 'Dealing only with the highest quality machinery'}
+              </p>
+            </motion.div>
+            
+        
+            <motion.div
+              className="bg-white/10 backdrop-blur-sm rounded-xl p-6 flex flex-col items-center text-center border border-white/20 h-full"
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ delay: 0.4 }}
+              whileHover={{ y: -5, boxShadow: '0 12px 30px rgba(0,0,0,0.1)' }}
+            >
+              <div className="bg-primary rounded-full p-3 mb-4">
+                <Globe className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">
+                {isJapanese ? 'グローバルな視点' : 'Global Perspective'}
+              </h3>
+              <p className="text-white/80 text-sm">
+                {isJapanese ? '国際的な視野での事業展開' : 'Business development with an international outlook'}
+              </p>
+            </motion.div>
+            
+           
+            <motion.div
+              className="bg-white/10 backdrop-blur-sm rounded-xl p-6 flex flex-col items-center text-center border border-white/20 h-full"
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ delay: 0.5 }}
+              whileHover={{ y: -5, boxShadow: '0 12px 30px rgba(0,0,0,0.1)' }}
+            >
+              <div className="bg-primary rounded-full p-3 mb-4">
+                <TrendingUp className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">
+                {isJapanese ? '持続可能な成長' : 'Sustainable Growth'}
+              </h3>
+              <p className="text-white/80 text-sm">
+                {isJapanese ? '長期的な視点での持続可能なビジネス' : 'Sustainable business with a long-term perspective'}
+              </p>
+            </motion.div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* History Timeline Section */}
       <section className="py-16 md:py-24 bg-white">
@@ -552,72 +612,41 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
           </div>
         </div>
       </section>
-
-      {/* Leadership Team Section */}
-      <section className="py-16 md:py-24 bg-slate-50">
-        <div className="container">
-          <motion.div 
-            className="text-center max-w-3xl mx-auto mb-16"
-            variants={fadeInUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-6">{content.teamTitle}</h2>
-            <p className="text-lg text-slate-600">{content.teamSubtitle}</p>
-          </motion.div>
-          
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {content.team.map((member, idx) => (
-              <motion.div
-                key={idx}
-                className="bg-white rounded-xl overflow-hidden shadow-md border border-slate-200"
-                variants={fadeInUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ delay: idx * 0.1 }}
-                whileHover={{ y: -5, boxShadow: '0 12px 30px rgba(0,0,0,0.08)' }}
-              >
-                <div className="h-48 bg-gradient-to-br from-primary/10 to-parrot-red/10 flex items-center justify-center">
-                  <div className="w-24 h-24 rounded-full bg-slate-200 flex items-center justify-center text-slate-400">
-                    <Users className="h-12 w-12" />
-                  </div>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold text-slate-800 mb-1">{member.name}</h3>
-                  <div className="text-primary font-medium text-sm mb-4">{member.position}</div>
-                  <p className="text-slate-600 text-sm">{member.bio}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Bottom CTA */}
-      <section className="py-16 md:py-20 bg-gradient-to-r from-primary to-parrot-red/90 text-white relative overflow-hidden">
+      {/* Bottom CTA - Updated Modern Design */}
+      <section className="py-16 md:py-20 bg-[#1a2f5c] text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
-        <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-white/5 rounded-full blur-3xl" />
-        <div className="absolute -bottom-32 -right-32 w-[500px] h-[500px] bg-white/5 rounded-full blur-3xl" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 -rotate-12"></div>
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-400/10 rotate-12"></div>
         
         <div className="container relative z-10">
-          <motion.div
-            className="max-w-3xl mx-auto text-center"
-            variants={fadeIn}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.4 }}
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">{content.bottomCtaTitle}</h2>
-            <p className="text-white/90 mb-8 text-lg">{content.bottomCtaText}</p>
-            <Button size="lg" className="bg-white text-primary font-bold hover:bg-white/90 px-8" asChild>
-              <Link href={`/${params.lang}/contact`}>
-                {content.bottomCtaButton}
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </motion.div>
+          <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+            <motion.div
+              className="md:w-2/3 text-center md:text-left"
+              variants={fadeIn}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.4 }}
+            >
+              <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">{content.bottomCtaTitle}</h2>
+              <p className="text-white/80 text-base">{content.bottomCtaText}</p>
+            </motion.div>
+            
+            <motion.div
+              className="md:w-1/3 flex justify-center md:justify-end"
+              variants={fadeIn}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ delay: 0.2 }}
+            >
+              <Button size="lg" className="bg-white text-[#1a2f5c] font-bold hover:bg-white/90 px-8 w-full md:w-auto" asChild>
+                <Link href={`/${params.lang}/contact`}>
+                  {content.bottomCtaButton}
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </motion.div>
+          </div>
         </div>
       </section>
     </div>

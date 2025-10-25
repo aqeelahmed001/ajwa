@@ -92,192 +92,237 @@ export default function ServicesPage({ params }: { params: { lang: string } }) {
 
   return (
     <div className="bg-slate-50 min-h-screen">
-      {/* Hero Section */}
-      <section className="relative min-h-[400px] flex items-center justify-center overflow-hidden">
-        {/* Background image with gradient overlay */}
+      {/* Hero Section - Updated to match About page */}
+      <section className="relative min-h-[500px] md:min-h-[600px] flex items-center justify-center overflow-hidden">
+        {/* Background image with centered positioning */}
         <div className="absolute inset-0 z-0">
           <Image 
-            src="/images/contact.jpg" 
+            src="/images/service.jpg" 
             alt="Our Services" 
             fill 
-            className="object-cover"
+            className="object-cover object-center"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary to-parrot-red/80 mix-blend-multiply"></div>
-          <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
+          <div className="absolute inset-0 bg-black/60"></div>
         </div>
-        <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-white/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-32 -right-32 w-[500px] h-[500px] bg-white/10 rounded-full blur-3xl" />
         
         <div className="container relative z-10 py-16 md:py-24 text-center">
-          <motion.h1 
-            className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: cubicBezier(0.23, 1, 0.32, 1) }}
+          {/* Main content */}
+          <motion.div
+            className="max-w-3xl mx-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
           >
-            {content.title}
-          </motion.h1>
-          <motion.p 
-            className="text-lg md:text-2xl text-white/90 max-w-3xl mx-auto drop-shadow"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.2, ease: cubicBezier(0.23, 1, 0.32, 1) }}
-          >
-            {content.subtitle}
-          </motion.p>
+            {/* Small badge */}
+            <motion.div
+              className="mb-6"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <span className="inline-block bg-white/20 backdrop-blur-sm text-white border border-white/30 px-3 py-1 rounded-full text-sm font-medium">
+                {locale === 'ja' ? 'サービス一覧' : 'OUR SERVICES'}
+              </span>
+            </motion.div>
+            
+            <motion.h1
+              className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              {content.title}
+            </motion.h1>
+            
+            <motion.p
+              className="text-xl md:text-2xl font-medium text-white/90 mb-10"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+            >
+              {content.subtitle}
+            </motion.p>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              <Link 
+                href={`/${params.lang}/contact`}
+                className="inline-flex items-center px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-sm transition-colors"
+              >
+                {locale === 'ja' ? 'お問い合わせ' : 'Get Started'}
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
-      <div className="container py-16 md:py-24">
-        {/* Buying Services */}
-        <motion.section 
-          className="mb-20"
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">{content.buyingTitle}</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">{content.buyingSubtitle}</p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {content.buyingServices.map((service, index) => (
-              <motion.div key={index} variants={fadeInUp}>
-                <Card className="h-full hover:shadow-lg transition-shadow duration-300">
-                  <CardContent className="p-6">
-                    <div className="mb-4">{service.icon}</div>
-                    <h3 className="text-xl font-semibold mb-3">{service.title}</h3>
-                    <p className="text-muted-foreground mb-4">{service.description}</p>
-                    <ul className="space-y-2">
-                      {service.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-center text-sm">
-                          <CheckCircle className="h-4 w-4 text-primary mr-2 flex-shrink-0" />
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* Selling Services */}
-        <motion.section 
-          className="mb-20"
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">{content.sellingTitle}</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">{content.sellingSubtitle}</p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {content.sellingServices.map((service, index) => (
-              <motion.div key={index} variants={fadeInUp}>
-                <Card className="h-full hover:shadow-lg transition-shadow duration-300">
-                  <CardContent className="p-6">
-                    <div className="mb-4">{service.icon}</div>
-                    <h3 className="text-xl font-semibold mb-3">{service.title}</h3>
-                    <p className="text-muted-foreground mb-4">{service.description}</p>
-                    <ul className="space-y-2">
-                      {service.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-center text-sm">
-                          <CheckCircle className="h-4 w-4 text-parrot-red mr-2 flex-shrink-0" />
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* Additional Services */}
-        <motion.section 
-          className="mb-20"
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">{content.additionalTitle}</h2>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-6">
-            {content.additionalServices.map((service, index) => (
-              <motion.div key={index} variants={fadeInUp}>
-                <Card className="hover:shadow-md transition-shadow duration-300">
-                  <CardContent className="p-6 text-center">
-                    <div className="mb-3 flex justify-center">{service.icon}</div>
-                    <h3 className="text-lg font-semibold mb-2">{service.title}</h3>
-                    <p className="text-muted-foreground text-sm">{service.description}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* Process Steps */}
-        <motion.section 
-          className="mb-20"
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">{content.processTitle}</h2>
-          </div>
-          
-          <div className="grid md:grid-cols-4 gap-8">
-            {content.processSteps.map((step, index) => (
-              <motion.div key={index} variants={fadeInUp} className="text-center">
-                <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
-                  {step.step}
+      <div className="container py-12 md:py-16">
+        {/* Main Services Tabs - Buying and Selling */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2">
+            {/* Buying Services Panel */}
+            <div className="p-6 md:p-8 border-b md:border-b-0 md:border-r border-gray-100">
+              <div className="flex items-center mb-6">
+                <div className="bg-blue-100 p-3 rounded-full mr-4">
+                  <ShoppingCart className="h-6 w-6 text-blue-600" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
-                <p className="text-muted-foreground text-sm">{step.description}</p>
+                <h2 className="text-2xl font-bold">{content.buyingTitle}</h2>
+              </div>
+              
+              <p className="text-gray-600 mb-6">{content.buyingSubtitle}</p>
+              
+              <div className="space-y-6">
+                {content.buyingServices.map((service, index) => (
+                  <motion.div 
+                    key={index} 
+                    className="border-l-4 border-blue-500 pl-4 py-1"
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                  >
+                    <h3 className="text-lg font-semibold mb-2 flex items-center">
+                      {service.title}
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-3">{service.description}</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {service.features.map((feature, idx) => (
+                        <div key={idx} className="flex items-center text-sm">
+                          <CheckCircle className="h-3 w-3 text-blue-600 mr-2 flex-shrink-0" />
+                          <span className="text-gray-700">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+              
+              {/* Buying Process Steps */}
+              <div className="mt-8 pt-6 border-t border-gray-100">
+                <h3 className="text-lg font-semibold mb-4">Buying Process</h3>
+                <div className="flex overflow-x-auto space-x-4 pb-2">
+                  {content.processSteps.slice(0, 4).map((step, index) => (
+                    <div key={index} className="flex-shrink-0 w-40 text-center">
+                      <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mx-auto mb-2">
+                        {step.step}
+                      </div>
+                      <p className="text-sm font-medium">{step.title}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            
+            {/* Selling Services Panel */}
+            <div className="p-6 md:p-8">
+              <div className="flex items-center mb-6">
+                <div className="bg-red-100 p-3 rounded-full mr-4">
+                  <DollarSign className="h-6 w-6 text-red-600" />
+                </div>
+                <h2 className="text-2xl font-bold">{content.sellingTitle}</h2>
+              </div>
+              
+              <p className="text-gray-600 mb-6">{content.sellingSubtitle}</p>
+              
+              <div className="space-y-6">
+                {content.sellingServices.map((service, index) => (
+                  <motion.div 
+                    key={index} 
+                    className="border-l-4 border-red-500 pl-4 py-1"
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                  >
+                    <h3 className="text-lg font-semibold mb-2 flex items-center">
+                      {service.title}
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-3">{service.description}</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {service.features.map((feature, idx) => (
+                        <div key={idx} className="flex items-center text-sm">
+                          <CheckCircle className="h-3 w-3 text-red-600 mr-2 flex-shrink-0" />
+                          <span className="text-gray-700">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+              
+              {/* Selling Process Steps */}
+              <div className="mt-8 pt-6 border-t border-gray-100">
+                <h3 className="text-lg font-semibold mb-4">Selling Process</h3>
+                <div className="flex overflow-x-auto space-x-4 pb-2">
+                  {content.processSteps.slice(0, 4).map((step, index) => (
+                    <div key={index} className="flex-shrink-0 w-40 text-center">
+                      <div className="w-10 h-10 bg-red-600 text-white rounded-full flex items-center justify-center text-sm font-bold mx-auto mb-2">
+                        {step.step}
+                      </div>
+                      <p className="text-sm font-medium">{step.title}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Additional Services - Compact Row */}
+        <div className="mb-12">
+          <h3 className="text-xl font-bold mb-6 text-center">{content.additionalTitle}</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {content.additionalServices.map((service, index) => (
+              <motion.div 
+                key={index} 
+                className="bg-white p-4 rounded-lg border border-gray-100 flex items-start"
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -2, boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+              >
+                <div className="bg-gray-100 p-2 rounded-full mr-3">
+                  {service.icon}
+                </div>
+                <div>
+                  <h4 className="text-base font-semibold mb-1">{service.title}</h4>
+                  <p className="text-gray-600 text-sm">{service.description}</p>
+                </div>
               </motion.div>
             ))}
           </div>
-        </motion.section>
+        </div>
 
-        {/* CTA Section */}
+        {/* CTA Section - Clean, Minimalist Design */}
         <motion.section 
-          className="text-center"
-          variants={fadeInUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
+          className="mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
         >
-          <div className="bg-gradient-to-r from-primary to-parrot-red/90 rounded-2xl p-10 shadow-lg">
-            <h2 className="text-2xl font-bold mb-4 text-white">{content.ctaTitle}</h2>
-            <p className="text-white/90 mb-6 max-w-2xl mx-auto">{content.ctaText}</p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-white text-primary font-bold hover:bg-white/90" asChild>
-                <Link href={`/${params.lang}/contact`}>
-                  {content.ctaButton}
+          <div className="bg-white rounded-lg border border-gray-200 p-8 shadow-sm">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+              <div className="mb-6 md:mb-0 md:mr-8">
+                <h2 className="text-xl font-bold mb-2">{content.ctaTitle}</h2>
+                <p className="text-gray-600 max-w-xl">{content.ctaText}</p>
+              </div>
+              
+              <div className="flex-shrink-0">
+                <Link 
+                  href={`/${params.lang}/contact`}
+                  className="inline-flex items-center px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-sm transition-colors"
+                >
+                  {locale === 'ja' ? 'お問い合わせ' : 'Contact Us'}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
-              </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" asChild>
-                <Link href={`/${params.lang}/machinery`}>
-                  {content.viewMachinery}
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
+              </div>
             </div>
           </div>
         </motion.section>

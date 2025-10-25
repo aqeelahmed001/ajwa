@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile } from 'fs/promises';
-import { join } from 'path';
-import { v4 as uuidv4 } from 'uuid'; // You'll need to install this: npm install uuid @types/uuid
+import { uploadImageServer } from '@/lib/cloudinary-server';
 
 // Define allowed file types
 const allowedFileTypes = [
@@ -53,32 +51,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate a unique filename
-    const fileExtension = file.name.split('.').pop();
-    const fileName = `${uuidv4()}.${fileExtension}`;
-    
-    // Define the upload directory and path
-    const uploadDir = join(process.cwd(), 'public', 'uploads');
-    const filePath = join(uploadDir, fileName);
+    // Get folder from form data or use default
+    const folder = formData.get('folder') as string || 'ajwa';
     
     // Convert the file to a Buffer
     const buffer = Buffer.from(await file.arrayBuffer());
     
-    // Write the file to the filesystem
-    // Note: In production, you might want to use a cloud storage service instead
-    await writeFile(filePath, buffer);
+    // Create a data URI for Cloudinary
+    const dataUri = `data:${file.type};base64,${buffer.toString('base64')}`;
     
-    // Generate the URL for the uploaded file
-    const fileUrl = `/uploads/${fileName}`;
+    // Upload to Cloudinary
+    const fileUrl = await uploadImageServer(dataUri, folder);
     
     return NextResponse.json({
       success: true,
-      data: {
-        fileName,
-        fileUrl,
-        fileType: file.type,
-        fileSize: file.size,
-      },
+      url: fileUrl,
       message: 'File uploaded successfully',
     });
   } catch (error) {

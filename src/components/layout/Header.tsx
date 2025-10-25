@@ -1,23 +1,18 @@
-"use client"
-import React, { useState, useEffect } from 'react'
+"use client";
+
+import React from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuLink, NavigationMenuContent, NavigationMenuTrigger } from '@/components/ui/navigation-menu'
+import { Menu, Phone, Mail, MapPin } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Sheet, SheetTrigger, SheetContent } from '@/components/ui/sheet'
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu'
-import { Separator } from '@/components/ui/separator'
-import { 
-  Menu, 
-  Globe, 
-  ChevronDown, 
-  Phone, 
-  Mail, 
-  MapPin, 
-  Clock, 
-  ChevronRight 
-} from 'lucide-react'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 interface HeaderProps {
   lang: string;
@@ -26,282 +21,193 @@ interface HeaderProps {
 export default function Header({ lang }: HeaderProps) {
   const pathname = usePathname()
   const isJapanese = lang === 'ja'
-  const [currentTime, setCurrentTime] = useState<string>('')
   
-  // Update Japan time every second
-  useEffect(() => {
-    const updateJapanTime = () => {
-      const now = new Date()
-      const options: Intl.DateTimeFormatOptions = {
-        timeZone: 'Asia/Tokyo',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      }
-      setCurrentTime(new Intl.DateTimeFormat('en-US', options).format(now))
-    }
-    
-    // Update immediately
-    updateJapanTime()
-    
-    // Update every second
-    const interval = setInterval(updateJapanTime, 1000)
-    
-    // Clean up interval on unmount
-    return () => clearInterval(interval)
-  }, [])
-  
-  // Replace current language in path with the selected one
-  const switchLanguage = (newLang: string) => {
-    // Remove the first part of the path (current language)
-    const pathWithoutLang = pathname.split('/').slice(2).join('/')
-    return `/${newLang}/${pathWithoutLang}`
+  // Get current time in Japan
+  const now = new Date()
+  const options: Intl.DateTimeFormatOptions = {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZone: 'Asia/Tokyo'
   }
-
+  const currentTime = new Intl.DateTimeFormat('ja-JP', options).format(now)
+  
   // Navigation items with translations
   const navItems = [
     {
       en: { name: 'Home', path: '/en' },
-      ja: { name: 'ホーム', path: '/ja' },
+      ja: { name: 'ホーム', path: '/ja' }
     },
     {
-      en: { name: 'About Us', path: '/en/about' },
-      ja: { name: '会社概要', path: '/ja/about' },
+      en: { name: 'About', path: '/en/about' },
+      ja: { name: '会社概要', path: '/ja/about' }
     },
     {
       en: { name: 'Services', path: '/en/services' },
-      ja: { name: 'サービス', path: '/ja/services' },
+      ja: { name: 'サービス', path: '/ja/services' }
     },
     {
       en: { name: 'Machinery', path: '/en/machinery' },
-      ja: { name: '機械', path: '/ja/machinery' },
+      ja: { name: '機械一覧', path: '/ja/machinery' }
     },
     {
-      en: { name: 'Send Inquiry', path: '/en/inquiry' },
-      ja: { name: 'お問い合わせ送信', path: '/ja/inquiry' },
+      en: { name: 'FAQ', path: '/en/faq' },
+      ja: { name: 'よくある質問', path: '/ja/faq' }
     },
     {
       en: { name: 'Contact', path: '/en/contact' },
-      ja: { name: 'お問い合わせ', path: '/ja/contact' },
-    },
+      ja: { name: 'お問い合わせ', path: '/ja/contact' }
+    }
   ]
 
   // Contact information
   const contactInfo = {
-    phone: '+81-0567-31-6675',
+    phone: '+81-0569-21-7375',
     email: 'info@ajwa.co.jp',
     address: isJapanese ? '〒496-0901 愛知県愛西市佐屋町道西64番地' : '〒496-0901 Aichi Prefecture, Aishish, Sayacho, michinishi 64',
     japanTime: currentTime + ' JST',
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      {/* Top Information Bar */}
-      <div className="bg-secondary/50 border-b border-border/40">
-        <div className="container mx-auto px-4 py-2">
-          <div className="flex flex-wrap items-center justify-between text-xs text-slate-600">
-            {/* Empty div for layout balance on small screens */}
-            <div className="hidden md:block w-1/3"></div>
-            
-            {/* Japan Time - Centered */}
-            <div className="flex items-center justify-center md:w-1/3">
-              <div className="flex items-center gap-1">
-                <Clock className="h-3 w-3 text-primary" />
-                <span className="font-medium">{contactInfo.japanTime}</span>
+    <header className="sticky top-0 z-40 w-full bg-white shadow-sm">
+      {/* Main Header - Larger size like the example */}
+      <div className="container mx-auto px-4">
+        <div className="flex h-20 items-center justify-between">
+          {/* Left side - Logo and Navigation Menu */}
+          <div className="flex items-center">
+            {/* Logo */}
+            <Link href={`/${lang}`} className="flex items-center mr-8">
+              <div className="h-12 w-auto">
+                <img 
+                  src="/images/logo.jpg" 
+                  alt="Ajwa Logo" 
+                  className="h-full w-auto object-contain"
+                  onError={(e) => {
+                    // Fallback if logo doesn't exist
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.nextSibling.style.display = 'block';
+                  }}
+                />
+                <div className="hidden h-12 w-12 bg-primary flex items-center justify-center">
+                  <span className="font-bold text-lg text-primary-foreground">A</span>
+                </div>
               </div>
-            </div>
-            
-            {/* Contact Information - Right Aligned */}
-            <div className="flex items-center justify-end space-x-4 md:w-1/3 overflow-x-auto whitespace-nowrap">
-              {/* Phone */}
-              <div className="flex items-center gap-1 flex-shrink-0">
-                <Phone className="h-3 w-3" />
-                <a href={`tel:${contactInfo.phone.replace(/[^0-9+]/g, '')}`} className="hover:text-primary transition-colors">
-                  {contactInfo.phone}
-                </a>
-              </div>
-              
-              {/* Email */}
-              <div className="flex items-center gap-1 flex-shrink-0">
-                <Mail className="h-3 w-3" />
-                <a href={`mailto:${contactInfo.email}`} className="hover:text-primary transition-colors">
-                  {contactInfo.email}
-                </a>
-              </div>
-              
-              {/* Address */}
-              <div className="hidden md:flex items-center gap-1 flex-shrink-0">
-                <MapPin className="h-3 w-3" />
-                <span>{contactInfo.address}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      {/* Main Header */}
-      <div className="bg-secondary/50 border-b border-border/40">
-        <div className="container mx-auto px-4 flex h-16 items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center gap-2">
-            <Link href={`/${lang}`} className="flex items-center space-x-2">
-              {/* Logo with brand green color */}
-              <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center">
-                <span className="font-bold text-lg text-primary-foreground">A</span>
-              </div>
-              <span className="font-bold text-xl hidden sm:inline-block">
-                {isJapanese ? 'アジュワ株式会社' : 'Ajwa Co LTD'}
-              </span>
             </Link>
-          </div>
-
-          {/* Desktop Navigation - Centered */}
-          <div className="hidden lg:flex flex-1 justify-center">
-            <NavigationMenu>
-              <NavigationMenuList>
-                {navItems.map((item, index) => (
-                  <NavigationMenuItem key={index}>
-                    <Link href={isJapanese ? item.ja.path : item.en.path} legacyBehavior passHref>
-                      <NavigationMenuLink className={`px-4 py-2 text-sm font-medium ${
-                        pathname === (isJapanese ? item.ja.path : item.en.path) 
-                        ? 'text-primary' 
-                        : 'text-muted-foreground hover:text-primary'
-                      } transition-colors`}>
-                        {isJapanese ? item.ja.name : item.en.name}
-                      </NavigationMenuLink>
-                    </Link>
-                  </NavigationMenuItem>
-                ))}
-              </NavigationMenuList>
-            </NavigationMenu>
-          </div>
-
-          {/* Actions: Language + Contact Button */}
-          <div className="flex items-center gap-4">
-            {/* Language Switcher */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
-                  <Globe className="h-4 w-4" />
-                  <span className="hidden md:inline-block text-xs font-medium uppercase">
-                    {lang}
-                  </span>
-                  <ChevronDown className="h-3 w-3 opacity-50" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                  <Link href={switchLanguage('en')} className={lang === 'en' ? 'font-medium' : ''}>
-                    English
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href={switchLanguage('ja')} className={lang === 'ja' ? 'font-medium' : ''}>
-                    日本語
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Contact Us Button - Desktop - Using Parrot Red for contrast */}
-            <div className="hidden sm:block">
-              <Button className="bg-[#F25912] text-white hover:bg-[#FA812F]" asChild>
-                <Link href={`/${lang}/contact`}>
-                  {isJapanese ? 'お問い合わせ' : 'Contact Us'}
+            
+            {/* Navigation Menu - Moved next to logo */}
+            <nav className="hidden lg:flex items-center space-x-6">
+              {navItems.map((item, index) => (
+                <Link 
+                  key={index} 
+                  href={isJapanese ? item.ja.path : item.en.path}
+                  className={`text-base font-medium ${
+                    pathname === (isJapanese ? item.ja.path : item.en.path) 
+                    ? 'text-blue-600' 
+                    : 'text-gray-700 hover:text-blue-600'
+                  } transition-colors`}
+                >
+                  {isJapanese ? item.ja.name : item.en.name}
                 </Link>
-              </Button>
-            </div>
+              ))}
+            </nav>
+          </div>
 
-            {/* Mobile Menu */}
+          {/* Right side - Contact Info */}
+          <div className="hidden lg:flex items-center space-x-8">
+            
+            {/* Language Switcher */}
+            <div className="border-l border-gray-200 pl-6">
+              <LanguageSwitcher currentLang={lang} />
+            </div>
+            
+            {/* Phone Number with Icon - styled like reference */}
+            <div className="flex items-center">
+              <a href={`tel:${contactInfo.phone.replace(/[^0-9+]/g, '')}`} className="flex flex-col items-center">
+                <div className="flex items-center">
+                  <Phone className="h-5 w-5 mr-2 text-blue-600" />
+                  <span className="text-blue-600 text-2xl font-bold hover:text-blue-800 transition-colors">
+                    {contactInfo.phone}
+                  </span>
+                </div>
+                <span className="text-xs text-gray-500 mt-1">
+                  平日9:00〜17:00
+                </span>
+              </a>
+            </div>
+            
+            {/* Contact/Inquiry Button */}
+            <div>
+              <Link 
+                href={`/${lang}/contact`}
+                className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 font-medium transition-colors"
+              >
+                {isJapanese ? 'お問い合わせ' : 'Inquiry'}
+              </Link>
+            </div>
+          </div>
+          
+          {/* Mobile Menu Button */}
+          <div className="lg:hidden">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="lg:hidden">
-                  <Menu className="h-5 w-5" />
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-6 w-6" />
                   <span className="sr-only">Toggle menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right">
-                <div className="grid gap-6 pt-6">
-                  <Link href={`/${lang}`} className="flex items-center gap-2">
-                    {/* Mobile Logo - using brand green color */}
-                    <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center">
-                      <span className="font-bold text-lg text-primary-foreground">A</span>
-                    </div>
-                    <span className="font-bold text-xl">
-                      {isJapanese ? 'アジワ商事' : 'Ajwa Co LTD'}
-                    </span>
+              <SheetContent side="right" className="w-[300px]">
+                <SheetHeader className="mb-6">
+                  <SheetTitle>
+                    {isJapanese ? 'メニュー' : 'Menu'}
+                  </SheetTitle>
+                </SheetHeader>
+                
+                {/* Mobile Navigation */}
+                <nav className="grid gap-5 mb-6">
+                  {navItems.map((item, index) => (
+                    <Link 
+                      key={index} 
+                      href={isJapanese ? item.ja.path : item.en.path}
+                      className={`flex items-center gap-2 text-base font-medium ${
+                        pathname === (isJapanese ? item.ja.path : item.en.path) 
+                        ? 'text-blue-600' 
+                        : 'text-gray-700 hover:text-blue-600'
+                      } transition-colors`}
+                    >
+                      {isJapanese ? item.ja.name : item.en.name}
+                    </Link>
+                  ))}
+                </nav>
+                
+                {/* Mobile Contact Info */}
+                <div className="space-y-4 border-t border-gray-200 pt-6">
+                  <div className="flex items-center">
+                    <Phone className="h-4 w-4 text-blue-600 mr-3" />
+                    <a href={`tel:${contactInfo.phone.replace(/[^0-9+]/g, '')}`} className="text-gray-700">
+                      {contactInfo.phone}
+                    </a>
+                  </div>
+                  <div className="flex items-center">
+                    <Mail className="h-4 w-4 text-blue-600 mr-3" />
+                    <a href={`mailto:${contactInfo.email}`} className="text-gray-700">
+                      {contactInfo.email}
+                    </a>
+                  </div>
+                </div>
+                
+                {/* Mobile Language Switcher */}
+                <div className="mt-6 border-t border-gray-200 pt-6">
+                  <LanguageSwitcher currentLang={lang} />
+                </div>
+                
+                {/* Mobile Contact Button */}
+                <div className="mt-6">
+                  <Link 
+                    href={`/${lang}/contact`}
+                    className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 font-medium transition-colors w-full block text-center"
+                  >
+                    {isJapanese ? 'お問い合わせ' : 'Inquiry'}
                   </Link>
-                  
-                  {/* Contact Information in Mobile Menu */}
-                  <div className="bg-slate-50 rounded-lg p-4 space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Phone className="h-4 w-4 text-primary" />
-                      <a href={`tel:${contactInfo.phone.replace(/[^0-9+]/g, '')}`} className="text-slate-700">
-                        {contactInfo.phone}
-                      </a>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Mail className="h-4 w-4 text-primary" />
-                      <a href={`mailto:${contactInfo.email}`} className="text-slate-700">
-                        {contactInfo.email}
-                      </a>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-primary" />
-                      <span className="text-slate-700">{contactInfo.address}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4 text-primary" />
-                      <span className="text-slate-700">{contactInfo.japanTime}</span>
-                    </div>
-                  </div>
-                  
-                  <div className="flex flex-col space-y-3">
-                    {navItems.map((item, index) => (
-                      <Link
-                        key={index}
-                        href={isJapanese ? item.ja.path : item.en.path}
-                        className={`text-base font-medium ${
-                          pathname === (isJapanese ? item.ja.path : item.en.path) 
-                          ? 'text-primary' 
-                          : 'text-muted-foreground'
-                        }`}
-                      >
-                        {isJapanese ? item.ja.name : item.en.name}
-                      </Link>
-                    ))}
-                  </div>
-                  <div className="flex flex-col gap-2 pt-4">
-                    <Button className="w-full bg-[#F25912] text-white hover:bg-[#FA812F]" asChild>
-                      <Link href={`/${lang}/contact`}>
-                        {isJapanese ? 'お問い合わせ' : 'Contact Us'}
-                      </Link>
-                    </Button>
-                    <div className="flex items-center justify-between border-t border-border pt-4 mt-2">
-                      <span className="text-sm text-muted-foreground">
-                        {isJapanese ? '言語を選択' : 'Select Language'}
-                      </span>
-                      <div className="flex gap-2">
-                        <Button
-                          variant={lang === 'en' ? 'default' : 'outline'}
-                          size="sm"
-                          asChild
-                          className={`text-xs ${lang === 'en' ? 'bg-primary hover:bg-primary/90' : ''}`}
-                        >
-                          <Link href={switchLanguage('en')}>EN</Link>
-                        </Button>
-                        <Button
-                          variant={lang === 'ja' ? 'default' : 'outline'}
-                          size="sm"
-                          asChild
-                          className={`text-xs ${lang === 'ja' ? 'bg-primary hover:bg-primary/90' : ''}`}
-                        >
-                          <Link href={switchLanguage('ja')}>JP</Link>
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </SheetContent>
             </Sheet>
@@ -310,4 +216,4 @@ export default function Header({ lang }: HeaderProps) {
       </div>
     </header>
   )
-} 
+}

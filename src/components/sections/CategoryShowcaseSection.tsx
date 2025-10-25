@@ -1,76 +1,56 @@
 "use client";
 
-import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import React from 'react'
+import Link from 'next/link'
+import { motion } from 'framer-motion'
+import { ArrowRight, Settings } from 'lucide-react'
 
 interface CategoryShowcaseSectionProps {
   lang: string;
 }
 
 export default function CategoryShowcaseSection({ lang }: CategoryShowcaseSectionProps) {
-  const isJapanese = lang === 'ja';
+  const isJapanese = lang === 'ja'
   
-  // Category data with translations
+  // Sample categories
   const categories = [
     {
-      id: 'excavator',
-      name: isJapanese ? 'ショベル' : 'Excavators',
-      description: isJapanese 
-        ? '様々な現場で活躍する高品質な油圧ショベル' 
-        : 'High-quality hydraulic excavators for various job sites',
-      image: '/images/mach1.jpg',
-      count: 24,
+      id: 1,
+      name: isJapanese ? 'CNC工作機械' : 'CNC Machine Tools',
+      image: '/images/categories/cnc.jpg',
+      count: 24
     },
     {
-      id: 'loader',
-      name: isJapanese ? 'ホイールローダー' : 'Wheel Loaders',
-      description: isJapanese 
-        ? '効率的な材料の移動と積み込みのための頑丈な機械' 
-        : 'Robust machines for efficient material moving and loading',
-      image: '/images/mach2.jpg',
-      count: 18,
+      id: 2,
+      name: isJapanese ? '旋盤' : 'Lathes',
+      image: '/images/categories/lathe.jpg',
+      count: 18
     },
     {
-      id: 'bulldozer',
-      name: isJapanese ? 'ブルドーザー' : 'Bulldozers',
-      description: isJapanese 
-        ? '土木工事や整地作業に最適な強力な機械' 
-        : 'Powerful machines ideal for earthmoving and grading',
-      image: '/images/mach3.jpg',
-      count: 12,
+      id: 3,
+      name: isJapanese ? 'フライス盤' : 'Milling Machines',
+      image: '/images/categories/mill.jpg',
+      count: 15
     },
     {
-      id: 'crane',
-      name: isJapanese ? 'クレーン' : 'Cranes',
-      description: isJapanese 
-        ? '重量物の吊り上げと移動のための多目的クレーン' 
-        : 'Versatile cranes for lifting and moving heavy objects',
-      image: '/images/mach1.jpg',
-      count: 15,
+      id: 4,
+      name: isJapanese ? '研削盤' : 'Grinding Machines',
+      image: '/images/categories/grinder.jpg',
+      count: 12
     },
     {
-      id: 'forklift',
-      name: isJapanese ? 'フォークリフト' : 'Forklifts',
-      description: isJapanese 
-        ? '倉庫や工場での効率的な物流作業に' 
-        : 'For efficient logistics operations in warehouses and factories',
-      image: '/images/mach2.jpg',
-      count: 20,
+      id: 5,
+      name: isJapanese ? '板金機械' : 'Sheet Metal Machinery',
+      image: '/images/categories/sheet.jpg',
+      count: 9
     },
     {
-      id: 'truck',
-      name: isJapanese ? 'トラック' : 'Trucks',
-      description: isJapanese 
-        ? '資材や機械の運搬に最適な各種トラック' 
-        : 'Various trucks ideal for transporting materials and machinery',
-      image: '/images/mach3.jpg',
-      count: 16,
-    },
-  ];
+      id: 6,
+      name: isJapanese ? '測定機器' : 'Measuring Equipment',
+      image: '/images/categories/measuring.jpg',
+      count: 7
+    }
+  ]
 
   // Animation variants
   const containerVariants = {
@@ -78,108 +58,116 @@ export default function CategoryShowcaseSection({ lang }: CategoryShowcaseSectio
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
-      },
-    },
+        staggerChildren: 0.1
+      }
+    }
   };
 
   const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
+    hidden: { opacity: 0, y: 20 },
     visible: {
-      y: 0,
       opacity: 1,
+      y: 0,
       transition: {
-        type: "spring" as const,
-        stiffness: 100,
-      },
-    },
-  };
-
-  // Content text
-  const content = {
-    title: isJapanese ? '機械カテゴリー' : 'Machinery Categories',
-    subtitle: isJapanese 
-      ? '様々な用途に合わせた機械を取り揃えております。カテゴリーから探す。' 
-      : 'Browse our extensive range of machinery by category.',
-    viewAll: isJapanese ? 'すべて表示' : 'View All',
-    viewCategory: isJapanese ? 'カテゴリーを見る' : 'View Category',
-    items: isJapanese ? '件' : 'items',
+        duration: 0.5
+      }
+    }
   };
 
   return (
-    <section className="py-16 md:py-24 bg-background">
-      <div className="container mx-auto px-4">
-        {/* Section header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">{content.title}</h2>
-          <p className="text-slate-600 max-w-2xl mx-auto">{content.subtitle}</p>
-        </div>
-
-        {/* Categories grid */}
-        <motion.div 
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-        >
-          {categories.map((category) => (
-            <motion.div 
-              key={category.id}
-              className="group relative overflow-hidden rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300"
-              variants={itemVariants}
-            >
-              {/* Category image */}
-              <div className="relative h-64 overflow-hidden">
-                <Image
-                  src={category.image}
-                  alt={category.name}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                
-                {/* Category info */}
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-xl font-bold text-white">{category.name}</h3>
-                    <span className="bg-white/20 backdrop-blur-sm text-white text-sm py-1 px-2 rounded-full">
-                      {category.count} {content.items}
-                    </span>
-                  </div>
-                  <p className="text-white/80 text-sm mb-4 line-clamp-2">{category.description}</p>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="border-white text-white hover:bg-white hover:text-black transition-colors"
-                    asChild
-                  >
-                    <Link href={`/${lang}/machinery?category=${category.id}`}>
-                      {content.viewCategory}
-                      <ArrowRight className="ml-1 h-3 w-3" />
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+    <section className="relative">
+      {/* Main background - using a more visible navy blue shade */}
+      <div className="bg-[#1a2f5c] relative overflow-hidden">
+        {/* No diagonal section at bottom */}
         
-        {/* View all button */}
-        <div className="mt-10 text-center">
-          <Button 
-            variant="default" 
-            size="lg" 
-            className="bg-primary hover:bg-primary/90"
-            asChild
+        <div className="container py-4 px-2 md:px-4">
+          {/* Compact header with gear icon */}
+          <div className="flex justify-between items-center mb-3">
+            {/* Badge and title - compact */}
+            <div className="flex items-center">
+              <div className="bg-blue-500 px-1 py-0.5 mr-2">
+                <span className="text-white text-xs font-medium">
+                  {isJapanese ? 'YMS' : 'YMS'}
+                </span>
+              </div>
+              
+              <h2 className="text-lg font-bold text-white">
+                {isJapanese ? '中古工作機械のご紹介' : 'Used Machine Tool Introduction'}
+              </h2>
+            </div>
+            
+            {/* Gear icon - small */}
+            <div className="hidden md:block">
+              <div className="relative w-6 h-6 animate-spin-slow">
+                <Settings className="w-full h-full text-blue-400/30" strokeWidth={1} />
+              </div>
+            </div>
+          </div>
+          
+          {/* Category tabs - compact */}
+          <div className="flex mb-3 overflow-x-auto scrollbar-hide">
+            <button className="px-2 py-1 bg-white text-[#1a2f5c] font-medium text-xs mr-1">
+              {isJapanese ? '新着' : 'New Arrivals'}
+            </button>
+            <button className="px-2 py-1 text-white/90 hover:bg-white/10 transition-colors text-xs mr-1">
+              {isJapanese ? 'CNC' : 'CNC'}
+            </button>
+            <button className="px-2 py-1 text-white/90 hover:bg-white/10 transition-colors text-xs mr-1">
+              {isJapanese ? '旋盤' : 'Lathes'}
+            </button>
+            <button className="px-2 py-1 text-white/90 hover:bg-white/10 transition-colors text-xs mr-1">
+              {isJapanese ? 'フライス' : 'Milling'}
+            </button>
+            <button className="px-2 py-1 text-white/90 hover:bg-white/10 transition-colors text-xs">
+              {isJapanese ? 'その他' : 'Others'}
+            </button>
+          </div>
+          
+          {/* 6 cards in 2 rows of 3 */}
+          <motion.div 
+            className="grid grid-cols-3 gap-2"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
           >
-            <Link href={`/${lang}/machinery`}>
-              {content.viewAll}
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
+            {categories.map((category) => (
+              <motion.div 
+                key={category.id} 
+                className="bg-[#2a4070] relative group"
+                variants={itemVariants}
+                whileHover={{ y: -4, scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <Link href={`/${lang}/categories/${category.id}`}>
+                  <div className="aspect-[4/3] relative overflow-hidden">
+                    {/* Placeholder for category image */}
+                    <div className="absolute inset-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <span className="text-white/50 text-xs">{category.name}</span>
+                    </div>
+                    
+                    {/* Count badge */}
+                    <div className="absolute top-0 right-0 bg-blue-500 text-white px-1 py-0.5 text-xs">
+                      {category.count}
+                    </div>
+                    
+                    {/* Title overlay - with hover effect */}
+                    <div className="absolute bottom-0 left-0 right-0 bg-[#1a2f5c]/90 p-2 transform translate-y-0 group-hover:translate-y-0 transition-transform duration-300">
+                      <div className="flex justify-between items-center">
+                        <h3 className="text-xs font-medium text-white truncate pr-2">
+                          {category.name}
+                        </h3>
+                        <span className="w-5 h-5 bg-blue-500/20 rounded-full flex items-center justify-center group-hover:bg-blue-500 transition-colors">
+                          <ArrowRight className="h-3 w-3 text-blue-400 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </div>
     </section>
-  );
+  )
 }

@@ -5,12 +5,9 @@ import Link from 'next/link'
 import { motion, Variants } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
-import AwesomeSlider from 'react-awesome-slider'
-// @ts-ignore - No type definitions available for autoplay
-import withAutoplay from 'react-awesome-slider/dist/autoplay'
-import 'react-awesome-slider/dist/styles.css'
-import 'react-awesome-slider/dist/custom-animations/cube-animation.css'
+// Removed slider imports
 import { usePageContent } from '@/hooks/usePageContent'
+import { getOptimizedImageUrl } from '@/lib/cloudinary'
 
 interface HeroSectionProps {
   lang: string;
@@ -21,8 +18,7 @@ interface HeroSectionProps {
 export default function HeroSection({ lang, backgroundImage, images }: HeroSectionProps) {
   const isJapanese = lang === 'ja'
   
-  // Create autoplay slider
-  const AutoplaySlider = withAutoplay(AwesomeSlider)
+  // No longer using autoplay slider
   
   // Animation variants
   const containerVariants: Variants = {
@@ -80,47 +76,37 @@ export default function HeroSection({ lang, backgroundImage, images }: HeroSecti
       : 'We purchase used machinery in Japan at fair market value.')
   }
 
-  // Slider images (using the new images from public/images folder)
-  const defaultImages = [
-    '/images/mach1.jpg',
-    '/images/mach2.jpg',
-    '/images/mach3.jpg',
-  ]
-  const slides = (images && images.length > 0)
-    ? images
-    : (backgroundImage ? [backgroundImage, ...defaultImages] : defaultImages)
+  // Using a single background image for simplicity and reliability
+  const bgImage = backgroundImage || '/images/mach1.jpg'
 
   return (
-    <section className="min-h-screen relative overflow-hidden">
-      {/* Slider background */}
+    <section className="min-h-[70vh] relative overflow-hidden">
+      {/* Static background image with fallback */}
       <div className="absolute inset-0 -z-10">
-        <AutoplaySlider
-          play={true}
-          cancelOnInteraction={false}
-          interval={6000}
-          className="h-full"
-          bullets={true}
-          organicArrows={true}
-          infinite={true}
-          mobileTouch={true}
-          animation="cubeAnimation"
-          media={slides.map((src) => ({
-            source: src
-          }))}
+        {/* Static background image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center" 
+          style={{ 
+            backgroundImage: `url('${bgImage}')`,
+            backgroundPosition: 'center',
+            backgroundSize: 'cover'
+          }}
         />
         {/* Dark overlay for readability */}
-        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 bg-black/60" />
       </div>
+      
+      {/* No custom CSS needed for static background */}
 
       {/* Foreground content */}
-      <div className="container relative z-10 py-20 md:py-28">
+      <div className="container relative z-10 py-12 md:py-16">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
           {/* Tag and subtitle */}
-          <motion.div variants={fadeIn} className="text-center mb-10">
+          <motion.div variants={fadeIn} className="text-center mb-6">
             <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-white/20 backdrop-blur-sm text-white border border-white/30">
               {heroText.categoryTag}
             </span>
@@ -130,21 +116,21 @@ export default function HeroSection({ lang, backgroundImage, images }: HeroSecti
           </motion.div>
 
           {/* Two-column choice with center divider */}
-          <div className="relative max-w-5xl mx-auto min-h-[500px] flex items-center">
+          <div className="relative max-w-5xl mx-auto min-h-[350px] flex items-center">
             {/* Center vertical divider - taller now */}
             <div className="hidden md:block absolute left-1/2 top-[10%] bottom-[10%] w-px bg-white/60 -translate-x-1/2" />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
               {/* Left: Buy a machine */}
               <motion.div variants={itemVariants} className="text-center px-4 flex flex-col items-center md:items-end justify-center">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white drop-shadow-md text-center">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-md text-center">
                   {heroText.mainLeft}
                 </h1>
                 <p className="mt-3 text-white/85 max-w-md text-center md:text-right">
                   {heroText.leftDescription}
                 </p>
-                <div className="mt-6">
-                  <Button size="lg" className="text-base px-6 bg-white text-slate-900 hover:bg-white/90" asChild>
+                <div className="mt-4">
+                  <Button size="default" className="text-sm px-5 py-2 bg-white text-slate-900 hover:bg-white/90" asChild>
                     <Link href={`/${lang}/machinery`}>
                       {heroText.ctaListings}
                       <ArrowRight className="ml-2 h-4 w-4" />
@@ -155,14 +141,14 @@ export default function HeroSection({ lang, backgroundImage, images }: HeroSecti
 
               {/* Right: Sell a machine */}
               <motion.div variants={itemVariants} className="text-center px-4 flex flex-col items-center md:items-start justify-center">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white drop-shadow-md text-center">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-md text-center">
                   {heroText.mainRight}
                 </h1>
                 <p className="mt-3 text-white/85 max-w-md text-center md:text-left">
                   {heroText.rightDescription}
                 </p>
-                <div className="mt-6">
-                  <Button size="lg" className="text-base px-6 bg-parrot-red hover:bg-parrot-red/90 text-white" asChild>
+                <div className="mt-4">
+                  <Button size="default" className="text-sm px-5 py-2 bg-parrot-red hover:bg-parrot-red/90 text-white" asChild>
                     <Link href={`/${lang}/contact`}>
                       {heroText.ctaContact}
                       <ArrowRight className="ml-2 h-4 w-4" />

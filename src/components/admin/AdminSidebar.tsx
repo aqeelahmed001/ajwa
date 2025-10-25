@@ -18,7 +18,8 @@ import {
   HelpCircle,
   Bell,
   User,
-  ChevronDown
+  ChevronDown,
+  FolderTree
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
@@ -224,6 +225,12 @@ export default function AdminSidebar() {
             icon={<FileText className="h-5 w-5" />} 
             label="Page Content" 
             isActive={pathname.startsWith('/admin/content/pages')} 
+          />
+          <SidebarItem 
+            href="/admin/content/category-management" 
+            icon={<FolderTree className="h-5 w-5" />} 
+            label="Categories" 
+            isActive={pathname.startsWith('/admin/content/category-management')} 
           />
           <SidebarItem 
             href="/admin/content/machinery-management" 

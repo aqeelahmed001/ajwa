@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { MongoClient, MongoClientOptions } from 'mongodb';
 
 if (!process.env.MONGODB_URI) {
@@ -35,3 +36,21 @@ if (process.env.NODE_ENV === 'development') {
 // Export a module-scoped MongoClient promise. By doing this in a
 // separate module, the client can be shared across functions.
 export default clientPromise;
+
+// Connect to MongoDB using mongoose for models
+export async function connectToDatabase() {
+  if (mongoose.connection.readyState >= 1) {
+    return;
+  }
+  
+  if (!process.env.MONGODB_URI) {
+    throw new Error('Please add your MongoDB URI to .env.local');
+  }
+  
+  return mongoose.connect(process.env.MONGODB_URI, {
+    // These options are no longer needed in newer mongoose versions
+    // but keeping them for compatibility
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+}

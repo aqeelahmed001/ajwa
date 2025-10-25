@@ -73,13 +73,13 @@ export default function FAQSection({ lang }: FAQSectionProps) {
     categoryTitle: isJapanese ? 'よくある質問' : 'Frequently Asked Questions'
   }
   
-  // Animation variants
+  // Enhanced animation variants for more interactive animations
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.05,
+        staggerChildren: 0.08,
         delayChildren: 0.2
       }
     }
@@ -92,25 +92,32 @@ export default function FAQSection({ lang }: FAQSectionProps) {
       y: 0,
       transition: {
         type: "spring",
-        stiffness: 100
+        stiffness: 100,
+        damping: 10
       }
     }
   }
+  
+  // Add hover animation for FAQ items
+  const hoverAnimation = {
+    scale: 1.01,
+    transition: { duration: 0.3 }
+  }
 
-  // Custom accordion trigger with plus/minus icons
+  // Enhanced interactive accordion trigger with plus/minus icons
   const CustomAccordionTrigger = React.forwardRef<
     React.ElementRef<typeof AccordionTrigger>,
     React.ComponentPropsWithoutRef<typeof AccordionTrigger>
   >(({ children, className, ...props }, ref) => (
     <AccordionTrigger
       ref={ref}
-      className={`group flex flex-1 items-center justify-between py-6 px-5 text-left hover:bg-muted/10 transition-colors rounded-lg ${className}`}
+      className={`group flex flex-1 items-center justify-between py-6 px-5 text-left hover:bg-slate-50 transition-all duration-300 rounded-lg ${className}`}
       {...props}
     >
-      <div className="font-medium text-base md:text-lg pr-4">{children}</div>
-      <div className="shrink-0 rounded-full border border-slate-200 h-8 w-8 flex items-center justify-center">
-        <Plus className="h-4 w-4 text-parrot-red group-data-[state=open]:hidden" />
-        <Minus className="h-4 w-4 text-parrot-red hidden group-data-[state=open]:block" />
+      <div className="font-medium text-base md:text-lg pr-4 group-hover:text-primary transition-colors duration-300">{children}</div>
+      <div className="shrink-0 rounded-full border border-slate-200 h-8 w-8 flex items-center justify-center group-hover:border-primary group-hover:bg-primary/5 transition-all duration-300">
+        <Plus className="h-4 w-4 text-primary group-data-[state=open]:hidden group-hover:scale-110 transition-transform duration-300" />
+        <Minus className="h-4 w-4 text-primary hidden group-data-[state=open]:block group-hover:scale-110 transition-transform duration-300" />
       </div>
     </AccordionTrigger>
   ));
@@ -129,34 +136,45 @@ export default function FAQSection({ lang }: FAQSectionProps) {
           {/* Left column - Section header */}
           <div className="lg:col-span-4 lg:sticky lg:top-24">
             <div className="mb-8 lg:mb-0">
-              <div className="inline-flex items-center mb-3 px-3 py-1 rounded-full bg-parrot-red/10 text-parrot-red text-sm font-medium">
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="inline-flex items-center mb-3 px-3 py-1 rounded-full bg-parrot-red/10 text-parrot-red text-sm font-medium hover:bg-parrot-red/20 hover:scale-105 transition-all duration-300 cursor-default"
+              >
                 {content.categoryTitle}
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-5 leading-tight">
+              </motion.div>
+              <motion.h2 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="text-3xl md:text-4xl font-bold mb-5 leading-tight"
+              >
                 {content.title}
-              </h2>
+              </motion.h2>
               <p className="text-muted-foreground text-lg mb-8">
                 {content.subtitle}
               </p>
 
-              {/* Contact card */}
-              <div className="bg-card rounded-xl border border-slate-200 p-6 shadow-sm">
-                <div className="flex items-center mb-4">
-                  <div className="w-10 h-10 bg-parrot-red/10 rounded-full flex items-center justify-center mr-4">
-                    <MessageSquare className="h-5 w-5 text-parrot-red" />
+              {/* Contact card - styled like the reference image */}
+              <div className="bg-[#F9F7F5] rounded-xl p-6 shadow-sm">
+                <div className="flex items-start mb-4">
+                  <div className="flex-shrink-0 mr-3">
+                    <MessageSquare className="h-6 w-6 text-[#4D2E00]" />
                   </div>
-                  <h3 className="font-semibold text-xl">{content.contactText}</h3>
+                  <h3 className="font-bold text-xl text-[#4D2E00]">{content.contactText}</h3>
                 </div>
-                <p className="text-muted-foreground mb-5">
+                <p className="text-[#4D2E00] mb-5">
                   {isJapanese 
                     ? '機械取引に関する専門的なアドバイスが必要な場合は、当社の専門家チームにご相談ください。'
                     : 'For specialized advice on machinery trading, consult with our expert team.'}
                 </p>
-                <Button size="lg" className="w-full bg-parrot-red hover:bg-parrot-red/90 text-white font-medium" asChild>
-                  <Link href={`/${lang}/contact`}>
-                    {content.contactBtnText}
-                  </Link>
-                </Button>
+                <Link 
+                  href={`/${lang}/contact`}
+                  className="block w-full py-3 bg-[#4D2E00] hover:bg-[#5D3E10] text-white text-center font-medium rounded-md transition-colors duration-300"
+                >
+                  {content.contactBtnText}
+                </Link>
               </div>
             </div>
           </div>
@@ -171,15 +189,19 @@ export default function FAQSection({ lang }: FAQSectionProps) {
           >
             <Accordion type="single" collapsible className="w-full">
               {faqItems.map((item, index) => (
-                <motion.div key={index} variants={itemVariants}>
+                <motion.div 
+                  key={index} 
+                  variants={itemVariants}
+                  whileHover={hoverAnimation}
+                >
                   <AccordionItem 
                     value={`item-${index}`} 
-                    className="bg-card border border-slate-200 rounded-xl mb-5 overflow-hidden shadow-sm"
+                    className="bg-card border border-slate-200 rounded-xl mb-5 overflow-hidden shadow-sm hover:shadow-md hover:border-primary/20 transition-all duration-300"
                   >
                     <CustomAccordionTrigger>
                       {item.question}
                     </CustomAccordionTrigger>
-                    <AccordionContent className="px-5 pb-6 pt-0 text-base text-muted-foreground">
+                    <AccordionContent className="px-5 pb-6 pt-0 text-base text-muted-foreground animate-fadeIn">
                       {item.answer}
                     </AccordionContent>
                   </AccordionItem>
@@ -187,24 +209,45 @@ export default function FAQSection({ lang }: FAQSectionProps) {
               ))}
             </Accordion>
             
-            {/* Trust indicators */}
+            {/* Trust indicators - with interactive elements */}
             <div className="mt-12 pt-8 border-t border-slate-200">
               <div className="flex flex-wrap items-center justify-between gap-4">
-                <div className="flex items-center">
+                <motion.div 
+                  className="flex items-center p-2 hover:bg-slate-50 rounded-lg transition-colors duration-300 cursor-default"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-2">
+                    <span className="text-blue-600 font-bold">15+</span>
+                  </div>
                   <div className="text-sm text-muted-foreground">
                     {isJapanese ? '業界で15年以上の実績' : 'Over 15 years of industry expertise'}
                   </div>
-                </div>
-                <div className="flex items-center">
+                </motion.div>
+                <motion.div 
+                  className="flex items-center p-2 hover:bg-slate-50 rounded-lg transition-colors duration-300 cursor-default"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-2">
+                    <span className="text-green-600 font-bold">50+</span>
+                  </div>
                   <div className="text-sm text-muted-foreground">
                     {isJapanese ? '50カ国以上への輸出実績' : 'Exports to over 50 countries'}
                   </div>
-                </div>
-                <div className="flex items-center">
+                </motion.div>
+                <motion.div 
+                  className="flex items-center p-2 hover:bg-slate-50 rounded-lg transition-colors duration-300 cursor-default"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-2">
+                    <span className="text-purple-600 font-bold">24/7</span>
+                  </div>
                   <div className="text-sm text-muted-foreground">
                     {isJapanese ? '24時間サポート' : '24/7 Customer Support'}
                   </div>
-                </div>
+                </motion.div>
               </div>
             </div>
           </motion.div>

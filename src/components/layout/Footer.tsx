@@ -52,140 +52,182 @@ export default function Footer({ lang }: FooterProps) {
   }
 
   return (
-    <footer className="bg-[#2A1506] text-white">
-      <div className="container py-12 md:py-16">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-          {/* Company Information */}
-          <div>
-            <div className="flex items-center gap-2">
-              {/* Logo placeholder */}
-              <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
-                <span className="font-bold text-primary-foreground">A</span>
+    <footer>
+      {/* Upper section - Main footer content with navy blue background */}
+      <div className="bg-[#1a2f5c] text-white">
+        <div className="container py-12 md:py-16">
+          <div className="grid grid-cols-1 gap-10 md:grid-cols-12">
+            {/* Left column - Company info and social */}
+            <div className="md:col-span-4 lg:col-span-5">
+              <div className="flex items-center gap-3 mb-6">
+                {/* Logo */}
+                <div className="h-10 w-10 bg-blue-500 flex items-center justify-center">
+                  <span className="font-bold text-white text-lg">A</span>
+                </div>
+                <div>
+                  <h3 className="font-bold text-xl text-white">
+                    {isJapanese ? 'アジワ商事' : 'Ajwa Trading'}
+                  </h3>
+                  <p className="text-xs text-blue-200">
+                    {isJapanese ? '国際機械取引' : 'International Machinery Trading'}
+                  </p>
+                </div>
               </div>
-              <span className="font-bold text-lg">
-                {isJapanese ? 'アジワ商事' : 'Ajwa Trading'}
-              </span>
-            </div>
-            <p className="mt-4 text-sm text-white/80">
-              {isJapanese 
-                ? '日本を拠点とする機械輸出入会社。品質の高い機械を世界各国へ輸出し、日本国内の中古機械を適正価格で買取いたします。' 
-                : 'Japan-based machinery export and import company. We export quality machinery worldwide and buy used machinery from Japanese customers at fair prices.'}
-            </p>
-            <div className="mt-6 flex space-x-3">
-              <Link href="https://twitter.com" target="_blank" rel="noreferrer">
-                <Button variant="ghost" size="icon" className="h-8 w-8">
+              
+              <p className="text-sm text-white/80 mb-6 max-w-md">
+                {isJapanese 
+                  ? '日本を拠点とする機械輸出入会社。品質の高い機械を世界各国へ輸出し、日本国内の中古機械を適正価格で買取いたします。' 
+                  : 'Japan-based machinery export and import company. We export quality machinery worldwide and buy used machinery from Japanese customers at fair prices.'}
+              </p>
+              
+              {/* Contact information */}
+              <div className="space-y-3 mb-6">
+                <div className="flex items-start">
+                  <MapPin className="mt-1 h-4 w-4 flex-shrink-0 text-blue-300 mr-3" aria-hidden="true" />
+                  <span className="text-sm text-white/80">{contactInfo.address}</span>
+                </div>
+                <div className="flex items-center">
+                  <Phone className="h-4 w-4 flex-shrink-0 text-blue-300 mr-3" aria-hidden="true" />
+                  <Link href={`tel:${contactInfo.phone}`} className="text-sm text-white/80 hover:text-white transition-colors">
+                    {contactInfo.phone}
+                  </Link>
+                </div>
+                <div className="flex items-center">
+                  <Mail className="h-4 w-4 flex-shrink-0 text-blue-300 mr-3" aria-hidden="true" />
+                  <Link href={`mailto:${contactInfo.email}`} className="text-sm text-white/80 hover:text-white transition-colors">
+                    {contactInfo.email}
+                  </Link>
+                </div>
+              </div>
+              
+              {/* Social media */}
+              <div className="flex space-x-4">
+                <Link 
+                  href="https://twitter.com" 
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="bg-[#2a4070] h-8 w-8 flex items-center justify-center hover:bg-blue-500 transition-colors"
+                >
                   <Twitter className="h-4 w-4" />
                   <span className="sr-only">Twitter</span>
-                </Button>
-              </Link>
-              <Link href="https://facebook.com" target="_blank" rel="noreferrer">
-                <Button variant="ghost" size="icon" className="h-8 w-8">
+                </Link>
+                <Link 
+                  href="https://facebook.com" 
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="bg-[#2a4070] h-8 w-8 flex items-center justify-center hover:bg-blue-500 transition-colors"
+                >
                   <Facebook className="h-4 w-4" />
                   <span className="sr-only">Facebook</span>
-                </Button>
-              </Link>
-              <Link href="https://instagram.com" target="_blank" rel="noreferrer">
-                <Button variant="ghost" size="icon" className="h-8 w-8">
+                </Link>
+                <Link 
+                  href="https://instagram.com" 
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="bg-[#2a4070] h-8 w-8 flex items-center justify-center hover:bg-blue-500 transition-colors"
+                >
                   <Instagram className="h-4 w-4" />
                   <span className="sr-only">Instagram</span>
-                </Button>
-              </Link>
-              <Link href="https://linkedin.com" target="_blank" rel="noreferrer">
-                <Button variant="ghost" size="icon" className="h-8 w-8">
+                </Link>
+                <Link 
+                  href="https://linkedin.com" 
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="bg-[#2a4070] h-8 w-8 flex items-center justify-center hover:bg-blue-500 transition-colors"
+                >
                   <Linkedin className="h-4 w-4" />
                   <span className="sr-only">LinkedIn</span>
-                </Button>
-              </Link>
-            </div>
-          </div>
-          
-          {/* Navigation Links */}
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:col-span-2">
-            {/* Company Links */}
-            <div>
-              <h3 className="text-sm font-medium">{footerNavigation.company.title}</h3>
-              <ul className="mt-4 space-y-2">
-                {footerNavigation.company.links.map((item, index) => (
-                  <li key={index}>
-                    <Link href={item.href} className="text-sm text-white/80 hover:text-white transition-colors">
-                      {item.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+                </Link>
+              </div>
             </div>
             
-            {/* Services Links */}
-            <div>
-              <h3 className="text-sm font-medium">{footerNavigation.services.title}</h3>
-              <ul className="mt-4 space-y-2">
-                {footerNavigation.services.links.map((item, index) => (
-                  <li key={index}>
-                    <Link href={item.href} className="text-sm text-white/80 hover:text-white transition-colors">
-                      {item.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            
-            {/* Support Links */}
-            <div className="sm:col-span-2 lg:col-span-1">
-              <h3 className="text-sm font-medium">{footerNavigation.support.title}</h3>
-              <ul className="mt-4 space-y-2">
-                {footerNavigation.support.links.map((item, index) => (
-                  <li key={index}>
-                    <Link href={item.href} className="text-sm text-white/80 hover:text-white transition-colors">
-                      {item.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          
-          {/* Contact Information */}
-          <div>
-            <h3 className="text-sm font-medium">{isJapanese ? 'お問い合わせ' : 'Contact'}</h3>
-            <ul className="mt-4 space-y-3 text-sm text-white/80">
-              <li className="flex items-start">
-                <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-white/80 mr-2" aria-hidden="true" />
-                {contactInfo.address}
-              </li>
-              <li className="flex">
-                <Phone className="h-4 w-4 flex-shrink-0 text-white/80 mr-2" aria-hidden="true" />
-                <Link href={`tel:${contactInfo.phone}`} className="hover:text-white transition-colors">
-                  {contactInfo.phone}
-                </Link>
-              </li>
-              <li className="flex">
-                <Mail className="h-4 w-4 flex-shrink-0 text-white/80 mr-2" aria-hidden="true" />
-                <Link href={`mailto:${contactInfo.email}`} className="hover:text-white transition-colors">
-                  {contactInfo.email}
-                </Link>
-              </li>
-            </ul>
-            <div className="mt-6">
-              <Button className="w-full" asChild>
-                <Link href={`/${lang}/contact`}>
+            {/* Right column - Quick links */}
+            <div className="md:col-span-8 lg:col-span-7">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                {/* Company Links */}
+                <div>
+                  <h3 className="text-sm font-bold text-white uppercase tracking-wider border-b border-blue-500 pb-2 mb-4">
+                    {footerNavigation.company.title}
+                  </h3>
+                  <ul className="space-y-2">
+                    {footerNavigation.company.links.map((item, index) => (
+                      <li key={index}>
+                        <Link 
+                          href={item.href} 
+                          className="text-sm text-white/70 hover:text-white hover:pl-1 transition-all duration-300"
+                        >
+                          {item.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                
+                {/* Services Links */}
+                <div>
+                  <h3 className="text-sm font-bold text-white uppercase tracking-wider border-b border-blue-500 pb-2 mb-4">
+                    {footerNavigation.services.title}
+                  </h3>
+                  <ul className="space-y-2">
+                    {footerNavigation.services.links.map((item, index) => (
+                      <li key={index}>
+                        <Link 
+                          href={item.href} 
+                          className="text-sm text-white/70 hover:text-white hover:pl-1 transition-all duration-300"
+                        >
+                          {item.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                
+                {/* Support Links */}
+                <div>
+                  <h3 className="text-sm font-bold text-white uppercase tracking-wider border-b border-blue-500 pb-2 mb-4">
+                    {footerNavigation.support.title}
+                  </h3>
+                  <ul className="space-y-2">
+                    {footerNavigation.support.links.map((item, index) => (
+                      <li key={index}>
+                        <Link 
+                          href={item.href} 
+                          className="text-sm text-white/70 hover:text-white hover:pl-1 transition-all duration-300"
+                        >
+                          {item.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              
+              {/* Contact button */}
+              <div className="mt-10 sm:mt-12">
+                <Link 
+                  href={`/${lang}/contact`}
+                  className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-6 transition-colors"
+                >
                   {isJapanese ? 'お問い合わせ' : 'Contact Us'}
                 </Link>
-              </Button>
+              </div>
             </div>
           </div>
         </div>
-        
-        {/* Copyright */}
-        <div className="mt-12 border-t border-white/20 pt-8 text-center md:flex md:items-center md:justify-between">
-          <p className="text-xs text-white/70">
+      </div>
+      
+      {/* Lower section - Copyright and secondary links with darker background */}
+      <div className="bg-[#0f1d38] text-white py-4">
+        <div className="container flex flex-col md:flex-row justify-between items-center">
+          <p className="text-xs text-white/60 mb-4 md:mb-0">
             &copy; {currentYear} Ajwa Trading Limited. {isJapanese ? '全著作権所有。' : 'All rights reserved.'}
           </p>
-          <div className="mt-4 flex justify-center space-x-6 md:mt-0">
+          <div className="flex space-x-6">
             {footerNavigation.support.links.map((item, index) => (
               <Link 
                 key={index} 
                 href={item.href}
-                className="text-xs text-white/70 hover:text-white transition-colors"
+                className="text-xs text-white/60 hover:text-white transition-colors"
               >
                 {item.name}
               </Link>

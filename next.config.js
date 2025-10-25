@@ -3,6 +3,7 @@ const nextConfig = {
   images: {
     domains: [
       'placehold.co',
+      'res.cloudinary.com',
       // add other domains as needed
     ],
     formats: ['image/webp', 'image/avif'],

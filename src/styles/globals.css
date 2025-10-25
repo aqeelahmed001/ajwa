@@ -2,6 +2,87 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom animations */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Enhanced brand ticker styles */
+.brand-ticker {
+  position: relative;
+  background-image: linear-gradient(to right, #1B3A2F, #1F4438, #1B3A2F);
+}
+
+.brand-ticker::before,
+.brand-ticker::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.brand-ticker::before {
+  left: 0;
+  background: linear-gradient(to right, #1B3A2F, transparent);
+}
+
+.brand-ticker::after {
+  right: 0;
+  background: linear-gradient(to left, #1B3A2F, transparent);
+}
+
+/* Modern polygon shape for step numbers */
+.clip-path-polygon {
+  clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%);
+}
+
+/* Slow spin animation for gear icon */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+/* Fade in animation for accordion content */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
 @layer base {
   :root {
     /* Professional light theme with warm undertones - matching header top bar */

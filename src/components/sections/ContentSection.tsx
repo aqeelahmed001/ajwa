@@ -1,9 +1,9 @@
 "use client";
 
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import CloudinaryImage from '@/components/ui/CloudinaryImage';
 import { ArrowRight } from 'lucide-react';
 
 interface ContentSectionProps {
@@ -29,7 +29,7 @@ export default function ContentSection({ lang }: ContentSectionProps) {
       {
         id: 2,
         image: '/images/mach2.jpg',
-        title: isJapanese ? 'SKの強み' : 'Our Strengths',
+        title: isJapanese ? 'Ajwaの強み' : 'Our Strengths',
         description: isJapanese 
           ? '高品質な機械と専門知識で、お客様のニーズに応えます。' 
           : 'We meet your needs with high-quality machinery and expertise.',
@@ -98,12 +98,16 @@ export default function ContentSection({ lang }: ContentSectionProps) {
               variants={itemVariants}
             >
               {/* Image */}
-              <div className="relative h-64 overflow-hidden">
-                <Image
+              <div className="group relative overflow-hidden rounded-xl shadow-lg">
+                <CloudinaryImage
                   src={item.image}
                   alt={item.title}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  width={400}
+                  height={300}
+                  className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
+                  quality={85}
+                  format="auto"
+                  crop="fill"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                 <h3 className="absolute bottom-4 left-4 text-xl font-bold text-white">{item.title}</h3>
