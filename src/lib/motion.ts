@@ -5,18 +5,18 @@ import dynamic from 'next/dynamic';
 
 // Dynamically import motion components with SSR disabled
 export const motion = dynamic(
-  () => import('framer-motion').then((mod) => mod.motion),
+  () => import('framer-motion').then((mod) => mod.motion as any),
   { ssr: false }
 );
 
 export const AnimatePresence = dynamic(
-  () => import('framer-motion').then((mod) => mod.AnimatePresence),
+  () => import('framer-motion').then((mod) => mod.AnimatePresence as any),
   { ssr: false }
 );
 
 // Export other framer-motion utilities as needed
 export const useAnimation = dynamic(
-  () => import('framer-motion').then((mod) => mod.useAnimation),
+  () => import('framer-motion').then((mod) => mod.useAnimation as any),
   { ssr: false }
 );
 

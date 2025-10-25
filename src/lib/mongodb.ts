@@ -47,10 +47,7 @@ export async function connectToDatabase() {
     throw new Error('Please add your MongoDB URI to .env.local');
   }
   
-  return mongoose.connect(process.env.MONGODB_URI, {
-    // These options are no longer needed in newer mongoose versions
-    // but keeping them for compatibility
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  // Connect without deprecated options
+  // In newer versions of Mongoose (6+), these options are no longer needed
+  return mongoose.connect(process.env.MONGODB_URI);
 }
