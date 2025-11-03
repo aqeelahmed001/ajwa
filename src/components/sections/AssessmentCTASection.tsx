@@ -39,17 +39,17 @@ export default function AssessmentCTASection({ lang }: AssessmentCTASectionProps
   const content = {
     title: isJapanese ? 'お気軽にお申し込みください！' : 'Apply for a free assessment!',
     subtitle: isJapanese ? '無料買取査定はこちらから' : 'Free assessment options below',
-    webTitle: isJapanese ? 'WEBで簡単無料査定' : 'Easy free assessment online',
+    webTitle: isJapanese ? '機械を売る' : 'Sell Your Machinery',
     webDescription: isJapanese 
-      ? '情報の⼊⼒&フォトを送信。1営業⽇以内に回答します' 
-      : 'Enter information & send photos. We will respond within 1 business day',
-    webButton: isJapanese ? '無料査定に申し込む' : 'Apply for free assessment',
+      ? '機械の売却をお考えですか？以下のフォームに必要事項をご記入ください。' 
+      : 'Looking to sell your machinery? Fill out our form and we will contact you.',
+    webButton: isJapanese ? '売却の問い合わせ' : 'Sell Machinery',
     webStatus: isJapanese ? '利用可能' : 'Available',
-    lineTitle: isJapanese ? 'LINE登録でカンタン査定' : 'Easy assessment via LINE',
+    lineTitle: isJapanese ? '機械を購入' : 'Buy Machinery',
     lineDescription: isJapanese 
-      ? 'まずはともだちに「YNB」を追加！そのボタンをクリック、またはQRコードを読み取ってね' 
-      : 'First add "YNB" as a friend! Click the button or scan the QR code',
-    lineButton: isJapanese ? '友だちに追加' : 'Add as friend',
+      ? '必要な機械をお探しですか？お客様のニーズに合った機械をご提案いたします。' 
+      : 'Looking for specific machinery? We will help you find what you need.',
+    lineButton: isJapanese ? '購入の問い合わせ' : 'Buy Machinery',
     lineStatus: isJapanese ? '利用可能' : 'Available',
     appTitle: isJapanese ? 'モバイルアプリで査定' : 'Assessment via mobile app',
     appDescription: isJapanese 
@@ -126,7 +126,7 @@ export default function AssessmentCTASection({ lang }: AssessmentCTASectionProps
                 <h4 className="text-2xl font-bold mb-3">{content.webTitle}</h4>
                 <p className="text-white/90 mb-6 max-w-xs mx-auto">{content.webDescription}</p>
                 <Link 
-                  href={`/${lang}/assessment`}
+                  href={`/${lang}/contact?tab=sell`}
                   className="inline-flex items-center justify-center bg-white text-orange-500 hover:bg-orange-50 transition-all duration-300 px-8 py-3.5 rounded-full font-medium shadow-lg hover:shadow-xl group-hover:scale-105 border border-white/50"
                 >
                   {content.webButton}
@@ -171,15 +171,13 @@ export default function AssessmentCTASection({ lang }: AssessmentCTASectionProps
               <div className="text-center">
                 <h4 className="text-2xl font-bold mb-3">{content.lineTitle}</h4>
                 <p className="text-white/90 mb-6 max-w-xs mx-auto">{content.lineDescription}</p>
-                <a 
-                  href="https://lin.ee/example" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
+                <Link 
+                  href={`/${lang}/contact?tab=buy`}
                   className="inline-flex items-center justify-center bg-white text-green-500 hover:bg-green-50 transition-all duration-300 px-8 py-3.5 rounded-full font-medium shadow-lg hover:shadow-xl group-hover:scale-105 border border-white/50"
                 >
                   {content.lineButton}
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </a>
+                </Link>
               </div>
             </div>
           </motion.div>

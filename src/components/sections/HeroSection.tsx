@@ -8,11 +8,22 @@ import { ArrowRight } from 'lucide-react'
 // Removed slider imports
 import { usePageContent } from '@/hooks/usePageContent'
 import { getOptimizedImageUrl } from '@/lib/cloudinary'
+import { HTMLProps } from 'react'
 
 interface HeroSectionProps {
   lang: string;
   backgroundImage?: string; // deprecated in favor of images, kept for compatibility
   images?: string[]; // slider images
+}
+
+// Helper component to safely render HTML content
+function HtmlContent({ html, className }: { html: string, className?: string }) {
+  return (
+    <div 
+      className={className} 
+      dangerouslySetInnerHTML={{ __html: html || '' }} 
+    />
+  )
 }
 
 export default function HeroSection({ lang, backgroundImage, images }: HeroSectionProps) {
@@ -52,12 +63,23 @@ export default function HeroSection({ lang, backgroundImage, images }: HeroSecti
     }
   }
   
-  const { getContent } = usePageContent({
+  const { getContent, rawData, contents } = usePageContent({
     pageId: 'home',
     section: 'hero',
     lang
-  })
-
+  });
+  
+  // Debug logging of raw data
+  console.log('Raw hero content data:', rawData.map(item => ({
+    key: item.key,
+    language: item.language,
+    type: item.type,
+    contentPreview: item.content.substring(0, 30) + (item.content.length > 30 ? '...' : '')
+  })));
+  
+  // Debug the processed contents
+  console.log('Processed contents:', contents);
+  
   // Text content from CMS with fallbacks
   const heroText = {
     categoryTag: getContent('categoryTag', isJapanese ? '国際機械取引' : 'International Machinery Trading'),
@@ -69,15 +91,24 @@ export default function HeroSection({ lang, backgroundImage, images }: HeroSecti
     ctaContact: getContent('ctaContact', isJapanese ? '売却の相談' : 'Sell Your Machine'),
     ctaListings: getContent('ctaListings', isJapanese ? '機械を探す' : 'Browse Listings'),
     leftDescription: getContent('leftDescription', isJapanese
-      ? '世界中から高品質な産業機械を厳選して提供します。'
-      : 'Find high-quality industrial machinery curated from around the world.'),
+      ? '<p>世界中から高品質な産業機械を厳選して提供します。</p>'
+      : '<p>Find high-quality industrial machinery curated from around the world.</p>'),
     rightDescription: getContent('rightDescription', isJapanese
-      ? '日本国内の中古機械を適正な市場価格で買取いたします。'
-      : 'We purchase used machinery in Japan at fair market value.')
+      ? '<p>日本国内の中古機械を適正な市場価格で買取いたします。</p>'
+      : '<p>We purchase used machinery in Japan at fair market value.</p>'),
+    backgroundImage: getContent('backgroundImage', '/images/mach1.jpg')
   }
+  
+  // Debug logging
+  console.log('Hero section content:', {
+    lang,
+    leftDescription: heroText.leftDescription,
+    rightDescription: heroText.rightDescription,
+    backgroundImage: heroText.backgroundImage
+  })
 
-  // Using a single background image for simplicity and reliability
-  const bgImage = backgroundImage || '/images/mach1.jpg'
+  // Use the dynamic background image from CMS or fallback to props or default
+  const bgImage = heroText.backgroundImage || backgroundImage || '/images/mach1.jpg'
 
   return (
     <section className="min-h-[70vh] relative overflow-hidden">
@@ -126,9 +157,12 @@ export default function HeroSection({ lang, backgroundImage, images }: HeroSecti
                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-md text-center">
                   {heroText.mainLeft}
                 </h1>
-                <p className="mt-3 text-white/85 max-w-md text-center md:text-right">
-                  {heroText.leftDescription}
-                </p>
+                <div className="mt-3 text-white/85 max-w-md text-center md:text-right">
+                  <HtmlContent 
+                    html={heroText.leftDescription} 
+                    className="text-white/85"
+                  />
+                </div>
                 <div className="mt-4">
                   <Button size="default" className="text-sm px-5 py-2 bg-white text-slate-900 hover:bg-white/90" asChild>
                     <Link href={`/${lang}/machinery`}>
@@ -144,9 +178,12 @@ export default function HeroSection({ lang, backgroundImage, images }: HeroSecti
                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-md text-center">
                   {heroText.mainRight}
                 </h1>
-                <p className="mt-3 text-white/85 max-w-md text-center md:text-left">
-                  {heroText.rightDescription}
-                </p>
+                <div className="mt-3 text-white/85 max-w-md text-center md:text-left">
+                  <HtmlContent 
+                    html={heroText.rightDescription} 
+                    className="text-white/85"
+                  />
+                </div>
                 <div className="mt-4">
                   <Button size="default" className="text-sm px-5 py-2 bg-parrot-red hover:bg-parrot-red/90 text-white" asChild>
                     <Link href={`/${lang}/contact`}>

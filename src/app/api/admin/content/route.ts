@@ -9,22 +9,27 @@ function isAuthenticated(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    if (!isAuthenticated(request)) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // Allow public access to GET requests for content
+    // Only check authentication for admin routes to modify content
 
     const { searchParams } = new URL(request.url);
     const pageId = searchParams.get('pageId');
     const section = searchParams.get('section');
+    const language = searchParams.get('language');
 
     await dbConnect();
     
     const query = {
       ...(pageId && { pageId }),
       ...(section && { section }),
+      ...(language && { language }),
     };
+    
+    console.log('Content API query:', query);
 
     const contents = await Content.find(query).sort({ order: 1 });
+    console.log(`Found ${contents.length} content items:`, contents.map(c => ({ key: c.key, language: c.language, content: c.content.substring(0, 30) + (c.content.length > 30 ? '...' : '') })));
+    
     return NextResponse.json(contents);
   } catch (error) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

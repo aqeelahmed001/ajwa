@@ -4,14 +4,30 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Metadata } from 'next'
+import { useSearchParams } from 'next/navigation'
 import { Phone, Mail, MapPin, Clock, Globe, ArrowRight, MessageSquare, TruckIcon, ShoppingCart } from 'lucide-react'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SellBuyForm from '@/components/forms/SellBuyForm';
 import { toast } from 'sonner';
 
 export default function ContactPage({ params }: { params: { lang: string } }) {
   const isJapanese = params.lang === 'ja'
-  const [activeTab, setActiveTab] = useState('contact');
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get('tab');
+  
+  // Set initial tab based on URL parameter or default to 'contact'
+  const [activeTab, setActiveTab] = useState(tabParam === 'sell' ? 'sell' : tabParam === 'buy' ? 'buy' : 'contact');
+  
+  // Update active tab when URL parameter changes
+  useEffect(() => {
+    if (tabParam === 'sell') {
+      setActiveTab('sell');
+    } else if (tabParam === 'buy') {
+      setActiveTab('buy');
+    } else if (tabParam === 'contact') {
+      setActiveTab('contact');
+    }
+  }, [tabParam]);
   
   const [formData, setFormData] = useState({
     name: '',

@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { signOut } from 'next-auth/react'
 import { 
   LayoutDashboard, 
   FileText, 
@@ -112,14 +113,21 @@ const SidebarGroup = ({ title, children }: SidebarGroupProps) => {
 
 export default function AdminSidebar() {
   const pathname = usePathname()
+  const router = useRouter()
   const [collapsed, setCollapsed] = useState(false)
   
   const handleLogout = async () => {
     try {
+      // First, call our custom logout API to clear cookies and log activity
       await fetch('/api/auth/logout', {
         method: 'POST',
       })
-      window.location.href = '/admin'
+      
+      // Then use NextAuth's signOut to clear the session
+      await signOut({ redirect: false })
+      
+      // Redirect to login page
+      router.push('/admin')
     } catch (error) {
       console.error('Logout failed:', error)
     }

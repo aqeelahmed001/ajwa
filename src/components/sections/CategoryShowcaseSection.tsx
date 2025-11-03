@@ -1,9 +1,10 @@
 "use client";
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { ArrowRight, Settings } from 'lucide-react'
+import { ArrowRight, Settings, Loader2 } from 'lucide-react'
+import { fetchPublicCategories } from '@/services/categoryService'
 
 interface CategoryShowcaseSectionProps {
   lang: string;
@@ -12,45 +13,85 @@ interface CategoryShowcaseSectionProps {
 export default function CategoryShowcaseSection({ lang }: CategoryShowcaseSectionProps) {
   const isJapanese = lang === 'ja'
   
-  // Sample categories
-  const categories = [
-    {
-      id: 1,
-      name: isJapanese ? 'CNC工作機械' : 'CNC Machine Tools',
-      image: '/images/categories/cnc.jpg',
-      count: 24
-    },
-    {
-      id: 2,
-      name: isJapanese ? '旋盤' : 'Lathes',
-      image: '/images/categories/lathe.jpg',
-      count: 18
-    },
-    {
-      id: 3,
-      name: isJapanese ? 'フライス盤' : 'Milling Machines',
-      image: '/images/categories/mill.jpg',
-      count: 15
-    },
-    {
-      id: 4,
-      name: isJapanese ? '研削盤' : 'Grinding Machines',
-      image: '/images/categories/grinder.jpg',
-      count: 12
-    },
-    {
-      id: 5,
-      name: isJapanese ? '板金機械' : 'Sheet Metal Machinery',
-      image: '/images/categories/sheet.jpg',
-      count: 9
-    },
-    {
-      id: 6,
-      name: isJapanese ? '測定機器' : 'Measuring Equipment',
-      image: '/images/categories/measuring.jpg',
-      count: 7
-    }
-  ]
+  // State for categories from API
+  const [categories, setCategories] = useState<Array<{
+    id: string;
+    name: string;
+    image?: string;
+    count: number;
+  }>>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Fetch categories from API
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        setLoading(true);
+        const fetchedCategories = await fetchPublicCategories();
+        
+        // Transform categories for display
+        const transformedCategories = fetchedCategories
+          .filter(cat => cat.isActive) // Only show active categories
+          .slice(0, 6) // Limit to 6 categories for showcase
+          .map(category => ({
+            id: category.id,
+            name: category.name,
+            image: category.image || `/images/categories/default.jpg`,
+            count: 0 // We'll update this with actual counts in a future enhancement
+          }));
+        
+        setCategories(transformedCategories);
+      } catch (err) {
+        console.error('Error fetching categories:', err);
+        setError('Failed to load categories');
+        
+        // Fallback to sample categories if API fails
+        setCategories([
+          {
+            id: '1',
+            name: isJapanese ? 'CNC工作機械' : 'CNC Machine Tools',
+            image: '/images/categories/cnc.jpg',
+            count: 24
+          },
+          {
+            id: '2',
+            name: isJapanese ? '旋盤' : 'Lathes',
+            image: '/images/categories/lathe.jpg',
+            count: 18
+          },
+          {
+            id: '3',
+            name: isJapanese ? 'フライス盤' : 'Milling Machines',
+            image: '/images/categories/mill.jpg',
+            count: 15
+          },
+          {
+            id: '4',
+            name: isJapanese ? '研削盤' : 'Grinding Machines',
+            image: '/images/categories/grinder.jpg',
+            count: 12
+          },
+          {
+            id: '5',
+            name: isJapanese ? '板金機械' : 'Sheet Metal Machinery',
+            image: '/images/categories/sheet.jpg',
+            count: 9
+          },
+          {
+            id: '6',
+            name: isJapanese ? '測定機器' : 'Measuring Equipment',
+            image: '/images/categories/measuring.jpg',
+            count: 7
+          }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    getCategories();
+  }, [isJapanese]);
 
   // Animation variants
   const containerVariants = {
@@ -123,14 +164,29 @@ export default function CategoryShowcaseSection({ lang }: CategoryShowcaseSectio
             </button>
           </div>
           
+          {/* Loading state */}
+          {loading && (
+            <div className="flex justify-center items-center py-8">
+              <Loader2 className="h-8 w-8 animate-spin text-blue-400" />
+            </div>
+          )}
+          
+          {/* Error state */}
+          {error && !loading && (
+            <div className="text-center py-8">
+              <p className="text-white/70 text-sm">{error}</p>
+            </div>
+          )}
+          
           {/* 6 cards in 2 rows of 3 */}
-          <motion.div 
-            className="grid grid-cols-3 gap-2"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-          >
-            {categories.map((category) => (
+          {!loading && !error && (
+            <motion.div 
+              className="grid grid-cols-3 gap-2"
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+            >
+              {categories.map((category) => (
               <motion.div 
                 key={category.id} 
                 className="bg-[#2a4070] relative group"
@@ -165,7 +221,8 @@ export default function CategoryShowcaseSection({ lang }: CategoryShowcaseSectio
                 </Link>
               </motion.div>
             ))}
-          </motion.div>
+            </motion.div>
+          )}
         </div>
       </div>
     </section>

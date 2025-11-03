@@ -1,7 +1,7 @@
 // Cloudinary client-side utilities (no Node.js dependencies)
 
-// Cloud name for Cloudinary
-const CLOUD_NAME = 'dlgifqrj8';
+// Cloud name for Cloudinary - using public value since this is client-side
+const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dlgifqrj8';
 
 /**
  * Upload an image to Cloudinary via API route

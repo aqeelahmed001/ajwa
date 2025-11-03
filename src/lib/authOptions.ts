@@ -1,6 +1,6 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { UserRole } from '@/models/User';
+import { UserRole } from './auth'; // Import from client-side auth
 
 // Custom types for NextAuth
 declare module 'next-auth' {
@@ -35,18 +35,40 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
-        // In a real application, validate credentials against your database
-        // For development, we'll use a mock user
-        if (credentials?.email === 'admin@ajwatrading.com' && credentials?.password === 'admin') {
+        try {
+          // Connect to the database
+          const { connectToDatabase } = await import('@/lib/mongodb');
+          await connectToDatabase();
+          
+          // Import User model dynamically to avoid circular dependencies
+          const { default: User } = await import('@/models/User');
+          
+          // Find user by email
+          const user = await User.findOne({ email: credentials?.email });
+          
+          // If user doesn't exist or is not active, return null
+          if (!user || !user.isActive) {
+            return null;
+          }
+          
+          // Verify password
+          const isValid = await user.comparePassword(credentials?.password || '');
+          if (!isValid) {
+            return null;
+          }
+          
+          // Return user data for session
           return {
-            id: '1',
-            name: 'Admin User',
-            email: 'admin@ajwatrading.com',
-            role: 'admin' as UserRole,
-            isActive: true,
+            id: user._id ? user._id.toString() : user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            isActive: user.isActive,
           };
+        } catch (error) {
+          console.error('Auth error:', error);
+          return null;
         }
-        return null;
       }
     })
   ],

@@ -54,6 +54,13 @@ export function RichTextEditor({ content, onChange, placeholder = 'Start writing
     },
     immediatelyRender: false, // Fix for SSR hydration issues
   }, [isMounted])
+  
+  // Update content when it changes externally
+  useEffect(() => {
+    if (editor && content !== editor.getHTML()) {
+      editor.commands.setContent(content)
+    }
+  }, [content, editor])
 
   if (!editor || !isMounted) {
     return (

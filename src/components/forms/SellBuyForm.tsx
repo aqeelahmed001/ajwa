@@ -30,6 +30,7 @@ export default function SellBuyForm({ lang, type }: SellBuyFormProps) {
   
   const [files, setFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -39,7 +40,45 @@ export default function SellBuyForm({ lang, type }: SellBuyFormProps) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newFiles = Array.from(e.target.files);
-      setFiles(prev => [...prev, ...newFiles]);
+      
+      // Filter files by accepted types
+      const validFiles = newFiles.filter(file => {
+        const fileType = file.type.toLowerCase();
+        return fileType.includes('jpeg') || 
+               fileType.includes('jpg') || 
+               fileType.includes('png') || 
+               fileType.includes('heic'); // iPhone format
+      });
+      
+      // Check file sizes
+      const validSizedFiles = validFiles.filter(file => {
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        if (file.size > maxSize) {
+          toast.error(isJapanese
+            ? `${file.name} は5MBを超えています。`
+            : `${file.name} exceeds the 5MB size limit.`);
+          return false;
+        }
+        return true;
+      });
+      
+      // Check if adding these files would exceed the limit
+      if (files.length + validSizedFiles.length > 8) {
+        toast.error(isJapanese 
+          ? '最大8枚の画像をアップロードできます。' 
+          : 'You can upload a maximum of 8 images.');
+        return;
+      }
+      
+      // Add valid files
+      setFiles(prev => [...prev, ...validSizedFiles]);
+      
+      // Show warning if some files were filtered out
+      if (validSizedFiles.length < newFiles.length) {
+        toast.warning(isJapanese 
+          ? '一部のファイルは許可されていない形式またはサイズのため、スキップされました。' 
+          : 'Some files were skipped because they are not in an allowed format or exceed the size limit.');
+      }
     }
   };
 
@@ -47,8 +86,57 @@ export default function SellBuyForm({ lang, type }: SellBuyFormProps) {
     setFiles(prev => prev.filter((_, i) => i !== index));
   };
 
+  const validateForm = () => {
+    const errors: Record<string, string> = {};
+    
+    // Required fields validation
+    if (!formData.name.trim()) {
+      errors.name = isJapanese ? 'お名前は必須です' : 'Name is required';
+    }
+    
+    if (!formData.email.trim()) {
+      errors.email = isJapanese ? 'メールアドレスは必須です' : 'Email is required';
+    } else {
+      // Email format validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        errors.email = isJapanese ? '有効なメールアドレスを入力してください' : 'Please enter a valid email address';
+      }
+    }
+    
+    if (!formData.phone.trim()) {
+      errors.phone = isJapanese ? '電話番号は必須です' : 'Phone number is required';
+    } else {
+      // Basic phone format validation
+      const phoneRegex = /^[0-9\s\-\+\(\)]{7,20}$/;
+      if (!phoneRegex.test(formData.phone)) {
+        errors.phone = isJapanese ? '有効な電話番号を入力してください' : 'Please enter a valid phone number';
+      }
+    }
+    
+    if (!formData.machineType.trim()) {
+      errors.machineType = isJapanese ? '機械の種類は必須です' : 'Machine type is required';
+    }
+    
+    // Conditional validations based on form type
+    if (isSell && !formData.machineCondition) {
+      errors.machineCondition = isJapanese ? '状態は必須です' : 'Condition is required';
+    }
+    
+    if (!isSell && !formData.budget.trim()) {
+      errors.budget = isJapanese ? '予算は必須です' : 'Budget is required';
+    }
+    
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
     
     try {
       setIsSubmitting(true);
@@ -153,8 +241,8 @@ export default function SellBuyForm({ lang, type }: SellBuyFormProps) {
       : 'Please provide any additional information or special requirements',
     uploadLabel: isJapanese ? '写真をアップロード' : 'Upload Photos',
     uploadText: isJapanese 
-      ? '機械の写真をアップロードしてください（最大5枚）' 
-      : 'Upload photos of the machinery (max 5 photos)',
+      ? '機械の写真をアップロードしてください（最大8枚、JPG、PNG、またはiPhone形式）' 
+      : 'Upload photos of the machinery (max 8 photos, JPG, PNG, or iPhone format)',
     submitButton: isSell
       ? (isJapanese ? '売却の問い合わせを送信' : 'Submit Selling Inquiry')
       : (isJapanese ? '購入の問い合わせを送信' : 'Submit Buying Inquiry'),
@@ -184,9 +272,12 @@ export default function SellBuyForm({ lang, type }: SellBuyFormProps) {
               value={formData.name}
               onChange={handleChange}
               placeholder={content.namePlaceholder}
-              className="w-full rounded-md border border-gray-200 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+              className={`w-full rounded-md border ${formErrors.name ? 'border-red-500' : 'border-gray-200'} px-4 py-2 focus:outline-none focus:ring-2 ${formErrors.name ? 'focus:ring-red-500' : 'focus:ring-primary'}`}
               required
             />
+            {formErrors.name && (
+              <p className="text-red-500 text-xs mt-1">{formErrors.name}</p>
+            )}
           </div>
           
           {/* Email Field */}
@@ -201,9 +292,12 @@ export default function SellBuyForm({ lang, type }: SellBuyFormProps) {
               value={formData.email}
               onChange={handleChange}
               placeholder={content.emailPlaceholder}
-              className="w-full rounded-md border border-gray-200 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+              className={`w-full rounded-md border ${formErrors.email ? 'border-red-500' : 'border-gray-200'} px-4 py-2 focus:outline-none focus:ring-2 ${formErrors.email ? 'focus:ring-red-500' : 'focus:ring-primary'}`}
               required
             />
+            {formErrors.email && (
+              <p className="text-red-500 text-xs mt-1">{formErrors.email}</p>
+            )}
           </div>
         </div>
         
@@ -220,9 +314,12 @@ export default function SellBuyForm({ lang, type }: SellBuyFormProps) {
               value={formData.phone}
               onChange={handleChange}
               placeholder={content.phonePlaceholder}
-              className="w-full rounded-md border border-gray-200 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+              className={`w-full rounded-md border ${formErrors.phone ? 'border-red-500' : 'border-gray-200'} px-4 py-2 focus:outline-none focus:ring-2 ${formErrors.phone ? 'focus:ring-red-500' : 'focus:ring-primary'}`}
               required
             />
+            {formErrors.phone && (
+              <p className="text-red-500 text-xs mt-1">{formErrors.phone}</p>
+            )}
           </div>
           
           {/* Company Field */}
@@ -255,9 +352,12 @@ export default function SellBuyForm({ lang, type }: SellBuyFormProps) {
               value={formData.machineType}
               onChange={handleChange}
               placeholder={content.machineTypePlaceholder}
-              className="w-full rounded-md border border-gray-200 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+              className={`w-full rounded-md border ${formErrors.machineType ? 'border-red-500' : 'border-gray-200'} px-4 py-2 focus:outline-none focus:ring-2 ${formErrors.machineType ? 'focus:ring-red-500' : 'focus:ring-primary'}`}
               required
             />
+            {formErrors.machineType && (
+              <p className="text-red-500 text-xs mt-1">{formErrors.machineType}</p>
+            )}
           </div>
           
           {/* Machine Make Field */}
@@ -407,9 +507,9 @@ export default function SellBuyForm({ lang, type }: SellBuyFormProps) {
                       type="file" 
                       className="sr-only" 
                       multiple 
-                      accept="image/*"
+                      accept="image/jpeg,image/jpg,image/png,image/heic"
                       onChange={handleFileChange}
-                      disabled={files.length >= 5}
+                      disabled={files.length >= 8}
                     />
                   </label>
                   <p className="pl-1">{isJapanese ? 'またはドラッグ＆ドロップ' : 'or drag and drop'}</p>
@@ -417,12 +517,36 @@ export default function SellBuyForm({ lang, type }: SellBuyFormProps) {
                 <p className="text-xs text-gray-500">
                   {content.uploadText}
                 </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  {isJapanese 
+                    ? '対応フォーマット: JPG、PNG、iPhone画像 (HEIC)' 
+                    : 'Accepted formats: JPG, PNG, iPhone images (HEIC)'}
+                </p>
               </div>
+            </div>
+            
+            {/* Upload counter */}
+            <div className="mt-3 flex items-center justify-between">
+              <div className="text-sm">
+                <span className={files.length >= 8 ? 'text-red-500 font-medium' : 'text-gray-600'}>
+                  {files.length}
+                </span>
+                <span className="text-gray-600"> / 8 {isJapanese ? '画像' : 'images'}</span>
+              </div>
+              {files.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setFiles([])}
+                  className="text-xs text-red-500 hover:text-red-700"
+                >
+                  {isJapanese ? 'すべてクリア' : 'Clear all'}
+                </button>
+              )}
             </div>
             
             {/* File preview */}
             {files.length > 0 && (
-              <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                 {files.map((file, index) => (
                   <div key={index} className="relative">
                     <div className="h-24 w-full border rounded-md overflow-hidden">

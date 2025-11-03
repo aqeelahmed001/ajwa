@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { Pencil, Trash2 } from 'lucide-react'
 import { RichTextEditor } from '@/components/admin/RichTextEditor'
+import { ImageUploader } from '@/components/admin/ImageUploader'
 
 interface Field {
   key: string
@@ -100,40 +101,106 @@ export function PageContent() {
   const [selectedLang, setSelectedLang] = useState<'en' | 'ja'>('en')
   const [selectedSection, setSelectedSection] = useState<string>(SECTIONS[0].id)
   const [contents, setContents] = useState<Record<string, Content>>({})
+  const [rawContents, setRawContents] = useState<Content[]>([])
   const [loading, setLoading] = useState(true)
+
+  // Define fetchContent function
+  const fetchContent = async () => {
+    try {
+      setLoading(true)
+      // Fetch all content for the section, not just the selected language
+      const response = await fetch(`/api/admin/content?pageId=home&section=${selectedSection}`, {
+        credentials: 'include' // Include cookies for authentication
+      })
+      
+      if (!response.ok) {
+        console.error(`Content fetch failed with status: ${response.status}`)
+        throw new Error('Failed to fetch content')
+      }
+      const data = await response.json()
+      console.log(`Fetched ${data.length} content items for ${selectedSection}:`, 
+        data.map((item: Content) => ({ key: item.key, language: item.language, type: item.type, content: item.content.substring(0, 30) })))
+      
+      // Filter data for the selected language and language-specific keys
+      const currentLangItems = data.filter((item: Content) => item.language === selectedLang)
+      const otherLangItems = data.filter((item: Content) => item.language !== selectedLang)
+      
+      console.log(`Items for ${selectedLang}:`, currentLangItems.length)
+      console.log(`Items for other languages:`, otherLangItems.length)
+      
+      // Store all raw data for reference
+      setRawContents(data)
+      
+      // Convert array to record by key
+      const contentMap = data.reduce((acc: Record<string, Content>, item: Content) => {
+        // For the current language, prioritize those items
+        if (item.language === selectedLang) {
+          console.log(`Processing ${selectedLang} item: ${item.key}, type: ${item.type}, content length: ${item.content?.length || 0}`)
+          acc[item.key] = item
+          
+          // If this is a language-specific key (e.g., leftDescription_ja), also store under the base key
+          if (item.key.endsWith(`_${selectedLang}`)) {
+            const baseKey = item.key.slice(0, -3) // Remove _xx suffix
+            console.log(`Also storing under base key: ${baseKey}`)
+            acc[baseKey] = item
+          }
+        } else {
+          // For other languages, only use as fallback if we don't have this content yet
+          const baseKey = item.key.replace(/_[a-z]{2}$/, '')
+          if (!acc[baseKey]) {
+            console.log(`Using fallback for ${baseKey} from ${item.language}`)
+            acc[baseKey] = item
+          }
+        }
+        return acc
+      }, {})
+      
+      console.log('Content map keys:', Object.keys(contentMap))
+      // Just log the raw content map for debugging
+      console.log('Raw content map:', contentMap)
+      setContents(contentMap)
+    } catch (error) {
+      console.error('Error fetching content:', error)
+      toast.error('Failed to fetch content')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   // Fetch content on mount and when language/section changes
   useEffect(() => {
-    const fetchContent = async () => {
-      try {
-        setLoading(true)
-        const response = await fetch(`/api/admin/content?pageId=home&section=${selectedSection}&language=${selectedLang}`)
-        if (!response.ok) throw new Error('Failed to fetch content')
-        const data = await response.json()
-        
-        // Convert array to record by key
-        const contentMap = data.reduce((acc: Record<string, Content>, item: Content) => {
-          acc[item.key] = item
-          return acc
-        }, {})
-        
-        setContents(contentMap)
-      } catch (error) {
-        console.error('Error fetching content:', error)
-        toast.error('Failed to fetch content')
-      } finally {
-        setLoading(false)
-      }
-    }
-
     fetchContent()
   }, [selectedLang, selectedSection])
+
+  // No duplicate function needed
 
   // Save content
   const saveContent = async (key: string, content: string, type: 'text' | 'richtext' | 'image') => {
     try {
-      const existing = contents[key]
-      const method = existing ? 'PUT' : 'POST'
+      console.log(`Saving content for key: ${key} in language: ${selectedLang}`)
+      
+      // Find existing content with this exact key
+      const existingWithExactKey = rawContents.find(item => 
+        item.key === key && item.language === selectedLang
+      );
+      
+      // Find existing content with base key (without language suffix)
+      const baseKey = key.replace(/_[a-z]{2}$/, '');
+      const existingWithBaseKey = rawContents.find(item => 
+        item.key === baseKey && item.language === selectedLang
+      );
+      
+      // Determine which existing item to update, if any
+      const existing = existingWithExactKey || existingWithBaseKey || contents[key];
+      const method = existing ? 'PUT' : 'POST';
+      
+      console.log(`Saving content for ${key}:`, {
+        existing: existing ? existing.key : 'none',
+        method,
+        contentLength: content.length,
+        type
+      });
+      
       const body = {
         pageId: 'home',
         section: selectedSection,
@@ -147,14 +214,47 @@ export function PageContent() {
       const response = await fetch('/api/admin/content', {
         method,
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // Include cookies for authentication
         body: JSON.stringify(body)
       })
 
-      if (!response.ok) throw new Error('Failed to save content')
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Save error response:', errorText);
+        throw new Error(`Failed to save content: ${response.status} ${errorText}`)
+      }
       
       const savedContent = await response.json()
-      setContents(prev => ({ ...prev, [key]: savedContent }))
+      console.log('Saved content:', savedContent);
+      
+      // Update the contents map
+      setContents(prev => {
+        const updated = { ...prev };
+        updated[key] = savedContent;
+        
+        // If this is a language-specific key, also update the base key
+        if (key.endsWith(`_${selectedLang}`)) {
+          const baseKey = key.slice(0, -3); // Remove _xx suffix
+          updated[baseKey] = savedContent;
+        }
+        
+        return updated;
+      })
+      
+      // Update the raw contents array
+      setRawContents(prev => {
+        // Remove any existing content with this key
+        const filtered = prev.filter(item => 
+          !(item.key === key && item.language === selectedLang)
+        );
+        // Add the new content
+        return [...filtered, savedContent];
+      })
+      
       toast.success('Content saved')
+      
+      // Refresh all content to ensure everything is in sync
+      fetchContent()
     } catch (error) {
       console.error('Error saving content:', error)
       toast.error('Failed to save content')
@@ -166,6 +266,7 @@ export function PageContent() {
     try {
       const response = await fetch(`/api/admin/content?id=${_id}`, {
         method: 'DELETE',
+        credentials: 'include' // Include cookies for authentication
       })
 
       if (!response.ok) throw new Error('Failed to delete content')
@@ -226,40 +327,92 @@ export function PageContent() {
                         <span className="text-xs text-muted-foreground">{field.description}</span>
                       )}
                     </div>
-                    {field.type === 'richtext' ? (
-                      <RichTextEditor
-                        content={contents[field.key]?.content || ''}
-                        onChange={(content) => saveContent(field.key, content, 'richtext')}
-                        placeholder={`Enter ${field.label.toLowerCase()}...`}
-                      />
-                    ) : field.type === 'image' ? (
-                      <div className="space-y-2">
-                        <Input
-                          type="text"
-                          placeholder="Image URL"
-                          className="w-full"
-                          value={contents[field.key]?.content || ''}
-                          onChange={(e) => saveContent(field.key, e.target.value, 'image')}
-                        />
-                        {contents[field.key]?.content && (
-                          <div className="h-40 bg-slate-100 rounded-md overflow-hidden">
-                            <img
-                              src={contents[field.key].content}
-                              alt={field.label}
-                              className="w-full h-full object-contain"
-                            />
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <Input
-                        type="text"
-                        placeholder={`Enter ${field.label.toLowerCase()}...`}
-                        className="w-full"
-                        value={contents[field.key]?.content || ''}
-                        onChange={(e) => saveContent(field.key, e.target.value, 'text')}
-                      />
-                    )}
+                    {/* Debug logging for this field */}
+                    {(() => {
+                      // This is a self-executing function that logs but returns null to avoid rendering issues
+                      console.log(`Field ${field.label} (${field.key}):`)
+                      
+                      // Find content in raw array
+                      const contentItem = rawContents.find(item => item.key === field.key)
+                      const langSpecificItem = rawContents.find(item => item.key === `${field.key}_${selectedLang}`)
+                      
+                      console.log(` - Raw content found: ${!!contentItem}`)
+                      console.log(` - Raw lang specific content found: ${!!langSpecificItem}`)
+                      console.log(` - Content from map: ${(contents[field.key]?.content || '').substring(0, 30)}`)
+                      console.log(` - Content from raw: ${(contentItem?.content || '').substring(0, 30)}`)
+                      
+                      return null
+                    })()}
+                    
+                    {(() => {
+                      // Get the appropriate content for this field
+                      const langSpecificKey = `${field.key}_${selectedLang}`;
+                      const baseKey = field.key;
+                      
+                      // First try to find content with language-specific key
+                      let contentItem = rawContents.find(item => 
+                        item.key === langSpecificKey && item.language === selectedLang
+                      );
+                      
+                      // If not found, try the base key with current language
+                      if (!contentItem) {
+                        contentItem = rawContents.find(item => 
+                          item.key === baseKey && item.language === selectedLang
+                        );
+                      }
+                      
+                      // If still not found, try any language as fallback
+                      if (!contentItem) {
+                        contentItem = rawContents.find(item => 
+                          item.key === baseKey || item.key === langSpecificKey
+                        );
+                      }
+                      
+                      // Get content value or empty string
+                      const contentValue = contentItem?.content || '';
+                      
+                      // Debug
+                      console.log(`Field ${field.key} content:`, {
+                        langSpecificKey,
+                        baseKey,
+                        contentFound: !!contentItem,
+                        contentKey: contentItem?.key,
+                        contentLanguage: contentItem?.language,
+                        contentPreview: contentValue.substring(0, 30)
+                      });
+                      
+                      // Save key to use - use language suffix for non-English
+                      const keyToSave = selectedLang === 'ja' ? langSpecificKey : baseKey;
+                      
+                      if (field.type === 'richtext') {
+                        return (
+                          <RichTextEditor
+                            content={contentValue}
+                            onChange={(content) => saveContent(keyToSave, content, 'richtext')}
+                            placeholder={`Enter ${field.label.toLowerCase()}...`}
+                          />
+                        );
+                      } else if (field.type === 'image') {
+                        return (
+                          <ImageUploader
+                            value={contentValue}
+                            onChange={(url) => saveContent(keyToSave, url, 'image')}
+                            placeholder={`Enter ${field.label.toLowerCase()} URL...`}
+                            folder={`ajwa/${selectedSection}`}
+                          />
+                        );
+                      } else {
+                        return (
+                          <Input
+                            type="text"
+                            placeholder={`Enter ${field.label.toLowerCase()}...`}
+                            className="w-full"
+                            value={contentValue}
+                            onChange={(e) => saveContent(keyToSave, e.target.value, 'text')}
+                          />
+                        );
+                      }
+                    })()}
                   </div>
                 ))}
               </CardContent>

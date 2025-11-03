@@ -1,19 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { uploadImageServer } from '@/lib/cloudinary-server';
-
-// Define allowed file types
-const allowedFileTypes = [
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-  'image/gif',
-];
-
-// Maximum file size (5MB)
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
+import { SECURITY_CONFIG } from '@/lib/env';
+import { isValidImage, checkRateLimit, generateSecureFilename } from '@/lib/security';
 
 export async function POST(request: NextRequest) {
   try {
+    // Get client IP for rate limiting
+    const ip = request.headers.get('x-forwarded-for') || 'unknown-ip';
+    
+    // Check rate limit
+    if (!checkRateLimit(ip)) {
+      return NextResponse.json(
+        { success: false, message: 'Too many requests. Please try again later.' },
+        { status: 429 } // Too Many Requests
+      );
+    }
+    
     // Check if the request is multipart/form-data
     const contentType = request.headers.get('content-type');
     if (!contentType || !contentType.includes('multipart/form-data')) {
@@ -35,18 +37,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate file type
-    if (!allowedFileTypes.includes(file.type)) {
+    // Validate file
+    if (!isValidImage(file)) {
       return NextResponse.json(
-        { success: false, message: 'File type not allowed' },
-        { status: 400 }
-      );
-    }
-
-    // Validate file size
-    if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json(
-        { success: false, message: 'File size exceeds the limit (5MB)' },
+        { success: false, message: 'Invalid file. Please check file type and size.' },
         { status: 400 }
       );
     }

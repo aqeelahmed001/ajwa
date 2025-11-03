@@ -1,8 +1,12 @@
 import type { Metadata } from 'next'
 import '@/styles/globals.css'
 import 'react-awesome-slider/dist/styles.css'
+import { Providers } from './providers'
 
-
+export const metadata: Metadata = {
+  title: 'Ajwa Trading',
+  description: 'Ajwa Trading - Machinery and Equipment',
+}
 
 export default function RootLayout({
   children,
@@ -10,9 +14,9 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html>
+    <html lang="en">
       <body>
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   )

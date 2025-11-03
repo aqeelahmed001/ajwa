@@ -1,5 +1,5 @@
 "use client"
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -26,10 +26,22 @@ export function Content() {
   const [contents, setContents] = useState<IContent[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedContent, setSelectedContent] = useState<IContent | null>(null);
+  const [filterPageId, setFilterPageId] = useState<string>('home');
+  const [filterSection, setFilterSection] = useState<string>('');
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<ContentFormData>({
     resolver: zodResolver(contentSchema),
+    defaultValues: {
+      pageId: 'home',
+      section: 'hero',
+      type: 'text'
+    }
   });
+  
+  // Load content on mount
+  useEffect(() => {
+    fetchContents(filterPageId, filterSection);
+  }, [filterPageId, filterSection]);
 
   const fetchContents = async (pageId?: string, section?: string) => {
     try {
@@ -195,12 +207,21 @@ export function Content() {
           <div className="flex gap-2 mb-4">
             <Input
               placeholder="Filter by Page ID"
-              onChange={(e) => fetchContents(e.target.value)}
+              value={filterPageId}
+              onChange={(e) => setFilterPageId(e.target.value)}
             />
             <Input
               placeholder="Filter by Section"
-              onChange={(e) => fetchContents(undefined, e.target.value)}
+              value={filterSection}
+              onChange={(e) => setFilterSection(e.target.value)}
             />
+            <Button 
+              variant="outline" 
+              onClick={() => fetchContents(filterPageId, filterSection)}
+              disabled={loading}
+            >
+              Filter
+            </Button>
           </div>
 
           <div className="space-y-4">

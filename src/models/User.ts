@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-export type UserRole = 'admin' | 'editor' | 'viewer';
+export type UserRole = 'admin' | 'editor' | 'viewer' | string;
 
 export interface User {
   id: string;
@@ -9,8 +9,13 @@ export interface User {
   email: string;
   password: string; // This will be hashed
   role: UserRole;
+  roleId?: string; // Reference to Role model
   isActive: boolean;
   lastLogin?: Date;
+  lastLoginIp?: string;
+  failedLoginAttempts?: number;
+  lockedUntil?: Date;
+  createdBy?: string; // Reference to User who created this user
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -33,13 +38,34 @@ const UserSchema = new Schema(
     role: { 
       type: String, 
       required: true, 
-      enum: ['admin', 'editor', 'viewer'],
       default: 'viewer'
     },
+    roleId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Role'
+    },
     isActive: { type: Boolean, default: true },
-    lastLogin: { type: Date }
+    lastLogin: { type: Date },
+    lastLoginIp: { type: String },
+    failedLoginAttempts: { type: Number, default: 0 },
+    lockedUntil: { type: Date },
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+    }
   },
-  { timestamps: true }
+  { 
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+      transform: (doc, ret: any) => {
+        ret.id = ret._id.toString();
+        if (ret._id) delete ret._id;
+        if (ret.__v !== undefined) delete ret.__v;
+        if (ret.password) delete ret.password; // Don't expose password hash
+      }
+    }
+  }
 );
 
 // Hash password before saving
@@ -64,6 +90,13 @@ UserSchema.methods.comparePassword = async function(candidatePassword: string): 
 UserSchema.statics.findByEmail = function(email: string) {
   return this.findOne({ email });
 };
+
+// Create indexes for faster queries
+UserSchema.index({ email: 1 }, { unique: true });
+UserSchema.index({ role: 1 });
+UserSchema.index({ roleId: 1 });
+UserSchema.index({ isActive: 1 });
+UserSchema.index({ createdBy: 1 });
 
 // Check if the model exists before creating a new one
 const User = (mongoose.models.User as UserModel) || 

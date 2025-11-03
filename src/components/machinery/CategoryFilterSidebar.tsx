@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -19,8 +19,10 @@ import {
   MapPin,
   Tag,
   Truck,
-  DollarSign
+  DollarSign,
+  Loader2
 } from 'lucide-react';
+import { fetchPublicCategories } from '@/services/categoryService';
 
 interface CategoryFilterSidebarProps {
   lang: string;
@@ -40,17 +42,49 @@ export default function CategoryFilterSidebar({
   // Get current category from URL if any
   const currentCategory = searchParams.get('category') || 'all';
   
-  // Categories with translations
-  const categories = [
-    { id: 'all', name: isJapanese ? 'すべて' : 'All Categories' },
-    { id: 'excavator', name: isJapanese ? 'ショベル' : 'Excavators' },
-    { id: 'loader', name: isJapanese ? 'ホイールローダー' : 'Wheel Loaders' },
-    { id: 'bulldozer', name: isJapanese ? 'ブルドーザー' : 'Bulldozers' },
-    { id: 'crane', name: isJapanese ? 'クレーン' : 'Cranes' },
-    { id: 'forklift', name: isJapanese ? 'フォークリフト' : 'Forklifts' },
-    { id: 'truck', name: isJapanese ? 'トラック' : 'Trucks' },
-    { id: 'other', name: isJapanese ? 'その他' : 'Other' },
-  ];
+  // State for categories from API
+  const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  
+  // Fetch categories from API
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        setCategoriesLoading(true);
+        const fetchedCategories = await fetchPublicCategories();
+        
+        // Transform categories for display
+        const transformedCategories = [
+          { id: 'all', name: isJapanese ? 'すべて' : 'All Categories' },
+          ...fetchedCategories
+            .filter(cat => cat.isActive)
+            .map(category => ({
+              id: category.id,
+              name: category.name
+            }))
+        ];
+        
+        setCategories(transformedCategories);
+      } catch (err) {
+        console.error('Error fetching categories:', err);
+        // Fallback to sample categories if API fails
+        setCategories([
+          { id: 'all', name: isJapanese ? 'すべて' : 'All Categories' },
+          { id: 'excavator', name: isJapanese ? 'ショベル' : 'Excavators' },
+          { id: 'loader', name: isJapanese ? 'ホイールローダー' : 'Wheel Loaders' },
+          { id: 'bulldozer', name: isJapanese ? 'ブルドーザー' : 'Bulldozers' },
+          { id: 'crane', name: isJapanese ? 'クレーン' : 'Cranes' },
+          { id: 'forklift', name: isJapanese ? 'フォークリフト' : 'Forklifts' },
+          { id: 'truck', name: isJapanese ? 'トラック' : 'Trucks' },
+          { id: 'other', name: isJapanese ? 'その他' : 'Other' },
+        ]);
+      } finally {
+        setCategoriesLoading(false);
+      }
+    };
+    
+    getCategories();
+  }, [isJapanese]);
   
   // Manufacturers with translations
   const manufacturers = [
@@ -184,21 +218,28 @@ export default function CategoryFilterSidebar({
           <Tag className="h-4 w-4 text-muted-foreground" />
           {content.category}
         </Label>
-        <div className="space-y-2">
-          {categories.map((category) => (
-            <div key={category.id} className="flex items-center">
-              <Button
-                variant={selectedCategory === category.id ? "default" : "outline"}
-                size="sm"
-                className={`text-xs w-full justify-start ${selectedCategory === category.id ? 'bg-primary text-white' : 'bg-transparent'}`}
-                onClick={() => setSelectedCategory(category.id)}
-              >
-                {category.name}
-                {selectedCategory === category.id && <ChevronRight className="ml-auto h-4 w-4" />}
-              </Button>
-            </div>
-          ))}
-        </div>
+        
+        {categoriesLoading ? (
+          <div className="flex justify-center py-4">
+            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {categories.map((category) => (
+              <div key={category.id} className="flex items-center">
+                <Button
+                  variant={selectedCategory === category.id ? "default" : "outline"}
+                  size="sm"
+                  className={`text-xs w-full justify-start ${selectedCategory === category.id ? 'bg-primary text-white' : 'bg-transparent'}`}
+                  onClick={() => setSelectedCategory(category.id)}
+                >
+                  {category.name}
+                  {selectedCategory === category.id && <ChevronRight className="ml-auto h-4 w-4" />}
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       
       <Separator className="my-4" />

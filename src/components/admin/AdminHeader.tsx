@@ -2,6 +2,8 @@
 
 import React from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { signOut } from 'next-auth/react'
 import { 
   Bell, 
   User,
@@ -23,6 +25,24 @@ interface AdminHeaderProps {
 }
 
 export default function AdminHeader({ toggleSidebar }: AdminHeaderProps) {
+  const router = useRouter()
+  
+  const handleLogout = async () => {
+    try {
+      // First, call our custom logout API to clear cookies and log activity
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+      })
+      
+      // Then use NextAuth's signOut to clear the session
+      await signOut({ redirect: false })
+      
+      // Redirect to login page
+      router.push('/admin')
+    } catch (error) {
+      console.error('Logout failed:', error)
+    }
+  }
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-white px-4 dark:bg-slate-950 dark:border-slate-800">
       <Button 
@@ -67,7 +87,7 @@ export default function AdminHeader({ toggleSidebar }: AdminHeaderProps) {
             <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuItem>Settings</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-500">Logout</DropdownMenuItem>
+            <DropdownMenuItem className="text-red-500" onClick={handleLogout}>Logout</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

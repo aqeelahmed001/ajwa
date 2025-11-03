@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { motion, cubicBezier } from 'framer-motion'
+import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -68,12 +69,25 @@ interface BuyFormData {
 export default function InquiryPage({ params }: { params: { lang: string } }) {
   const locale = params.lang as Locale
   const translations = useInquiryTranslations(locale)
+  const searchParams = useSearchParams()
   
-  const [isSellMode, setIsSellMode] = useState(true)
+  // Get the form type from the URL query parameter
+  const formType = searchParams.get('type')
+  
+  const [isSellMode, setIsSellMode] = useState(formType !== 'buy')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isInJapan, setIsInJapan] = useState(false)
+  
+  // Update the form mode when the URL query parameter changes
+  useEffect(() => {
+    if (formType === 'buy') {
+      setIsSellMode(false)
+    } else if (formType === 'sell') {
+      setIsSellMode(true)
+    }
+  }, [formType])
   
   const [sellFormData, setSellFormData] = useState<SellFormData>({
     firstName: '',

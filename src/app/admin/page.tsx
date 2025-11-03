@@ -1,8 +1,9 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
+import Logo from '@/components/Logo'
+import { signIn, useSession } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -12,10 +13,28 @@ import { AlertCircle, Loader2 } from 'lucide-react'
 
 export default function AdminLoginPage() {
   const router = useRouter()
+  const { data: session, status } = useSession()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (status === 'loading') {
+      // Session is still loading, wait
+      console.log('Session is loading...')
+      return
+    }
+    
+    if (session && status === 'authenticated') {
+      console.log('Session detected, redirecting to dashboard')
+      console.log('Session data:', session)
+      
+      // Redirect to dashboard
+      router.replace('/admin/dashboard')
+    }
+  }, [session, status, router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -23,23 +42,34 @@ export default function AdminLoginPage() {
     setError('')
 
     try {
-      // This is a placeholder for actual authentication logic
-      // In a real implementation, you would call your API endpoint
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+      console.log('Attempting login with:', email)
+      
+      // Use NextAuth.js signIn method
+      const result = await signIn('credentials', {
+        redirect: false,
+        email,
+        password,
       })
 
-      const data = await response.json()
+      console.log('SignIn result:', result)
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Authentication failed')
+      if (result?.error) {
+        console.error('Login error:', result.error)
+        throw new Error(result.error || 'Authentication failed')
       }
 
-      // Redirect to dashboard on successful login
-      router.push('/admin/dashboard')
+      // If login successful, redirect to dashboard
+      if (result?.ok) {
+        console.log('Login successful, redirecting to dashboard')
+        
+        // Redirect to dashboard - router.replace prevents going back to login page
+        router.replace('/admin/dashboard')
+      } else {
+        console.error('Login failed but no error was returned')
+        throw new Error('Authentication failed')
+      }
     } catch (err: any) {
+      console.error('Login error:', err)
       setError(err.message || 'Failed to login. Please try again.')
     } finally {
       setIsLoading(false)
@@ -51,13 +81,7 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-md p-4">
         <div className="text-center mb-8">
           <div className="inline-block mb-4">
-            <Image 
-              src="/logo.png" 
-              alt="Ajwa Trading Admin" 
-              width={150} 
-              height={60} 
-              className="mx-auto"
-            />
+            <Logo width={150} height={60} />
           </div>
           <h1 className="text-2xl font-bold text-slate-900">Admin Portal</h1>
           <p className="text-slate-600">Login to manage your website content</p>

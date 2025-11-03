@@ -1,11 +1,12 @@
 // Import Cloudinary v2 API
 import { v2 as cloudinary } from 'cloudinary';
+import { CLOUDINARY_CONFIG } from './env';
 
 // Configure Cloudinary (server-side only)
 cloudinary.config({
-  cloud_name: 'dlgifqrj8',
-  api_key: process.env.CLOUDINARY_API_KEY || '129881768349894',
-  api_secret: process.env.CLOUDINARY_API_SECRET || '0_qki1Fmll7nnZtpzgu-UQzxGN0',
+  cloud_name: CLOUDINARY_CONFIG.CLOUD_NAME,
+  api_key: CLOUDINARY_CONFIG.API_KEY,
+  api_secret: CLOUDINARY_CONFIG.API_SECRET,
   secure: true,
 });
 

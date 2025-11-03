@@ -1,14 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { signIn } from 'next-auth/react';
 
-// In a real application, you would:
-// 1. Store user credentials securely (hashed passwords in a database)
-// 2. Use a proper authentication library like NextAuth.js
-// 3. Implement JWT or session-based authentication
-
-// This is a simplified example for demonstration
-const ADMIN_EMAIL = 'admin@ajwatrading.com';
-const ADMIN_PASSWORD = 'admin123'; // In production, never hardcode passwords
-
+// This route is kept for backwards compatibility
+// It redirects to the NextAuth.js signin endpoint
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -22,34 +16,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Simple authentication check
-    // In production, use proper authentication with password hashing
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-      // Create a simple session cookie
-      // In production, use a proper JWT or session management
-      const response = NextResponse.json(
-        { success: true, message: 'Login successful' },
-        { status: 200 }
-      );
-
-      // Set a simple auth cookie
-      // In production, use secure, httpOnly cookies with proper expiration
-      response.cookies.set('admin-auth', 'true', {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 60 * 60 * 24, // 1 day
-        path: '/',
-      });
-
-      return response;
-    }
-
-    // Authentication failed
-    return NextResponse.json(
-      { success: false, message: 'Invalid email or password' },
-      { status: 401 }
-    );
+    // Instead of custom auth, redirect to use NextAuth
+    // This is a server-side API route, so we can't directly use signIn
+    // Instead, we'll return a response instructing the client to redirect
+    return NextResponse.json({
+      success: true,
+      message: 'Please use NextAuth.js endpoint',
+      redirect: '/api/auth/signin',
+      credentials: { email, password }
+    });
   } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json(

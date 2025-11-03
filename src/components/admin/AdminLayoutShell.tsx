@@ -17,8 +17,8 @@ export default function AdminLayoutShell({
     setSidebarOpen((open) => !open)
   }
 
-  // For the login page (/admin) we render the page content without the admin shell
-  if (pathname === '/admin') {
+  // For the login page (/admin) and setup page (/admin/setup) we render the page content without the admin shell
+  if (pathname === '/admin' || pathname === '/admin/setup') {
     return <>{children}</>
   }
 
