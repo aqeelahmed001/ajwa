@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import { 
   LayoutDashboard, 
   FileText, 
@@ -114,6 +114,7 @@ const SidebarGroup = ({ title, children }: SidebarGroupProps) => {
 export default function AdminSidebar() {
   const pathname = usePathname()
   const router = useRouter()
+  const { data: session } = useSession()
   const [collapsed, setCollapsed] = useState(false)
   
   const handleLogout = async () => {
@@ -167,14 +168,20 @@ export default function AdminSidebar() {
         collapsed ? "justify-center" : "justify-between"
       )}>
         <div className="flex items-center gap-3">
-          <Avatar>
-            <AvatarImage src="/placeholder-avatar.jpg" />
-            <AvatarFallback>AD</AvatarFallback>
-          </Avatar>
+          <Link href="/admin/settings" className="hover:opacity-80 transition-opacity">
+            <Avatar>
+              <AvatarImage src={session?.user?.image || undefined} />
+              <AvatarFallback>
+                {session?.user?.name
+                  ? session.user.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2)
+                  : 'U'}
+              </AvatarFallback>
+            </Avatar>
+          </Link>
           {!collapsed && (
             <div>
-              <p className="text-sm font-medium">Admin User</p>
-              <p className="text-xs text-slate-500">admin@ajwatrading.com</p>
+              <p className="text-sm font-medium">{session?.user?.name || 'User'}</p>
+              <p className="text-xs text-slate-500">{session?.user?.email || ''}</p>
             </div>
           )}
         </div>
@@ -195,8 +202,10 @@ export default function AdminSidebar() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-full h-8 w-8">
-                    <User className="h-4 w-4" />
+                  <Button variant="ghost" size="icon" className="rounded-full h-8 w-8" asChild>
+                    <Link href="/admin/settings">
+                      <User className="h-4 w-4" />
+                    </Link>
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>

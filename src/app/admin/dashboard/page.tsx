@@ -7,6 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import Logo from '@/components/Logo'
 import { RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import Image from 'next/image'
 
 function LoadingState() {
   return (
@@ -62,7 +63,14 @@ export default function AdminDashboardPage() {
             <RefreshCw className="h-4 w-4" />
             Refresh
           </Button>
-          <Logo width={120} height={40} />
+          <Image 
+            src="/images/logo.jpg"
+            alt="Ajwa Logo"
+            width={160}
+            height={100}
+            className="rounded-lg"
+            style={{ background: 'none' }}
+          />
         </div>
       </div>
       

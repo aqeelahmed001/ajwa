@@ -11,6 +11,7 @@ export interface User {
   role: UserRole;
   roleId?: string; // Reference to Role model
   isActive: boolean;
+  image?: string; // Profile image URL
   lastLogin?: Date;
   lastLoginIp?: string;
   failedLoginAttempts?: number;
@@ -45,6 +46,7 @@ const UserSchema = new Schema(
       ref: 'Role'
     },
     isActive: { type: Boolean, default: true },
+    image: { type: String },
     lastLogin: { type: Date },
     lastLoginIp: { type: String },
     failedLoginAttempts: { type: Number, default: 0 },
