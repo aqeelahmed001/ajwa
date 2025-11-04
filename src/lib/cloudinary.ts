@@ -50,8 +50,29 @@ export function getOptimizedImageUrl(
     crop?: 'fill' | 'scale' | 'fit' | 'thumb';
   } = {}
 ): string {
+  // For debugging
+  console.log(`getOptimizedImageUrl input: ${url}`);
+  
+  // Handle empty URLs
+  if (!url) {
+    console.warn('Empty URL passed to getOptimizedImageUrl');
+    return '';
+  }
+  
+  // Special case for test image
+  if (url.includes('logo.jpg')) {
+    console.log('Using test image directly:', url);
+    return url;
+  }
+  
+  // If it's a local image in the public folder, use it directly
+  if (url.startsWith('/images/')) {
+    console.log('Using local image from public folder:', url);
+    return url;
+  }
+  
   // If it's already a Cloudinary URL, return it with transformations
-  if (url.includes('res.cloudinary.com/dlgifqrj8')) {
+  if (url.includes('res.cloudinary.com')) {
     const baseUrl = url.split('/upload/')[0] + '/upload/';
     const transformations = [];
     
@@ -66,11 +87,42 @@ export function getOptimizedImageUrl(
       : '';
     
     const imagePath = url.split('/upload/')[1];
-    return `${baseUrl}${transformationString}${imagePath}`;
+    const result = `${baseUrl}${transformationString}${imagePath}`;
+    console.log('Transformed Cloudinary URL:', result);
+    return result;
   }
   
-  // If it's a local URL but we want to use Cloudinary, convert it
-  if (url.startsWith('/') && options.width) {
+  // IMPORTANT: Handle brand images specifically
+  // Brand images are stored directly in the 'brands' folder in Cloudinary
+  // This is based on the folder structure shown in the screenshot
+  if (url.startsWith('brands/') || url.includes('/brands/')) {
+    // Make sure we're just using the filename with the brands/ prefix
+    let brandPath = url;
+    
+    // If it has a full path with /brands/ in it, extract just the filename
+    if (url.includes('/brands/') && !url.startsWith('brands/')) {
+      const parts = url.split('/brands/');
+      brandPath = 'brands/' + parts[parts.length - 1];
+    }
+    
+    // Build transformation string
+    const transformations = [];
+    if (options.width) transformations.push(`w_${options.width}`);
+    if (options.height) transformations.push(`h_${options.height}`);
+    if (options.quality) transformations.push(`q_${options.quality || 80}`);
+    if (options.format) transformations.push(`f_${options.format}`);
+    if (options.crop) transformations.push(`c_${options.crop || 'fill'}`);
+    
+    const transformationString = transformations.join(',');
+    
+    // Return Cloudinary URL with the correct path
+    const result = `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${transformationString}/${brandPath}`;
+    console.log('Generated Brand Cloudinary URL:', result);
+    return result;
+  }
+  
+  // If it's a relative path that should be handled by Cloudinary
+  if (url.startsWith('/') || !url.startsWith('http')) {
     // Remove leading slash for Cloudinary path
     const imagePath = url.startsWith('/') ? url.substring(1) : url;
     
@@ -85,10 +137,13 @@ export function getOptimizedImageUrl(
     const transformationString = transformations.join(',');
     
     // Return Cloudinary URL
-    return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${transformationString}/${imagePath}`;
+    const result = `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${transformationString}/${imagePath}`;
+    console.log('Generated Cloudinary URL:', result);
+    return result;
   }
   
-  // If it's a local URL and no transformations needed, return it as is
+  // If it's any other URL, return it as is
+  console.log('Using original URL:', url);
   return url;
 }
 

@@ -24,11 +24,43 @@ export default function CloudinaryImage({
   height,
   quality = 80,
   format = 'auto',
-  crop = 'fill',
+  crop = 'fit',
   alt,
   ...props
 }: CloudinaryImageProps) {
-  // Get optimized image URL
+  // For debugging
+  console.log(`CloudinaryImage: Original src: ${src}`);
+  
+  // Special case for test image or local images
+  if (src.includes('logo.jpg') || src.startsWith('/images/')) {
+    console.log('Using local image directly:', src);
+    return (
+      <Image
+        src={src}
+        width={width}
+        height={height}
+        alt={alt}
+        {...props}
+      />
+    );
+  }
+  
+  // For brand logos from Cloudinary, use them directly
+  // The API already returns full Cloudinary URLs
+  if (src.includes('res.cloudinary.com')) {
+    console.log('Using Cloudinary URL directly:', src);
+    return (
+      <Image
+        src={src}
+        width={width}
+        height={height}
+        alt={alt}
+        {...props}
+      />
+    );
+  }
+  
+  // For any other images, use the standard processing
   const optimizedSrc = getOptimizedImageUrl(src, {
     width,
     height,
@@ -36,13 +68,21 @@ export default function CloudinaryImage({
     format,
     crop,
   });
-
+  
+  console.log(`CloudinaryImage: Final src: ${optimizedSrc}`);
+  
   return (
     <Image
       src={optimizedSrc}
       width={width}
       height={height}
       alt={alt}
+      onError={(e) => {
+        console.error(`Image failed to load: ${optimizedSrc}`);
+        if (props.onError) {
+          props.onError(e);
+        }
+      }}
       {...props}
     />
   );

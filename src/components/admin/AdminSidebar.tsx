@@ -256,6 +256,12 @@ export default function AdminSidebar() {
             isActive={pathname.startsWith('/admin/content/machinery-management') || pathname.startsWith('/admin/content/machinery')} 
             badge={3}
           />
+          <SidebarItem 
+            href="/admin/content/brands" 
+            icon={<ImageIcon className="h-5 w-5" />} 
+            label="Brand Logos" 
+            isActive={pathname.startsWith('/admin/content/brands')} 
+          />
         </SidebarGroup>
         
         <SidebarGroup title={collapsed ? "" : "ADMINISTRATION"}>

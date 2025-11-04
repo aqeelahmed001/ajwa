@@ -48,7 +48,11 @@ const UserActivitySchema = new Schema(
         'view_users',
         'view_roles',
         'view_categories',
-        'view_content'
+        'view_content',
+        'create_brand',
+        'update_brand',
+        'delete_brand',
+        'reorder_brands'
       ]
     },
     details: { type: String },
