@@ -14,7 +14,12 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    await connectToDatabase();
+    // Ensure database connection is established before proceeding
+    // The improved connectToDatabase function will wait until the connection is fully established
+    const mongooseInstance = await connectToDatabase();
+    
+    // Double check connection state - this is just for logging
+    console.log('MongoDB connection state before GET by ID:', mongooseInstance.connection.readyState);
     
     const { id } = params;
     
@@ -64,7 +69,12 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    await connectToDatabase();
+    // Ensure database connection is established before proceeding
+    // The improved connectToDatabase function will wait until the connection is fully established
+    const mongooseInstance = await connectToDatabase();
+    
+    // Double check connection state - this is just for logging
+    console.log('MongoDB connection state before PUT:', mongooseInstance.connection.readyState);
     
     const { id } = params;
     const data = await request.json();
@@ -151,7 +161,12 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    await connectToDatabase();
+    // Ensure database connection is established before proceeding
+    // The improved connectToDatabase function will wait until the connection is fully established
+    const mongooseInstance = await connectToDatabase();
+    
+    // Double check connection state - this is just for logging
+    console.log('MongoDB connection state before DELETE:', mongooseInstance.connection.readyState);
     
     const { id } = params;
     

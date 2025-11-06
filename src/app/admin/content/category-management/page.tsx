@@ -130,7 +130,7 @@ export default function CategoryManagementPage() {
   
   // Get parent categories for dropdown
   const parentCategories = [
-    { id: '', name: 'None (Top Level)' },
+    { id: 'none', name: 'None (Top Level)' },
     ...categories.filter(cat => !cat.parentId)
   ]
   
@@ -174,7 +174,7 @@ export default function CategoryManagementPage() {
       name: '',
       description: '',
       image: '',
-      parentId: '',
+      parentId: 'none', // Use 'none' for UI, will be converted to '' when saving
       order: categories.length,
       isActive: true
     })
@@ -189,7 +189,7 @@ export default function CategoryManagementPage() {
       name: category.name,
       description: category.description || '',
       image: category.image || '',
-      parentId: category.parentId || '',
+      parentId: category.parentId || 'none', // Use 'none' for UI when parentId is empty
       order: category.order,
       isActive: category.isActive
     })
@@ -221,7 +221,9 @@ export default function CategoryManagementPage() {
   
   // Handle select change
   const handleSelectChange = (value: string) => {
-    setFormData(prev => ({ ...prev, parentId: value }))
+    // Convert 'none' to empty string for the backend
+    const parentId = value === 'none' ? '' : value
+    setFormData(prev => ({ ...prev, parentId }))
   }
   
   // Handle image upload
@@ -263,12 +265,18 @@ export default function CategoryManagementPage() {
       
       const method = dialogMode === 'create' ? 'POST' : 'PUT'
       
+      // Prepare data for submission, converting 'none' to empty string
+      const submitData = {
+        ...formData,
+        parentId: formData.parentId === 'none' ? '' : formData.parentId
+      }
+      
       const response = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(submitData)
       })
       
       if (!response.ok) {
@@ -439,7 +447,7 @@ export default function CategoryManagementPage() {
                     <SelectValue placeholder="Select parent category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None (Top Level)</SelectItem>
+                    <SelectItem value="none">None (Top Level)</SelectItem>
                     {categories
                       .filter(cat => !cat.parentId && (!currentCategory || cat.id !== currentCategory.id))
                       .map(category => (

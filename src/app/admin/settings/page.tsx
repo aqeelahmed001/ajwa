@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -11,18 +11,26 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useToast } from '@/components/ui/use-toast'
 import { Loader2, Save, Upload, User, Shield, Key, AlertCircle } from 'lucide-react'
-import { useSession } from 'next-auth/react'
+import { useAuth } from '@/lib/auth-context'
 
 export default function SettingsPage() {
-  const { data: session, update: updateSession } = useSession()
+  const { user, checkAuth } = useAuth()
   const { toast } = useToast()
   
   // User profile state
-  const [name, setName] = useState(session?.user?.name || '')
-  const [email, setEmail] = useState(session?.user?.email || '')
-  const [avatarUrl, setAvatarUrl] = useState(session?.user?.image || '')
+  const [name, setName] = useState(user?.name || '')
+  const [email, setEmail] = useState(user?.email || '')
+  const [avatarUrl, setAvatarUrl] = useState('')
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
+  
+  // Update state when user data changes
+  useEffect(() => {
+    if (user) {
+      setName(user.name || '')
+      setEmail(user.email || '')
+    }
+  }, [user])
   
   // Password change state
   const [currentPassword, setCurrentPassword] = useState('')
@@ -74,16 +82,8 @@ export default function SettingsPage() {
         throw new Error('Failed to update profile')
       }
       
-      // Update session with new user data
-      await updateSession({
-        ...session,
-        user: {
-          ...session?.user,
-          name,
-          email,
-          image: imageUrl
-        }
-      })
+      // Refresh auth state to get updated user data
+      await checkAuth()
       
       toast({
         title: "Profile updated",

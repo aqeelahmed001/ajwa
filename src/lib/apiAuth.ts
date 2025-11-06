@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
+
 import { authOptions } from './auth';
 
 /**
@@ -7,12 +7,12 @@ import { authOptions } from './auth';
  * @returns An unauthorized response or null if authenticated
  */
 export async function checkAdminAuth() {
-  const session = await getServerSession(authOptions);
+  const user = await getCurrentUserServer();
   
   // Check if the user is authenticated and has admin role
   if (!session || session.user?.role !== 'admin') {
     return NextResponse.json(
-      { success: false, message: 'Unauthorized' },
+      { success: false, error: 'Unauthorized' },
       { status: 401 }
     );
   }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
 import CategoryModel from '@/models/Category';
+import mongoose from 'mongoose';
 
 /**
  * GET handler - Get all public categories
@@ -8,7 +9,9 @@ import CategoryModel from '@/models/Category';
  */
 export async function GET(request: NextRequest) {
   try {
-    await connectToDatabase();
+    // Ensure database connection is established before proceeding
+    // The improved connectToDatabase function will wait until the connection is fully established
+    const mongooseInstance = await connectToDatabase();
     
     // Get query parameters
     const url = new URL(request.url);
@@ -22,6 +25,9 @@ export async function GET(request: NextRequest) {
     } else if (parentId) {
       query.parentId = parentId;
     }
+    
+    // Double check connection state - this is just for logging
+    console.log('MongoDB connection state before query:', mongooseInstance.connection.readyState);
     
     // Fetch categories
     const categories = await CategoryModel.find(query)

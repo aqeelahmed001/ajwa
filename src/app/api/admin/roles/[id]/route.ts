@@ -3,8 +3,8 @@ import { connectToDatabase } from '@/lib/mongodb';
 import Role from '@/models/Role';
 import User from '@/models/User';
 import { logActivity } from '@/lib/activityLogger';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth-server';
+
+import { getCurrentUserServer } from '@/lib/jwt';
 import { PERMISSIONS } from '@/lib/permissions';
 import mongoose from 'mongoose';
 
@@ -20,10 +20,10 @@ export async function GET(
 ) {
   try {
     // Check authentication and authorization
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
+    const user = await getCurrentUserServer();
+    if (!user) {
       return NextResponse.json(
-        { success: false, message: 'Unauthorized' },
+        { success: false, error: 'Unauthorized' },
         { status: 401 }
       );
     }
@@ -53,7 +53,7 @@ export async function GET(
     
     // Log activity
     await logActivity(
-      session.user.id,
+      user.id,
       'view_role',
       `Viewed role details: ${role.name}`,
       request
@@ -80,10 +80,10 @@ export async function PUT(
 ) {
   try {
     // Check authentication and authorization
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
+    const user = await getCurrentUserServer();
+    if (!user) {
       return NextResponse.json(
-        { success: false, message: 'Unauthorized' },
+        { success: false, error: 'Unauthorized' },
         { status: 401 }
       );
     }
@@ -161,7 +161,7 @@ export async function PUT(
     
     // Log activity
     await logActivity(
-      session.user.id,
+      user.id,
       'update_role',
       `Updated role: ${role.name}`,
       request
@@ -188,10 +188,10 @@ export async function DELETE(
 ) {
   try {
     // Check authentication and authorization
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
+    const user = await getCurrentUserServer();
+    if (!user) {
       return NextResponse.json(
-        { success: false, message: 'Unauthorized' },
+        { success: false, error: 'Unauthorized' },
         { status: 401 }
       );
     }
@@ -248,7 +248,7 @@ export async function DELETE(
     
     // Log activity
     await logActivity(
-      session.user.id,
+      user.id,
       'delete_role',
       `Deleted role: ${roleName}`,
       request

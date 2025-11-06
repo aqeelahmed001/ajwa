@@ -549,7 +549,7 @@ function UsersManagement() {
               <SelectValue placeholder="All Roles" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Roles</SelectItem>
+              <SelectItem key="all" value="all">All Roles</SelectItem>
               {roles.map((role) => (
                 <SelectItem key={role.id} value={role.name}>
                   {role.name}
@@ -572,9 +572,9 @@ function UsersManagement() {
               <SelectValue placeholder="All Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="true">Active</SelectItem>
-              <SelectItem value="false">Inactive</SelectItem>
+              <SelectItem key="all" value="all">All Status</SelectItem>
+              <SelectItem key="true" value="true">Active</SelectItem>
+              <SelectItem key="false" value="false">Inactive</SelectItem>
             </SelectContent>
           </Select>
           

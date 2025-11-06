@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useSession } from 'next-auth/react'
+import { useAuth } from '@/lib/auth-context'
 
 // Define permissions mapping
 const PERMISSIONS_MAP = {
@@ -78,7 +78,7 @@ export default function RoleGuard({
   fallback?: React.ReactNode
 }) {
   const router = useRouter()
-  const { data: session, status } = useSession()
+  const { user, isLoading, error } = useAuth()
   
   // Function to check if user has permission
   const checkPermission = (user: any, permission: string): boolean => {
@@ -95,9 +95,9 @@ export default function RoleGuard({
   };
   
   // Check if user is authenticated and has required permission
-  const isAuthenticated = status === 'authenticated' && session?.user;
-  console.log('RoleGuard - Authentication status:', status);
-  console.log('RoleGuard - Session:', session);
+  const isAuthenticated = user !== null;
+  console.log('RoleGuard - Authentication status:', isAuthenticated ? 'authenticated' : 'unauthenticated');
+  console.log('RoleGuard - User:', user);
   console.log('RoleGuard - isAuthenticated:', isAuthenticated);
   
   // For dashboard access, be more lenient with permissions
@@ -109,30 +109,30 @@ export default function RoleGuard({
       console.log('RoleGuard - Allowing dashboard access to authenticated user');
     } else {
       // For other permissions, check normally
-      hasAccess = checkPermission(session?.user, requiredPermission);
+      hasAccess = checkPermission(user, requiredPermission);
     }
   }
   
   console.log('RoleGuard - requiredPermission:', requiredPermission);
   console.log('RoleGuard - hasAccess:', hasAccess);
   
-  // Debug session user role
-  if (session?.user) {
-    console.log('RoleGuard - User role:', session.user.role);
+  // Debug user role
+  if (user) {
+    console.log('RoleGuard - User role:', user.role);
   }
   
   useEffect(() => {
     // If not authenticated and not loading, redirect to login
-    if (status === 'unauthenticated') {
+    if (!isLoading && !user) {
       console.log('RoleGuard - User is unauthenticated, redirecting to login');
       // Use replace instead of push to prevent back navigation to protected page
       router.replace('/admin');
     }
-  }, [status, router]);
+  }, [user, isLoading, router]);
   
   // Don't redirect while loading
-  if (status === 'loading') {
-    console.log('RoleGuard - Session is loading, showing loading state');
+  if (isLoading) {
+    console.log('RoleGuard - Auth is loading, showing loading state');
     return <LoadingState />;
   }
   

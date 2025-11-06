@@ -266,7 +266,10 @@ export function PageContent() {
     try {
       const response = await fetch(`/api/admin/content?id=${_id}`, {
         method: 'DELETE',
-        credentials: 'include' // Include cookies for authentication
+        credentials: 'include', // Include cookies for authentication
+        headers: {
+          'Content-Type': 'application/json'
+        }
       })
 
       if (!response.ok) throw new Error('Failed to delete content')

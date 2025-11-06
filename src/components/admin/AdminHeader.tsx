@@ -3,7 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { signOut, useSession } from 'next-auth/react'
+import { useAuth } from '@/lib/auth-context'
 import { 
   Bell, 
   User,
@@ -26,20 +26,14 @@ interface AdminHeaderProps {
 
 export default function AdminHeader({ toggleSidebar }: AdminHeaderProps) {
   const router = useRouter()
-  const { data: session } = useSession()
+  const { user, logout } = useAuth()
   
   const handleLogout = async () => {
     try {
-      // First, call our custom logout API to clear cookies and log activity
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-      })
+      // Use our auth context's logout function
+      await logout()
       
-      // Then use NextAuth's signOut to clear the session
-      await signOut({ redirect: false })
-      
-      // Redirect to login page
-      router.push('/admin')
+      // Redirect is handled by the auth context
     } catch (error) {
       console.error('Logout failed:', error)
     }
@@ -78,23 +72,16 @@ export default function AdminHeader({ toggleSidebar }: AdminHeaderProps) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full relative overflow-hidden">
-              {session?.user?.image ? (
-                <img 
-                  src={session.user.image} 
-                  alt={session.user.name || 'User'}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <User className="h-5 w-5" />
-              )}
+              {/* Always show the user icon since we don't have image in our JWT payload */}
+              <User className="h-5 w-5" />
               <span className="sr-only">User menu</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>
-              {session?.user?.name || 'My Account'}
-              {session?.user?.email && (
-                <p className="text-xs text-muted-foreground mt-1">{session.user.email}</p>
+              {user?.name || 'My Account'}
+              {user?.email && (
+                <p className="text-xs text-muted-foreground mt-1">{user.email}</p>
               )}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />

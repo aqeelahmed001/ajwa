@@ -1,28 +1,20 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { verifyToken } from './lib/jwt';
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const url = request.nextUrl;
   const path = url.pathname;
-  // Check for any NextAuth.js cookie that indicates authentication
-  const nextAuthCookieNames = [
-    'next-auth.session-token',
-    '__Secure-next-auth.session-token',
-    '__Host-next-auth.session-token',
-    'next-auth.callback-url',
-    'next-auth.csrf-token',
-    '__Secure-next-auth.callback-url',
-    'next-auth.pkce.code_verifier'
-  ];
   
-  // Check if any NextAuth cookie exists
-  let authCookie = false;
-  for (const cookieName of nextAuthCookieNames) {
-    if (request.cookies.has(cookieName)) {
-      authCookie = true;
-      console.log(`Found NextAuth cookie: ${cookieName}`);
-      break;
-    }
+  // Check for auth token
+  const authToken = request.cookies.get('auth-token')?.value;
+  
+  // Log cookie information for debugging
+  console.log('Auth token:', authToken ? 'Found' : 'Not found');
+  
+  // In development mode, also log all cookies
+  if (process.env.NODE_ENV === 'development') {
+    console.log('All cookies:', request.cookies.getAll().map(c => c.name));
   }
   
   // Block access to setup page - it's not needed
@@ -32,24 +24,43 @@ export function middleware(request: NextRequest) {
   
   // Protect admin routes
   if (path.startsWith('/admin')) {
-    // Allow access to login page without authentication
-    if (path === '/admin') {
+    // Always allow access to login page, auth API routes, and static assets without authentication
+    if (path === '/admin' || 
+        path.includes('/_next/') || 
+        path.includes('/favicon.ico') || 
+        path.includes('/api/auth/')) {
       return NextResponse.next();
     }
     
-    // Check authentication for all other admin routes
-    console.log('Middleware - Checking auth for path:', path);
-    console.log('Middleware - Auth cookie exists:', authCookie);
-  
-    // For dashboard and all other admin routes, check for auth cookie
-    if (!authCookie) {
-      console.log('Middleware - No auth cookie, redirecting to login');
-      // If not authenticated, redirect to the admin login page
+    // For dashboard and all other admin routes, check for auth token
+    if (!authToken) {
+      console.log('No auth token found, checking for development bypass');
+      
+      // In development, check if we should bypass auth for testing
+      if (process.env.NODE_ENV === 'development' && process.env.BYPASS_AUTH === 'true') {
+        console.log('Auth bypass enabled in development mode');
+        return NextResponse.next();
+      }
+      
+      console.log('Redirecting to login page');
       return NextResponse.redirect(new URL('/admin', url));
     }
     
-    // If authenticated, allow access to admin routes
-    console.log(`Middleware - Auth cookie found, allowing access to: ${path}`);
+    // Verify the token
+    try {
+      const user = await verifyToken(authToken);
+      if (user === null) {
+        console.log('Invalid auth token, redirecting to login');
+        return NextResponse.redirect(new URL('/admin', url));
+      }
+      
+      // If token is valid, allow access
+      console.log('Valid auth token, allowing access for user:', user.email);
+      return NextResponse.next();
+    } catch (error) {
+      console.error('Error verifying token:', error);
+      return NextResponse.redirect(new URL('/admin', url));
+    }
   }
   
   // Block access to setup API - it's not needed
@@ -66,14 +77,26 @@ export function middleware(request: NextRequest) {
     
     // Allow public access to content API for read operations
     if (path.startsWith('/api/admin/content') && request.method === 'GET') {
-      console.log('Middleware - Allowing public access to content API:', path);
       return NextResponse.next();
     }
     
-    // For other admin APIs, check auth cookie
-    if (!authCookie) {
-      console.log('Middleware - No auth cookie for API route:', path);
+    // For other admin APIs, check auth token
+    if (!authToken) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    
+    // Verify the token
+    try {
+      const user = await verifyToken(authToken);
+      if (user === null) {
+        return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+      }
+      
+      // If token is valid, allow access
+      return NextResponse.next();
+    } catch (error) {
+      console.error('Error verifying token for API access:', error);
+      return NextResponse.json({ error: 'Authentication error' }, { status: 401 });
     }
   }
 
@@ -83,7 +106,11 @@ export function middleware(request: NextRequest) {
 // Configure the paths that should trigger this middleware
 export const config = {
   matcher: [
-    // Match all paths
-    '/(.*)',
+    // Match admin routes
+    '/admin/:path*',
+    // Match admin API routes
+    '/api/admin/:path*',
+    // Exclude Next.js static files and API auth routes
+    '/((?!api/auth|_next/static|_next/image|favicon.ico).*)',
   ],
 };

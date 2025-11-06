@@ -3,8 +3,8 @@ import dbConnect from '@/lib/db';
 import User from '@/models/User';
 import MachineryItem from '@/models/MachineryItem';
 import UserActivity from '@/models/UserActivity';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/authOptions';
+
+import { getCurrentUserServer } from '@/lib/jwt';
 import { v2 as cloudinary } from 'cloudinary';
 
 // Configure Cloudinary
@@ -17,8 +17,8 @@ cloudinary.config({
 export async function GET(request: NextRequest) {
   try {
     // Check authentication
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
+    const user = await getCurrentUserServer();
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

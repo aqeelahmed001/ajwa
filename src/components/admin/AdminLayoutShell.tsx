@@ -1,7 +1,8 @@
 "use client"
 
-import React, { useState } from 'react'
-import { usePathname } from 'next/navigation'
+import React, { useState, useEffect } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import { useAuth } from '@/lib/auth-context'
 import AdminSidebar from '@/components/admin/AdminSidebar'
 import AdminHeader from '@/components/admin/AdminHeader'
 
@@ -11,7 +12,24 @@ export default function AdminLayoutShell({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
+  const router = useRouter()
+  const { user, isLoading } = useAuth()
   const [sidebarOpen, setSidebarOpen] = useState(true)
+
+  // Check authentication status
+  useEffect(() => {
+    // Skip auth check for login page
+    if (pathname === '/admin' || pathname === '/admin/setup') {
+      return
+    }
+
+    // If not authenticated and not loading, redirect to login
+    if (!isLoading && !user) {
+      console.log('No user found in AdminLayoutShell, redirecting to login')
+      // Use router for a smoother redirect
+      router.push('/admin')
+    }
+  }, [pathname, user, isLoading, router])
 
   const toggleSidebar = () => {
     setSidebarOpen((open) => !open)
@@ -20,6 +38,20 @@ export default function AdminLayoutShell({
   // For the login page (/admin) and setup page (/admin/setup) we render the page content without the admin shell
   if (pathname === '/admin' || pathname === '/admin/setup') {
     return <>{children}</>
+  }
+  
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-slate-100">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    )
+  }
+  
+  // If not authenticated, don't render anything (will redirect in useEffect)
+  if (!user) {
+    return null
   }
 
   return (

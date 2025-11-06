@@ -8,6 +8,7 @@ import { useSearchParams } from 'next/navigation'
 import { Phone, Mail, MapPin, Clock, Globe, ArrowRight, MessageSquare, TruckIcon, ShoppingCart } from 'lucide-react'
 import { useState, useEffect } from 'react';
 import SellBuyForm from '@/components/forms/SellBuyForm';
+import LocationsSection from '@/components/sections/LocationsSection';
 import { toast } from 'sonner';
 
 export default function ContactPage({ params }: { params: { lang: string } }) {
@@ -404,16 +405,8 @@ export default function ContactPage({ params }: { params: { lang: string } }) {
         </div>
       </div>
       
-      {/* Map section */}
-      <div className="h-96 w-full bg-slate-200">
-        {/* Map integration would go here */}
-        <div className="h-full w-full flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-xl font-medium mb-2">{isJapanese ? '地図が表示されます' : 'Map would display here'}</div>
-            <div className="text-muted-foreground">{isJapanese ? '実際のマップAPIと連携する予定です' : 'Will be integrated with actual map API'}</div>
-          </div>
-        </div>
-      </div>
+      {/* Locations Section */}
+      <LocationsSection lang={params.lang} />
     </div>
   )
 } 

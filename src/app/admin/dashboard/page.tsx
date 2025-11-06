@@ -8,6 +8,7 @@ import Logo from '@/components/Logo'
 import { RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
+import { useAuth } from '@/lib/auth-context'
 
 function LoadingState() {
   return (
@@ -49,6 +50,9 @@ function LoadingState() {
 }
 
 export default function AdminDashboardPage() {
+  // Add user information for debugging
+  const { user, isLoading } = useAuth()
+  
   return (
     <div className="flex flex-col gap-6 p-4">
       <div className="flex items-center justify-between">
@@ -73,6 +77,18 @@ export default function AdminDashboardPage() {
           />
         </div>
       </div>
+      
+      {/* Debug information */}
+      <Card className="mb-4 bg-yellow-50">
+        <CardHeader>
+          <h2 className="text-lg font-semibold">Debug Information</h2>
+        </CardHeader>
+        <CardContent>
+          <p><strong>Auth Status:</strong> {isLoading ? 'loading' : user ? 'authenticated' : 'unauthenticated'}</p>
+          <p><strong>User:</strong> {user?.email || 'Not logged in'}</p>
+          <p><strong>Role:</strong> {user?.role || 'None'}</p>
+        </CardContent>
+      </Card>
       
       <Suspense fallback={<LoadingState />}>
         <DashboardProvider />

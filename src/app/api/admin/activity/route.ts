@@ -1,18 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
 import UserActivity from '@/models/UserActivity';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth-server';
+import { getCurrentUserServer } from '@/lib/jwt';
 import { logActivity } from '@/lib/activityLogger';
 
 // GET handler - Get activity logs with pagination and filtering
 export async function GET(request: NextRequest) {
   try {
     // Check authentication and authorization
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
+    const user = await getCurrentUserServer();
+    if (!user) {
       return NextResponse.json(
-        { success: false, message: 'Unauthorized' },
+        { success: false, error: 'Unauthorized' },
         { status: 401 }
       );
     }
@@ -83,7 +82,7 @@ export async function GET(request: NextRequest) {
     
     // Log activity
     await logActivity(
-      session.user.id,
+      user.id,
       'view_activity_logs',
       `Viewed activity logs with filters`,
       request
@@ -118,10 +117,10 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Check authentication and authorization
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
+    const user = await getCurrentUserServer();
+    if (!user) {
       return NextResponse.json(
-        { success: false, message: 'Unauthorized' },
+        { success: false, error: 'Unauthorized' },
         { status: 401 }
       );
     }
@@ -180,7 +179,7 @@ export async function POST(request: NextRequest) {
     
     // Log activity
     await logActivity(
-      session.user.id,
+      user.id,
       'export_activity_logs',
       `Exported activity logs in ${format} format`,
       request

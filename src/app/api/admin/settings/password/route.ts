@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/authOptions';
+
+import { getCurrentUserServer } from '@/lib/jwt';
 import dbConnect from '@/lib/db';
 import User from '@/models/User';
 import UserActivity from '@/models/UserActivity';
@@ -8,8 +8,8 @@ import UserActivity from '@/models/UserActivity';
 export async function PUT(request: NextRequest) {
   try {
     // Check authentication
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
+    const user = await getCurrentUserServer();
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -28,7 +28,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Find user
-    const user = await User.findById(session.user.id);
+    const user = await User.findById(user.id);
     if (!user) {
       return NextResponse.json(
         { error: 'User not found' },
@@ -51,7 +51,7 @@ export async function PUT(request: NextRequest) {
 
     // Log activity
     await UserActivity.create({
-      userId: session.user.id,
+      userId: user.id,
       action: 'password_change',
       details: 'Changed account password',
       ipAddress: request.headers.get('x-forwarded-for') || request.ip,

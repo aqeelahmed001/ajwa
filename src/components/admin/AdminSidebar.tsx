@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { signOut, useSession } from 'next-auth/react'
+import { useAuth } from '@/lib/auth-context'
 import { 
   LayoutDashboard, 
   FileText, 
@@ -114,23 +114,20 @@ const SidebarGroup = ({ title, children }: SidebarGroupProps) => {
 export default function AdminSidebar() {
   const pathname = usePathname()
   const router = useRouter()
-  const { data: session } = useSession()
+  const { user, logout } = useAuth()
   const [collapsed, setCollapsed] = useState(false)
   
   const handleLogout = async () => {
     try {
-      // First, call our custom logout API to clear cookies and log activity
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-      })
+      // Use our auth context's logout function
+      await logout();
       
-      // Then use NextAuth's signOut to clear the session
-      await signOut({ redirect: false })
-      
-      // Redirect to login page
-      router.push('/admin')
+      // Redirect is handled by the auth context, but just in case
+      router.push('/admin');
     } catch (error) {
-      console.error('Logout failed:', error)
+      console.error('Logout failed:', error);
+      // Force redirect as fallback
+      window.location.href = '/admin';
     }
   }
   
@@ -170,18 +167,17 @@ export default function AdminSidebar() {
         <div className="flex items-center gap-3">
           <Link href="/admin/settings" className="hover:opacity-80 transition-opacity">
             <Avatar>
-              <AvatarImage src={session?.user?.image || undefined} />
               <AvatarFallback>
-                {session?.user?.name
-                  ? session.user.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2)
+                {user?.name
+                  ? user.name.split(' ').map((n: string) => n[0]).join('').toUpperCase().substring(0, 2)
                   : 'U'}
               </AvatarFallback>
             </Avatar>
           </Link>
           {!collapsed && (
             <div>
-              <p className="text-sm font-medium">{session?.user?.name || 'User'}</p>
-              <p className="text-xs text-slate-500">{session?.user?.email || ''}</p>
+              <p className="text-sm font-medium">{user?.name || 'User'}</p>
+              <p className="text-xs text-slate-500">{user?.email || ''}</p>
             </div>
           )}
         </div>

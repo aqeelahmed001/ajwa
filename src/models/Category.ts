@@ -28,7 +28,7 @@ const CategorySchema = new Schema<CategoryDocument>(
     slug: {
       type: String,
       required: true,
-      unique: true
+      // Remove unique: true here since we're defining it in the index below
     },
     description: {
       type: String,

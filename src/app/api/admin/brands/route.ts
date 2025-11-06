@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/authOptions';
+
+import { getCurrentUserServer } from '@/lib/jwt';
 import dbConnect from '@/lib/db';
 import Brand from '@/models/Brand';
 import UserActivity from '@/models/UserActivity';
@@ -45,8 +45,8 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Check authentication
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
+    const user = await getCurrentUserServer();
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     
@@ -115,10 +115,10 @@ export async function POST(request: NextRequest) {
     // Log activity (try-catch to make it non-blocking)
     try {
       // Check if the user ID is available
-      if (session.user && session.user.id) {
+      if (session.user && user.id) {
         // Try to log the activity, but don't block if it fails
         await UserActivity.create({
-          userId: session.user.id,
+          userId: user.id,
           // Use a valid action from the enum
           action: 'create_content', // Using an existing action as fallback
           details: `Created brand: ${name}`,

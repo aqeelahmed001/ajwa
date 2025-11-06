@@ -2,18 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
 import Role from '@/models/Role';
 import { logActivity } from '@/lib/activityLogger';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth-server';
+
+import { getCurrentUserServer } from '@/lib/jwt';
 import { PERMISSIONS } from '@/lib/permissions';
 
 // GET handler - Get all roles with optional filters
 export async function GET(request: NextRequest) {
   try {
     // Check authentication and authorization
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
+    const user = await getCurrentUserServer();
+    if (!user) {
       return NextResponse.json(
-        { success: false, message: 'Unauthorized' },
+        { success: false, error: 'Unauthorized' },
         { status: 401 }
       );
     }
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
     // Log activity
     try {
       // Access the user ID from session
-      const userId = session.user.id;
+      const userId = user.id;
       
       // Log session details for debugging
       console.debug('Session user for activity logging:', JSON.stringify(session.user));
@@ -78,10 +78,10 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Check authentication and authorization
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
+    const user = await getCurrentUserServer();
+    if (!user) {
       return NextResponse.json(
-        { success: false, message: 'Unauthorized' },
+        { success: false, error: 'Unauthorized' },
         { status: 401 }
       );
     }
@@ -139,7 +139,7 @@ export async function POST(request: NextRequest) {
     // Log activity
     try {
       // Access the user ID from session
-      const userId = session.user.id;
+      const userId = user.id;
       
       if (!userId) {
         console.warn('No user ID found in session for activity logging');

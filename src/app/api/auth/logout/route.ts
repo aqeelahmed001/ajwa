@@ -1,18 +1,17 @@
-import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth-server';
+import { NextRequest, NextResponse } from 'next/server';
+import { clearAuthCookie, getCurrentUser } from '@/lib/jwt';
 import { logActivity } from '@/lib/activityLogger';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    // Get the current session
-    const session = await getServerSession(authOptions);
+    // Get the current user from the request
+    const user = await getCurrentUser(request);
     
-    if (session?.user?.id) {
+    if (user?.id) {
       // Log the logout activity
       try {
         await logActivity(
-          session.user.id,
+          user.id,
           'logout',
           'User logged out',
           request as any
@@ -22,13 +21,16 @@ export async function POST(request: Request) {
       }
     }
     
-    // Create a response that will clear all auth cookies
+    // Create a response that will clear the auth cookie
     const response = NextResponse.json(
       { success: true, message: 'Logged out successfully' },
       { status: 200 }
     );
     
-    // Clear all NextAuth cookies
+    // Clear the auth cookie
+    clearAuthCookie(response);
+    
+    // Also clear any remaining NextAuth cookies for clean transition
     const cookiesToClear = [
       'next-auth.session-token',
       '__Secure-next-auth.session-token',
@@ -47,7 +49,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Logout error:', error);
     return NextResponse.json(
-      { success: false, message: 'An error occurred during logout' },
+      { success: false, error: 'An error occurred during logout' },
       { status: 500 }
     );
   }

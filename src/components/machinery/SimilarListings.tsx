@@ -45,6 +45,12 @@ interface SimilarListingsProps {
     category: string;
     manufacturer: string;
     modelNumber: string;
+    year: number;
+    hours: number;
+    price: number;
+    condition: string;
+    location: string;
+    featured?: boolean;
     subcategory?: string; // Make subcategory optional in the interface
     tags?: string[];
   };
@@ -76,29 +82,80 @@ export default function SimilarListings({
     location: isJapanese ? '所在地' : 'Location',
   };
 
-  // Calculate similarity score for each machinery item
+  // Calculate similarity score for each machinery item with enhanced logic
   const getSimilarityScore = (machinery: MachineryItem): number => {
     let score = 0;
     
     // Same manufacturer is a strong signal
     if (machinery.manufacturer === currentMachinery.manufacturer) {
+      score += 10;
+    } else if (machinery.manufacturer.includes(currentMachinery.manufacturer) || 
+               currentMachinery.manufacturer.includes(machinery.manufacturer)) {
+      // Partial manufacturer match (e.g., "Caterpillar" vs "Cat")
       score += 5;
     }
     
     // Same category is also important
     if (machinery.category === currentMachinery.category) {
-      score += 4;
+      score += 8;
     }
     
     // Same subcategory if both have it
     if (currentMachinery.subcategory && 
         machinery.subcategory === currentMachinery.subcategory) {
-      score += 3;
+      score += 6;
     }
     
     // Similar model (contains part of the model number)
-    if (machinery.modelNumber.includes(currentMachinery.modelNumber.split('-')[0]) || 
-        currentMachinery.modelNumber.includes(machinery.modelNumber.split('-')[0])) {
+    if (machinery.modelNumber && currentMachinery.modelNumber) {
+      // Exact model series match (e.g., D6 series)
+      const currentModelBase = currentMachinery.modelNumber.split(/[-\s]/)[0];
+      const itemModelBase = machinery.modelNumber.split(/[-\s]/)[0];
+      
+      if (currentModelBase === itemModelBase && currentModelBase.length > 0) {
+        score += 7;
+      } else if (machinery.modelNumber.includes(currentMachinery.modelNumber.split(/[-\s]/)[0]) || 
+                currentMachinery.modelNumber.includes(machinery.modelNumber.split(/[-\s]/)[0])) {
+        // Partial model match
+        score += 4;
+      }
+    }
+    
+    // Year proximity (closer years = more similar)
+    const yearDifference = Math.abs(machinery.year - currentMachinery.year);
+    if (yearDifference === 0) {
+      score += 5; // Same year
+    } else if (yearDifference <= 2) {
+      score += 4; // Within 2 years
+    } else if (yearDifference <= 5) {
+      score += 3; // Within 5 years
+    } else if (yearDifference <= 10) {
+      score += 1; // Within 10 years
+    }
+    
+    // Similar hours of operation
+    const hoursDifference = Math.abs(machinery.hours - currentMachinery.hours);
+    const hoursPercentDiff = currentMachinery.hours > 0 ? 
+      hoursDifference / currentMachinery.hours : 1;
+      
+    if (hoursPercentDiff < 0.1) {
+      score += 4; // Within 10% hours
+    } else if (hoursPercentDiff < 0.25) {
+      score += 3; // Within 25% hours
+    } else if (hoursPercentDiff < 0.5) {
+      score += 2; // Within 50% hours
+    }
+    
+    // Same condition
+    if (machinery.condition === currentMachinery.condition) {
+      score += 5;
+    }
+    
+    // Same location
+    if (machinery.location === currentMachinery.location) {
+      score += 3;
+    } else if (machinery.location.split(',')[0] === currentMachinery.location.split(',')[0]) {
+      // Same city/region
       score += 2;
     }
     
@@ -107,22 +164,47 @@ export default function SimilarListings({
       const commonTags = machinery.tags.filter(tag => 
         currentMachinery.tags?.includes(tag)
       );
-      score += commonTags.length;
+      score += commonTags.length * 2; // Each matching tag is valuable
+    }
+    
+    // Similar price range (within 20%)
+    if (machinery.price > 0 && currentMachinery.price > 0) {
+      const priceDiff = Math.abs(machinery.price - currentMachinery.price);
+      const pricePercentDiff = priceDiff / currentMachinery.price;
+      
+      if (pricePercentDiff < 0.1) {
+        score += 5; // Within 10% price
+      } else if (pricePercentDiff < 0.2) {
+        score += 3; // Within 20% price
+      }
+    }
+    
+    // Featured items get a small boost
+    if (machinery.featured) {
+      score += 1;
     }
     
     return score;
   };
 
+  console.log('SimilarListings props:', { currentMachinery, allMachineryLength: allMachinery.length, maxItems });
+  
   // Filter out the current machinery and get similar items
   const similarMachinery = allMachinery
     .filter(item => item.id !== currentMachinery.id)
-    .map(item => ({
-      ...item,
-      similarityScore: getSimilarityScore(item)
-    }))
+    .map(item => {
+      const score = getSimilarityScore(item);
+      console.log(`Similarity score for ${item.name}: ${score}`);
+      return {
+        ...item,
+        similarityScore: score
+      };
+    })
     .filter(item => item.similarityScore > 0)
     .sort((a, b) => b.similarityScore - a.similarityScore)
     .slice(0, maxItems);
+    
+  console.log(`Found ${similarMachinery.length} similar machinery items after filtering and scoring`);
 
   // Animation variants
   const containerVariants = {

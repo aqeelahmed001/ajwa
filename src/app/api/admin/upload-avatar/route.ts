@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/authOptions';
+
+import { getCurrentUserServer } from '@/lib/jwt';
 import { v2 as cloudinary } from 'cloudinary';
 
 // Configure Cloudinary
@@ -13,8 +13,8 @@ cloudinary.config({
 export async function POST(request: NextRequest) {
   try {
     // Check authentication
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
+    const user = await getCurrentUserServer();
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
         dataURI,
         {
           folder: 'ajwa/avatars',
-          public_id: `user_${session.user.id}`,
+          public_id: `user_${user.id}`,
           overwrite: true,
           transformation: [
             { width: 250, height: 250, crop: 'fill', gravity: 'face' }

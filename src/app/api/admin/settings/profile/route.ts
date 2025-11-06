@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/authOptions';
+
+import { getCurrentUserServer } from '@/lib/jwt';
 import dbConnect from '@/lib/db';
 import User from '@/models/User';
 import UserActivity from '@/models/UserActivity';
@@ -8,8 +8,8 @@ import UserActivity from '@/models/UserActivity';
 export async function PUT(request: NextRequest) {
   try {
     // Check authentication
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
+    const user = await getCurrentUserServer();
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -30,7 +30,7 @@ export async function PUT(request: NextRequest) {
     // Check if email already exists for another user
     const existingUser = await User.findOne({ 
       email, 
-      _id: { $ne: session.user.id } 
+      _id: { $ne: user.id } 
     });
     
     if (existingUser) {
@@ -42,7 +42,7 @@ export async function PUT(request: NextRequest) {
 
     // Update user
     const user = await User.findByIdAndUpdate(
-      session.user.id,
+      user.id,
       { name, email, ...(image && { image }) },
       { new: true }
     );
@@ -56,7 +56,7 @@ export async function PUT(request: NextRequest) {
 
     // Log activity
     await UserActivity.create({
-      userId: session.user.id,
+      userId: user.id,
       action: 'update_profile',
       details: 'Updated profile information',
       ipAddress: request.headers.get('x-forwarded-for') || request.ip,

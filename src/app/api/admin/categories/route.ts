@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
 import CategoryModel from '@/models/Category';
+import mongoose from 'mongoose';
 
 // GET all categories
 export async function GET(request: NextRequest) {
   try {
-    await connectToDatabase();
+    // Ensure database connection is established before proceeding
+    // The improved connectToDatabase function will wait until the connection is fully established
+    const mongooseInstance = await connectToDatabase();
     
     // Get query parameters
     const url = new URL(request.url);
@@ -24,6 +27,9 @@ export async function GET(request: NextRequest) {
     if (isActive !== null && isActive !== undefined) {
       query.isActive = isActive === 'true';
     }
+    
+    // Double check connection state - this is just for logging
+    console.log('MongoDB connection state before query:', mongooseInstance.connection.readyState);
     
     // Fetch categories
     const categories = await CategoryModel.find(query)
@@ -59,7 +65,12 @@ export async function GET(request: NextRequest) {
 // POST create new category
 export async function POST(request: NextRequest) {
   try {
-    await connectToDatabase();
+    // Ensure database connection is established before proceeding
+    // The improved connectToDatabase function will wait until the connection is fully established
+    const mongooseInstance = await connectToDatabase();
+    
+    // Double check connection state - this is just for logging
+    console.log('MongoDB connection state before POST operation:', mongooseInstance.connection.readyState);
     
     const data = await request.json();
     

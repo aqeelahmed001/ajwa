@@ -1,4 +1,4 @@
-import dbConnect from '../lib/db';
+import { connectToDatabase } from '../lib/mongodb';
 
 /**
  * Simple script to test the MongoDB connection
@@ -6,7 +6,8 @@ import dbConnect from '../lib/db';
 async function testDbConnection() {
   try {
     console.log('Attempting to connect to MongoDB...');
-    const mongoose = await dbConnect();
+    await connectToDatabase();
+    const mongoose = require('mongoose');
     console.log('Successfully connected to MongoDB!');
     console.log(`Connection state: ${mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'}`);
     console.log(`Database name: ${mongoose.connection.name}`);
@@ -20,7 +21,7 @@ async function testDbConnection() {
       if (collections.length === 0) {
         console.log('No collections found. Database is empty.');
       } else {
-        collections.forEach(collection => {
+        collections.forEach((collection: { name: string }) => {
           console.log(`- ${collection.name}`);
         });
       }
