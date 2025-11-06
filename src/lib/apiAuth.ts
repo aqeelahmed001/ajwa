@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-
-import { authOptions } from './auth';
+import { getCurrentUserServer } from './jwt';
 
 /**
  * Helper function to check if the current user is authenticated as an admin
@@ -10,7 +9,7 @@ export async function checkAdminAuth() {
   const user = await getCurrentUserServer();
   
   // Check if the user is authenticated and has admin role
-  if (!session || session.user?.role !== 'admin') {
+  if (!user || user.role !== 'admin') {
     return NextResponse.json(
       { success: false, error: 'Unauthorized' },
       { status: 401 }

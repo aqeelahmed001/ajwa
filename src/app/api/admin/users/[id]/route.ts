@@ -18,8 +18,8 @@ export async function GET(
 ) {
   try {
     // Check authentication and authorization
-    const user = await getCurrentUserServer();
-    if (!user) {
+    const currentUser = await getCurrentUserServer();
+    if (!currentUser) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
         { status: 401 }
@@ -81,8 +81,8 @@ export async function PUT(
 ) {
   try {
     // Check authentication and authorization
-    const user = await getCurrentUserServer();
-    if (!user) {
+    const currentUser = await getCurrentUserServer();
+    if (!currentUser) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
         { status: 401 }
@@ -188,8 +188,8 @@ export async function DELETE(
   console.log('DELETE handler called with params:', params);
   try {
     // Check authentication and authorization
-    const user = await getCurrentUserServer();
-    if (!user) {
+    const currentUser = await getCurrentUserServer();
+    if (!currentUser) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
         { status: 401 }

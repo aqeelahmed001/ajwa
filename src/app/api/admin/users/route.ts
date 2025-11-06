@@ -81,12 +81,12 @@ export async function GET(request: NextRequest) {
       // Access the user ID from session
       const userId = user.id;
       
-      // Log session details for debugging
-      console.debug('Session user for activity logging:', JSON.stringify(session.user));
+      // Log user details for debugging
+      console.debug('User for activity logging:', JSON.stringify(user));
       
       if (!userId) {
-        console.warn('No user ID found in session for activity logging');
-        console.debug('Session user object:', session.user);
+        console.warn('No user ID found for activity logging');
+        console.debug('User object:', user);
       } else {
         await logActivity(
           userId,

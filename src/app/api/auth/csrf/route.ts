@@ -1,15 +1,16 @@
 import { NextResponse } from 'next/server';
-import { getCsrfToken } from 'next-auth/react';
+import crypto from 'crypto';
 
 // This endpoint provides a CSRF token for client-side operations
 export async function GET() {
   try {
-    // Get the CSRF token
-    const csrfToken = await getCsrfToken();
+    // Generate a random CSRF token
+    const csrfToken = crypto.randomBytes(32).toString('hex');
     
+    // Return the token in the response
     return NextResponse.json({ csrfToken });
   } catch (error) {
-    console.error('Error getting CSRF token:', error);
-    return NextResponse.json({ error: 'Failed to get CSRF token' }, { status: 500 });
+    console.error('Error generating CSRF token:', error);
+    return NextResponse.json({ error: 'Failed to generate CSRF token' }, { status: 500 });
   }
 }

@@ -8,8 +8,8 @@ import UserActivity from '@/models/UserActivity';
 export async function PUT(request: NextRequest) {
   try {
     // Check authentication
-    const user = await getCurrentUserServer();
-    if (!user) {
+    const currentUser = await getCurrentUserServer();
+    if (!currentUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -30,7 +30,7 @@ export async function PUT(request: NextRequest) {
     // Check if email already exists for another user
     const existingUser = await User.findOne({ 
       email, 
-      _id: { $ne: user.id } 
+      _id: { $ne: currentUser.id } 
     });
     
     if (existingUser) {
@@ -41,13 +41,13 @@ export async function PUT(request: NextRequest) {
     }
 
     // Update user
-    const user = await User.findByIdAndUpdate(
-      user.id,
+    const updatedUser = await User.findByIdAndUpdate(
+      currentUser.id,
       { name, email, ...(image && { image }) },
       { new: true }
     );
 
-    if (!user) {
+    if (!updatedUser) {
       return NextResponse.json(
         { error: 'User not found' },
         { status: 404 }
@@ -56,7 +56,7 @@ export async function PUT(request: NextRequest) {
 
     // Log activity
     await UserActivity.create({
-      userId: user.id,
+      userId: updatedUser.id,
       action: 'update_profile',
       details: 'Updated profile information',
       ipAddress: request.headers.get('x-forwarded-for') || request.ip,
@@ -65,10 +65,10 @@ export async function PUT(request: NextRequest) {
 
     // Return updated user
     return NextResponse.json({
-      id: user._id,
-      name: user.name,
-      email: user.email,
-      image: user.image
+      id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      image: updatedUser.image
     });
   } catch (error) {
     console.error('Profile update error:', error);

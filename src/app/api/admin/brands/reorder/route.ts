@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     // Log activity (try-catch to make it non-blocking)
     try {
       // Check if the user ID is available
-      if (session.user && user.id) {
+      if (user && user.id) {
         // Try to log the activity, but don't block if it fails
         await UserActivity.create({
           userId: user.id,

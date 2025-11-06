@@ -8,8 +8,8 @@ import UserActivity from '@/models/UserActivity';
 export async function PUT(request: NextRequest) {
   try {
     // Check authentication
-    const user = await getCurrentUserServer();
-    if (!user) {
+    const currentUser = await getCurrentUserServer();
+    if (!currentUser) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -28,7 +28,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Find user
-    const user = await User.findById(user.id);
+    const user = await User.findById(currentUser.id);
     if (!user) {
       return NextResponse.json(
         { error: 'User not found' },
