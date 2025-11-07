@@ -45,10 +45,10 @@ export default function Footer({ lang }: FooterProps) {
   
   const contactInfo = {
     address: isJapanese 
-      ? '〒123-4567 東京都新宿区西新宿1-1-1' 
-      : '1-1-1 Nishi-Shinjuku, Shinjuku-ku, Tokyo 123-4567, Japan',
-    phone: '+81-3-1234-5678',
-    email: 'contact@ajwa-trading.com'
+      ? '〒498-0052 愛知県弥富市稲荷３丁目20番地' 
+      : '〒 498 - 0052 Aichi ken Yatomi-shi Inari 3-chōme 20',
+    phone: '+81-080-4303-1786',
+    email: 'info@ajwa.co.jp'
   }
 
   return (
@@ -59,19 +59,19 @@ export default function Footer({ lang }: FooterProps) {
           <div className="grid grid-cols-1 gap-10 md:grid-cols-12">
             {/* Left column - Company info and social */}
             <div className="md:col-span-4 lg:col-span-5">
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center gap-6 mb-6">
                 {/* Logo */}
-                <div className="h-10 w-10 bg-blue-500 flex items-center justify-center">
-                  <span className="font-bold text-white text-lg">A</span>
+                <div className="flex-shrink-0 rounded-2xl bg-white/10 border border-white/10 p-2 md:p-3">
+                  <img 
+                    src="/images/logo.jpg" 
+                    alt="Ajwa Logo" 
+                    className="h-16 md:h-20 lg:h-24 w-auto object-contain"
+                  />
+                  <div className="hidden h-full w-full bg-primary flex items-center justify-center logo-fallback">
+                    <span className="font-bold text-lg text-primary-foreground">A</span>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-bold text-xl text-white">
-                    {isJapanese ? 'アジワ商事' : 'Ajwa Trading'}
-                  </h3>
-                  <p className="text-xs text-blue-200">
-                    {isJapanese ? '国際機械取引' : 'International Machinery Trading'}
-                  </p>
-                </div>
+             
               </div>
               
               <p className="text-sm text-white/80 mb-6 max-w-md">

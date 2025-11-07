@@ -62,9 +62,9 @@ export default function Header({ lang }: HeaderProps) {
 
   // Contact information
   const contactInfo = {
-    phone: '+81-0569-21-7375',
+    phone: '+81-080-4303-1786',
     email: 'info@ajwa.co.jp',
-    address: isJapanese ? '〒496-0901 愛知県愛西市佐屋町道西64番地' : '〒496-0901 Aichi Prefecture, Aishish, Sayacho, michinishi 64',
+    address: isJapanese ? '〒498-0052 愛知県弥富市稲荷３丁目20番地' : '〒498-0052 Aichi Prefecture, Yatomi-shi Inari 3-chōme 20',
     japanTime: currentTime + ' JST',
   }
 

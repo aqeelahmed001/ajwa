@@ -96,7 +96,7 @@ export default function HeroSection({ lang, backgroundImage, images }: HeroSecti
     rightDescription: getContent('rightDescription', isJapanese
       ? '<p>日本国内の中古機械を適正な市場価格で買取いたします。</p>'
       : '<p>We purchase used machinery in Japan at fair market value.</p>'),
-    backgroundImage: getContent('backgroundImage', '/images/mach1.jpg')
+    backgroundImage: getContent('backgroundImage')
   }
   
   // Debug logging
@@ -107,8 +107,31 @@ export default function HeroSection({ lang, backgroundImage, images }: HeroSecti
     backgroundImage: heroText.backgroundImage
   })
 
-  // Use the dynamic background image from CMS or fallback to props or default
-  const bgImage = heroText.backgroundImage || backgroundImage || '/images/mach1.jpg'
+  // Evaluate all CMS-provided background image options
+  const backgroundImageCandidates = [
+    contents[`backgroundImage_${lang}`],
+    contents['backgroundImage'],
+    contents['backgroundImage_en'],
+    contents['backgroundImage_ja']
+  ].filter((value): value is string => Boolean(value && value.trim()))
+
+  const prioritizedCmsImage = backgroundImageCandidates.find(url => url.includes('res.cloudinary.com'))
+    || backgroundImageCandidates.find(url => url.startsWith('http'))
+    || backgroundImageCandidates[0]
+
+  // Determine background image with priority: explicit prop > CMS value > default fallback
+  const normalizedPropImage = backgroundImage?.trim()
+  const normalizedCmsImage = (prioritizedCmsImage || heroText.backgroundImage || '').trim()
+
+  const resolvedPropImage = normalizedPropImage
+    ? getOptimizedImageUrl(normalizedPropImage, { quality: 80, format: 'auto' })
+    : ''
+
+  const resolvedCmsImage = normalizedCmsImage
+    ? getOptimizedImageUrl(normalizedCmsImage, { quality: 80, format: 'auto' })
+    : ''
+
+  const bgImage = resolvedPropImage || resolvedCmsImage || '/images/banner2-2.jpg'
 
   return (
     <section className="min-h-[70vh] relative overflow-hidden">

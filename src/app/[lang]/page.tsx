@@ -30,7 +30,6 @@ export default function HomePage({ params }: HomePageProps) {
       {/* Hero Section */}
       <HeroSection 
         lang={lang} 
-        backgroundImage="/images/hero-bg.jpg"
       />
       
       {/* Assessment CTA Section - Added as per request */}
