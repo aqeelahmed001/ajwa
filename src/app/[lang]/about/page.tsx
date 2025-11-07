@@ -203,7 +203,7 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
       {
         icon: <Phone className="h-5 w-5" />,
         label: isJapanese ? '電話番号' : 'Phone',
-        value: '+81-3-1234-5678'
+        value: '+81-080-4303-1786'
       },
       {
         icon: <Mail className="h-5 w-5" />,
@@ -213,7 +213,7 @@ export default function AboutPage({ params }: { params: { lang: string } }) {
       {
         icon: <MapPin className="h-5 w-5" />,
         label: isJapanese ? '所在地' : 'Location',
-        value: isJapanese ? '東京都港区赤坂1-2-3 アジュワビル5F' : 'Ajwa Building 5F, 1-2-3 Akasaka, Minato-ku, Tokyo, Japan'
+        value: isJapanese ? '〒498-0052 愛知県弥富市稲荷３丁目20番地' : '〒 498 - 0052 Aichi ken Yatomi-shi Inari 3-chōme 20'
       }
     ],
     

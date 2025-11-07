@@ -38,7 +38,8 @@ export default function Footer({ lang }: FooterProps) {
       links: [
         { name: isJapanese ? 'よくある質問' : 'FAQ', href: `/${lang}/faq` },
         { name: isJapanese ? 'プライバシーポリシー' : 'Privacy Policy', href: `/${lang}/privacy` },
-        { name: isJapanese ? '利用規約' : 'Terms of Service', href: `/${lang}/terms` }
+        { name: isJapanese ? '利用規約' : 'Terms of Service', href: `/${lang}/terms` },
+        { name: isJapanese ? 'サイトマップ' : 'Site Map', href: `/${lang}/sitemap` }
       ]
     }
   }
