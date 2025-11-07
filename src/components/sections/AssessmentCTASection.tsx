@@ -156,14 +156,17 @@ export default function AssessmentCTASection({ lang }: AssessmentCTASectionProps
             <div className="flex flex-col items-center gap-6 relative z-10">
               {/* Icon with animated glow and QR code */}
               <div className="relative">
-                <div className="absolute inset-0 bg-green-300/30 rounded-full blur-xl animate-pulse"></div>
+                <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-green-300/30 rounded-full blur-xl animate-pulse"></div>
                 <div className="bg-gradient-to-br from-green-300 to-green-500 p-5 rounded-full shadow-lg relative">
                   <MessageCircle className="w-10 h-10 text-white" />
                 </div>
-                <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-white rounded-lg shadow-lg overflow-hidden flex items-center justify-center transform rotate-6 hover:rotate-0 transition-transform">
-                  <div className="text-xs text-green-500 font-bold text-center">
-                    QR<br/>Code
-                  </div>
+                <div className="absolute -bottom-2 -right-2 w-20 h-20 bg-white rounded-xl shadow-lg overflow-hidden transform rotate-6 group-hover:rotate-0 transition-transform">
+                  <img
+                    src="/images/lineQR.jpeg"
+                    alt={isJapanese ? 'LINE QRコード' : 'LINE QR code'}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
                 </div>
               </div>
               

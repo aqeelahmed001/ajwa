@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createToken, setAuthCookie, UserJwtPayload } from '@/lib/jwt';
+import { createToken, setAuthCookie, UserJwtPayload, SHORT_SESSION_EXPIRATION, TOKEN_EXPIRATION } from '@/lib/jwt';
 import bcrypt from 'bcryptjs';
 import { connectToDatabase } from '@/lib/mongodb';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, password } = body;
+    const { email, password, rememberMe = false } = body;
 
     // Simple validation
     if (!email || !password) {
@@ -38,7 +38,8 @@ export async function POST(request: NextRequest) {
 
       console.log('Generating JWT token for admin user');
       // Generate JWT token
-      const token = await createToken(adminUser);
+      const tokenExpiration = rememberMe ? TOKEN_EXPIRATION : SHORT_SESSION_EXPIRATION;
+      const token = await createToken(adminUser, tokenExpiration);
       console.log('JWT token generated successfully');
       
       // Create success response
@@ -49,7 +50,7 @@ export async function POST(request: NextRequest) {
       
       // Set auth cookie
       console.log('Setting auth cookie');
-      setAuthCookie(adminResponse, token);
+      setAuthCookie(adminResponse, token, tokenExpiration);
       console.log('Auth cookie set successfully');
       
       // Return success with user data (excluding sensitive info)
@@ -114,7 +115,8 @@ export async function POST(request: NextRequest) {
       console.log('Created user payload for JWT:', userData);
 
       // Generate JWT token
-      const token = await createToken(userData);
+      const tokenExpiration = rememberMe ? TOKEN_EXPIRATION : SHORT_SESSION_EXPIRATION;
+      const token = await createToken(userData, tokenExpiration);
       
       // Create success response
       const successResponse = NextResponse.json({
@@ -123,7 +125,7 @@ export async function POST(request: NextRequest) {
       }, { status: 200 });
       
       // Set auth cookie
-      setAuthCookie(successResponse, token);
+      setAuthCookie(successResponse, token, tokenExpiration);
       
       return successResponse;
     } catch (dbError) {

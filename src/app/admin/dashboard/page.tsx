@@ -79,7 +79,7 @@ export default function AdminDashboardPage() {
       </div>
       
       {/* Debug information */}
-      <Card className="mb-4 bg-yellow-50">
+      {/* <Card className="mb-4 bg-yellow-50">
         <CardHeader>
           <h2 className="text-lg font-semibold">Debug Information</h2>
         </CardHeader>
@@ -88,7 +88,7 @@ export default function AdminDashboardPage() {
           <p><strong>User:</strong> {user?.email || 'Not logged in'}</p>
           <p><strong>Role:</strong> {user?.role || 'None'}</p>
         </CardContent>
-      </Card>
+      </Card> */}
       
       <Suspense fallback={<LoadingState />}>
         <DashboardProvider />

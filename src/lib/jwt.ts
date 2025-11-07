@@ -17,12 +17,13 @@ if (!process.env.JWT_SECRET && process.env.NODE_ENV === 'production') {
 }
 
 // Token expiration time (24 hours in seconds)
-const TOKEN_EXPIRATION = 24 * 60 * 60;
+export const TOKEN_EXPIRATION = 24 * 60 * 60;
+export const SHORT_SESSION_EXPIRATION = 60 * 60; // 1 hour fallback for non-remembered sessions
 
 /**
  * Create a JWT token for a user
  */
-export async function createToken(payload: UserJwtPayload): Promise<string> {
+export async function createToken(payload: UserJwtPayload, expiresInSeconds: number = TOKEN_EXPIRATION): Promise<string> {
   // Ensure all required fields are present and of the correct type
   const validatedPayload = {
     // Include standard JWT claims
@@ -41,7 +42,7 @@ export async function createToken(payload: UserJwtPayload): Promise<string> {
     const token = await new SignJWT(validatedPayload)
       .setProtectedHeader({ alg: 'HS256' })
       .setIssuedAt()
-      .setExpirationTime(Math.floor(Date.now() / 1000) + TOKEN_EXPIRATION)
+      .setExpirationTime(Math.floor(Date.now() / 1000) + expiresInSeconds)
       .sign(new TextEncoder().encode(JWT_SECRET));
     
     console.log('Token created successfully');
@@ -102,14 +103,14 @@ export async function verifyToken(token: string): Promise<UserJwtPayload | null>
 /**
  * Set the auth token as a cookie
  */
-export function setAuthCookie(response: NextResponse, token: string): void {
+export function setAuthCookie(response: NextResponse, token: string, maxAge: number = TOKEN_EXPIRATION): void {
   console.log('Setting auth-token cookie with token:', token.substring(0, 10) + '...');
   console.log('Cookie options:', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
-    maxAge: TOKEN_EXPIRATION
+    maxAge
   });
   
   try {
@@ -120,7 +121,7 @@ export function setAuthCookie(response: NextResponse, token: string): void {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
-      maxAge: TOKEN_EXPIRATION
+      maxAge
     });
     console.log('Auth cookie set successfully');
   } catch (error) {
